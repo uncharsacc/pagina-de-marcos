@@ -249,45 +249,45 @@
     // Aquí puedes mover las marcas a la categoría que quieras
     const categorias = {
         "ECONOMICOS": [
-            { nombre: "GATTIZONI", portada: "", precio: 12000 },
-            { nombre: "GEORGE", portada: "" , precio: 12000},
-            { nombre: "JORGIO", portada: "" , precio: 12000},
-            { nombre: "LE GIRO", portada: "" , precio: 12000}
+            { nombre: "GATTIZONI", portada: "", precio: 10000},
+            { nombre: "GEORGE", portada: "" , precio: 10000},
+            { nombre: "JORGIO", portada: "" , precio: 10000},
+            { nombre: "LE GIRO", portada: "" , precio: 10000}
         ],
         "MEDIA": [
-            { nombre: "ANGELO FALCONI", portada: "", precio: 12000 },
-            { nombre: "JEAN DE PARIS", portada: "", precio: 12000 },
-            { nombre: "FOOSE", portada: "", precio: 12000 },
-            { nombre: "VESPA DEPORTIVO", portada: "" , precio: 12000},
-            { nombre: "VESPA", portada: "" , precio: 12000}, // Vespa Plástico/Metálico
-            { nombre: "LUXOR", portada: "" , precio: 12000}
+            { nombre: "ANGELO FALCONI", portada: "", precio: 24000 },
+            { nombre: "JEAN DE PARIS", portada: "", precio: 24000 },
+            { nombre: "FOOSE", portada: "", precio: 38000 },
+            { nombre: "VESPA DEPORTIVO", portada: "" , precio: 28600},
+            { nombre: "VESPA", portada: "" , precio: 30500, precioMax:38000}, // Vespa Plástico/Metálico
+            { nombre: "LUXOR", portada: "" , precio: 35700}
         ],
         "PREMIUM": [
-            { nombre: "LINEA VIGO", portada: "", precio: 12000 }, // Vigo Metálico
-            { nombre: "GAME DAY", portada: "" , precio: 12000},
-            { nombre: "MAXCOME", portada: "", precio: 12000 },
-            { nombre: "SILMO", portada: "" , precio: 12000},
-            { nombre: "SILMO ÓPTICO", portada: "" , precio: 12000},
-            { nombre: "SILMO SOBRELENTE", portada: "" , precio: 12000},
-            { nombre: "LINEA VIGO SOBRELENTE", portada: "", precio: 12000 },
-            { nombre: "POLO", portada: "" , precio: 12000}
+            { nombre: "LINEA VIGO", portada: "", precio: 42900 }, // Vigo Metálico
+            { nombre: "GAME DAY", portada: "" , precio: 48200},
+            { nombre: "MAXCOME", portada: "", precio: 46400 },
+            { nombre: "SILMO", portada: "" , precio: 44000},
+            { nombre: "SILMO ÓPTICO", portada: "" , precio: 44000},
+            { nombre: "SILMO SOBRELENTE", portada: "" , precio: 51200},
+            { nombre: "LINEA VIGO SOBRELENTE", portada: "", precio: 46400 },
+            { nombre: "POLO", portada: "" , precio: 47600}
         ],
         "SOL": [
-            { nombre: "VESPA SOL", portada: "" , precio: 12000},
-            { nombre: "LACROSSE SOL", portada: "" , precio: 12000},
-            { nombre: "ICE LOOK SOL", portada: "" , precio: 12000},
-            { nombre: "SILMO SOL", portada: "", precio: 12000 }
+            { nombre: "VESPA SOL", portada: "" , precio: 35700},
+            { nombre: "LACROSSE SOL", portada: "" , precio: 46400},
+            { nombre: "ICE LOOK SOL", portada: "" , precio: 53600},
+            { nombre: "SILMO SOL", portada: "", precio: 40500 }
         ],
         "NIÑOS": [
-            { nombre: "VESPA KIDS", portada: "" , precio: 12000},
-            { nombre: "VESPA KIDS SOL", portada: "" , precio: 12000},
-            { nombre: "MOODKIDS", portada: "", precio: 12000 },
-            { nombre: "MOODKIDS SOBRELENTE", portada: "" , precio: 12000},
-            { nombre: "FOOSE", portada: "", precio: 12000 }, // Foose TR90
-            { nombre: "VESPA PEBAX KIDS", portada: "", precio: 12000 }
+            { nombre: "VESPA KIDS", portada: "" , precio: 16700},
+            { nombre: "VESPA KIDS SOL", portada: "" , precio: 24990},
+            { nombre: "MOODKIDS", portada: "", precio: 35700 },
+            { nombre: "MOODKIDS SOBRELENTE", portada: "" , precio: 35700},
+            { nombre: "FOOSE", portada: "", precio: 16700 }, // Foose TR90
+            { nombre: "VESPA PEBAX KIDS", portada: "", precio: 44000 }
         ],
         "SEGURIDAD Y ANTIPARRA": [
-            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", portada: "", precio: 12000 }
+            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", portada: "", precio: 7500 , precioMax:27500 }
         ]
     };
 
@@ -321,7 +321,10 @@
                         ${!urlLogo ? '📷 Sin Logo' : ''}
                     </div>
                     <div class="nombre-marca">${marca.nombre}</div>
-                    <div class="precio-marca">$${marca.precio.toLocaleString('es-CL')}</div>
+                    <div class="precio-marca">
+                    $${marca.precio.toLocaleString('es-CL')}
+                    ${marca.precioMax ? ` - $${marca.precioMax.toLocaleString('es-CL')}` : ''} CLP
+                    </div>
                 `;
                 
                 card.onclick = () => verMarca(marca.nombre);
