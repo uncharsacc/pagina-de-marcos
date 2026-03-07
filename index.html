@@ -60,6 +60,12 @@
             gap: 25px;
             margin-bottom: 50px;
         }
+        .precio-marca {
+            margin-top: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #27ae60;
+        }
 
         .cuadrado-marca {
             background: white;
@@ -243,45 +249,45 @@
     // Aquí puedes mover las marcas a la categoría que quieras
     const categorias = {
         "ECONOMICOS": [
-            { nombre: "GATTIZONI", portada: "" },
-            { nombre: "GEORGE", portada: "" },
-            { nombre: "JORGIO", portada: "" },
-            { nombre: "LE GIRO", portada: "" }
+            { nombre: "GATTIZONI", portada: "", precio: 12000 },
+            { nombre: "GEORGE", portada: "" , precio: 12000},
+            { nombre: "JORGIO", portada: "" , precio: 12000},
+            { nombre: "LE GIRO", portada: "" , precio: 12000}
         ],
         "MEDIA": [
-            { nombre: "ANGELO FALCONI", portada: "" },
-            { nombre: "JEAN DE PARIS", portada: "" },
-            { nombre: "FOOSE", portada: "" },
-            { nombre: "VESPA DEPORTIVO", portada: "" },
-            { nombre: "VESPA", portada: "" }, // Vespa Plástico/Metálico
-            { nombre: "LUXOR", portada: "" }
+            { nombre: "ANGELO FALCONI", portada: "", precio: 12000 },
+            { nombre: "JEAN DE PARIS", portada: "", precio: 12000 },
+            { nombre: "FOOSE", portada: "", precio: 12000 },
+            { nombre: "VESPA DEPORTIVO", portada: "" , precio: 12000},
+            { nombre: "VESPA", portada: "" , precio: 12000}, // Vespa Plástico/Metálico
+            { nombre: "LUXOR", portada: "" , precio: 12000}
         ],
         "PREMIUM": [
-            { nombre: "LINEA VIGO", portada: "" }, // Vigo Metálico
-            { nombre: "GAME DAY", portada: "" },
-            { nombre: "MAXCOME", portada: "" },
-            { nombre: "SILMO", portada: "" },
-            { nombre: "SILMO ÓPTICO", portada: "" },
-            { nombre: "SILMO SOBRELENTE", portada: "" },
-            { nombre: "LINEA VIGO SOBRELENTE", portada: "" },
-            { nombre: "POLO", portada: "" }
+            { nombre: "LINEA VIGO", portada: "", precio: 12000 }, // Vigo Metálico
+            { nombre: "GAME DAY", portada: "" , precio: 12000},
+            { nombre: "MAXCOME", portada: "", precio: 12000 },
+            { nombre: "SILMO", portada: "" , precio: 12000},
+            { nombre: "SILMO ÓPTICO", portada: "" , precio: 12000},
+            { nombre: "SILMO SOBRELENTE", portada: "" , precio: 12000},
+            { nombre: "LINEA VIGO SOBRELENTE", portada: "", precio: 12000 },
+            { nombre: "POLO", portada: "" , precio: 12000}
         ],
         "SOL": [
-            { nombre: "VESPA SOL", portada: "" },
-            { nombre: "LACROSSE SOL", portada: "" },
-            { nombre: "ICE LOOK SOL", portada: "" },
-            { nombre: "SILMO SOL", portada: "" }
+            { nombre: "VESPA SOL", portada: "" , precio: 12000},
+            { nombre: "LACROSSE SOL", portada: "" , precio: 12000},
+            { nombre: "ICE LOOK SOL", portada: "" , precio: 12000},
+            { nombre: "SILMO SOL", portada: "", precio: 12000 }
         ],
         "NIÑOS": [
-            { nombre: "VESPA KIDS", portada: "" },
-            { nombre: "VESPA KIDS SOL", portada: "" },
-            { nombre: "MOODKIDS", portada: "" },
-            { nombre: "MOODKIDS SOBRELENTE", portada: "" },
-            { nombre: "FOOSE", portada: "" }, // Foose TR90
-            { nombre: "VESPA PEBAX KIDS", portada: "" }
+            { nombre: "VESPA KIDS", portada: "" , precio: 12000},
+            { nombre: "VESPA KIDS SOL", portada: "" , precio: 12000},
+            { nombre: "MOODKIDS", portada: "", precio: 12000 },
+            { nombre: "MOODKIDS SOBRELENTE", portada: "" , precio: 12000},
+            { nombre: "FOOSE", portada: "", precio: 12000 }, // Foose TR90
+            { nombre: "VESPA PEBAX KIDS", portada: "", precio: 12000 }
         ],
         "SEGURIDAD Y ANTIPARRA": [
-            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", portada: "" }
+            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", portada: "", precio: 12000 }
         ]
     };
 
@@ -315,6 +321,7 @@
                         ${!urlLogo ? '📷 Sin Logo' : ''}
                     </div>
                     <div class="nombre-marca">${marca.nombre}</div>
+                    <div class="precio-marca">$${marca.precio.toLocaleString('es-CL')}</div>
                 `;
                 
                 card.onclick = () => verMarca(marca.nombre);
@@ -327,6 +334,10 @@
     }
 
     function verMarca(nombreMarca) {
+
+        // GUARDAR POSICIÓN ACTUAL DEL SCROLL
+        posicionScrollPrincipal = window.scrollY;
+
         document.getElementById('tituloCarpetaActual').textContent = nombreMarca;
         document.getElementById('vistaMarcas').style.display = 'none';
         document.getElementById('vistaImagenes').style.display = 'block';
@@ -335,7 +346,6 @@
         const grid = document.getElementById('gridImagenes');
         grid.innerHTML = '';
 
-        // Obtenemos las fotos del archivo datos-imagenes.js
         const fotos = catalogoImagenes[nombreMarca] || [];
 
         if (fotos.length === 0) {
