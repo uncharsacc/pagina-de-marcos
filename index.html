@@ -351,15 +351,26 @@ function buscarMarca() {
 
     let resultados = [];
 
-    for (const [categoria, marcas] of Object.entries(categorias)) {
-        marcas.forEach(marca => {
-            if (marca.nombre.toLowerCase().includes(texto)) {
-                resultados.push({
-                    nombre: marca.nombre,
-                    categoria: categoria,
-                    precio: marca.precio,
-                    precioMax: marca.precioMax
-                });
+    // 🔍 Recorremos TODAS las marcas con sus imágenes
+    for (const [marca, fotos] of Object.entries(catalogoImagenes)) {
+
+        fotos.forEach(foto => {
+            if (foto.toLowerCase().includes(texto)) {
+
+                // 🔎 Buscar categoría y precio desde tu objeto original
+                for (const [categoria, marcas] of Object.entries(categorias)) {
+                    const encontrada = marcas.find(m => m.nombre === marca);
+
+                    if (encontrada) {
+                        resultados.push({
+                            codigo: foto,
+                            marca: marca,
+                            categoria: categoria,
+                            precio: encontrada.precio,
+                            precioMax: encontrada.precioMax
+                        });
+                    }
+                }
             }
         });
     }
@@ -369,16 +380,17 @@ function buscarMarca() {
         return;
     }
 
-    resultadoDiv.innerHTML = resultados.map(m => `
+    resultadoDiv.innerHTML = resultados.map(r => `
         <div class="resultado-item">
-            <strong>${m.nombre}</strong><br>
-            Categoría: ${m.categoria}<br>
-            Precio: $${m.precio.toLocaleString('es-CL')}
-            ${m.precioMax ? ` - $${m.precioMax.toLocaleString('es-CL')}` : ''} CLP
+            <strong>Código:</strong> ${r.codigo}<br>
+            <strong>Marca:</strong> ${r.marca}<br>
+            <strong>Categoría:</strong> ${r.categoria}<br>
+            <strong>Precio:</strong> 
+            $${r.precio.toLocaleString('es-CL')}
+            ${r.precioMax ? ` - $${r.precioMax.toLocaleString('es-CL')}` : ''} CLP
         </div>
     `).join("");
 }
-
 function verMarca(nombreMarca) {
     posicionScrollPrincipal = window.scrollY;
 
