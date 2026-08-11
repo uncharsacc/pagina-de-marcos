@@ -1,4 +1,7 @@
-{
+// Auto-generado por generar-webp.js
+// NO EDITAR MANUALMENTE - ejecuta: node generar-webp.js
+
+const catalogoImagenes = {
   "ANGELO FALCONI": [
     "AF-2229.webp",
     "AF-2230.webp",
@@ -1152,4 +1155,36 @@
     "DYVE-087.webp",
     "ESTUCHE VESPA SOL.webp"
   ]
-}
+};
+
+const mapaLogos = {
+  "ANGELO FALCONI": "logos-webp/ANGELO FALCONI.webp",
+  "FOOSE": "logos-webp/FOOSE.webp",
+  "GAME DAY": "logos-webp/GAME DAY.webp",
+  "GATTIZONI": "logos-webp/GATTIZONI.webp",
+  "GEORGE": "logos-webp/GEORGE.webp",
+  "ICE LOOK": "logos-webp/ICE LOOK.webp",
+  "JEAN DE PARIS": "logos-webp/JEAN DE PARIS.webp",
+  "JORGIO": "logos-webp/JORGIO.webp",
+  "LACROSSE": "logos-webp/LACROSSE.webp",
+  "LE GIRO": "logos-webp/LE GIRO.webp",
+  "LENTE Y ANTIPARRA DE SEGURIDAD": "logos-webp/LENTE Y ANTIPARRA DE SEGURIDAD.webp",
+  "LINEA VIGO SOBRELENTE": "logos-webp/LINEA VIGO SOBRELENTE.webp",
+  "LINEA VIGO": "logos-webp/LINEA VIGO.webp",
+  "LUXOR SOBRELENTE": "logos-webp/LUXOR SOBRELENTE.webp",
+  "LUXOR": "logos-webp/LUXOR.webp",
+  "MAXCOME": "logos-webp/MAXCOME.webp",
+  "MOODKIDS SOBRELENTE": "logos-webp/MOODKIDS SOBRELENTE.webp",
+  "MOODKIDS": "logos-webp/MOODKIDS.webp",
+  "POLO": "logos-webp/POLO.webp",
+  "SILMO SOBRELENTE": "logos-webp/SILMO SOBRELENTE.webp",
+  "SILMO SOL": "logos-webp/SILMO SOL.webp",
+  "SILMO ÓPTICO": "logos-webp/SILMO ÓPTICO.webp",
+  "SILMO": "logos-webp/SILMO.webp",
+  "VESPA DEPORTIVO": "logos-webp/VESPA DEPORTIVO.webp",
+  "VESPA KIDS SOL": "logos-webp/VESPA KIDS SOL.webp",
+  "VESPA KIDS": "logos-webp/VESPA KIDS.webp",
+  "VESPA PEBAX KIDS": "logos-webp/VESPA PEBAX KIDS.webp",
+  "VESPA SOL": "logos-webp/VESPA SOL.webp",
+  "VESPA": "logos-webp/VESPA.webp"
+};
