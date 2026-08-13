@@ -3244,7 +3244,7 @@ class MotorComparacionSimple {
     /* ========================================================
        BUSQUEDA PRINCIPAL
        ======================================================== */
-       async encontrarSimilares(imagenSrc, todasImagenes, limite = 24, onProgress = null, actualizarDebug = true, onResultadoParcial = null) {
+       async encontrarSimilares(imagenSrc, todasImagenes, limite = 24, onProgress = null, actualizarDebug = true) {
         addDebug(`Iniciando busqueda directa con ${todasImagenes.length} frontales`, 'info');
         const referencia = await this.extraerCaracteristicas(imagenSrc);
     
@@ -3289,15 +3289,8 @@ class MotorComparacionSimple {
             });
     
             const loteResultados = await Promise.all(lotePromesas);
-    
             for (const r of loteResultados) {
                 if (r) resultados.push(r);
-            }
-    
-            // Ordenar parcial y avisar a la UI (resultados progresivos)
-            resultados.sort((a, b) => b.similitud - a.similitud);
-            if (onResultadoParcial) {
-                onResultadoParcial(resultados.slice(0, limite));
             }
     
             procesadas += lote.length;
@@ -3822,13 +3815,6 @@ class MotorComparacionSimple {
             this.progressPercent.textContent = '0%';
             this.progressSubtitle.textContent = 'Analizando imagen...';
         
-            // Preparar sección de resultados vacía para ir llenándola
-            this.resultsSection.classList.add('active');
-            this.resultsGrid.innerHTML = '';
-            this.resultsCount.textContent = '0 encontrados';
-            this.referenceThumb.src = this.imagenSubidaSrc;
-            this.ultimosResultadosFoto = [];
-        
             addDebug('🔍 Iniciando búsqueda de similares...', 'info');
         
             try {
@@ -3841,12 +3827,6 @@ class MotorComparacionSimple {
                         this.progressBarInner.style.width = pct + '%';
                         this.progressPercent.textContent = pct + '%';
                         this.progressSubtitle.textContent = 'Comparando ' + procesadas + ' de ' + total + '...';
-                    },
-                    true,
-                    // Resultados progresivos: se van mostrando mientras avanza
-                    (parciales) => {
-                        this.ultimosResultadosFoto = parciales;
-                        this.mostrarResultados(parciales, true); // true = modo parcial (no hace scroll cada vez)
                     }
                 );
         
@@ -3857,7 +3837,7 @@ class MotorComparacionSimple {
                     this.mostrarSinResultados();
                 } else {
                     addDebug(`✅ ${resultados.length} resultados encontrados`, 'success');
-                    this.mostrarResultados(resultados, false); // false = final, hace scroll
+                    this.mostrarResultados(resultados);
                 }
             } catch (err) {
                 this.analysisProgress.classList.remove('active');
@@ -3925,12 +3905,11 @@ class MotorComparacionSimple {
             document.body.style.overflow = '';
         }
 
-        mostrarResultados(resultados, esParcial = false) {
+        mostrarResultados(resultados) {
             this.ultimosResultadosFoto = resultados;
         
             this.ocultarTodo();
             this.photoSearchSection.style.display = 'block';
-            this.resultsSection.classList.add('active');
         
             this.referenceThumb.src = this.imagenSubidaSrc;
             this.resultsCount.textContent = resultados.length + ' encontrados';
@@ -3958,12 +3937,11 @@ class MotorComparacionSimple {
                 '</div>';
             }).join('');
         
-            // Solo hacer scroll cuando termina la búsqueda, no en cada lote parcial
-            if (!esParcial) {
-                setTimeout(() => {
-                    this.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
-            }
+            this.resultsSection.classList.add('active');
+        
+            setTimeout(() => {
+                this.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         
             document.querySelectorAll('.result-filter-btn').forEach(b => b.classList.remove('active'));
             const btnTodos = document.querySelector('.result-filter-btn[data-filter="all"]');
