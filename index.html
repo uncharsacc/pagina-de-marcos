@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SACC & VISION - Buscar por Foto</title>
+    <title>ÓpticaCat - Buscar por Foto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
@@ -2110,7 +2110,7 @@
         const timestamp = new Date().toLocaleTimeString();
         debugLog.push({ timestamp, msg, type });
         actualizarDebugPanel();
-        console.log(`[SACC & VISION ${type.toUpperCase()}] ${msg}`);
+        console.log(`[ÓpticaCat ${type.toUpperCase()}] ${msg}`);
     }
 
     function actualizarDebugPanel() {
@@ -2263,6 +2263,126 @@ class MotorComparacionSimple {
         // (un lente de sol se "parece" por color/forma general a una antiparra
         // sin serlo). Por eso se excluyen SIEMPRE de la busqueda por foto.
         this.categoriasExcluidas = new Set(['SEGURIDAD Y ANTIPARRA']);
+
+        // CACHE PERSISTENTE DE DESCRIPTORES (IndexedDB). Subir esta version
+        // invalida automaticamente los descriptores guardados si se cambia
+        // el algoritmo de analisis (para que no queden "viejos" comparando
+        // contra la formula nueva).
+        this.CACHE_VERSION = 'v2-hog-zonas';
+        this.dbPromise = this.abrirDB();
+        this.precalentando = false;
+    }
+
+    /* ========================================================
+       CACHE PERSISTENTE DE DESCRIPTORES (IndexedDB)
+       --------------------------------------------------------
+       Calcular el descriptor de una ficha (mascara, Hu moments,
+       HOG, zonas, etc.) es lo mas caro de la busqueda. Las ~1000+
+       fichas del catalogo no cambian de una busqueda a otra, asi
+       que una vez calculado un descriptor se guarda en IndexedDB
+       (persiste entre visitas y recargas, a diferencia de una
+       variable en memoria). La primera busqueda de un visitante
+       calcula todo; las siguientes -y las de quien vuelve a la
+       pagina- son casi instantaneas porque solo comparan vectores
+       ya listos, sin volver a leer ni procesar las imagenes.
+       ======================================================== */
+    abrirDB() {
+        return new Promise((resolve) => {
+            if (!('indexedDB' in window)) { resolve(null); return; }
+            try {
+                const req = indexedDB.open('opticacat-descriptores', 1);
+                req.onupgradeneeded = () => {
+                    const db = req.result;
+                    if (!db.objectStoreNames.contains('descriptores')) {
+                        db.createObjectStore('descriptores', { keyPath: 'url' });
+                    }
+                };
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null); // ej. modo privado: se sigue sin cache
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    async obtenerDescriptorCache(url) {
+        const db = await this.dbPromise;
+        if (!db) return null;
+        return new Promise((resolve) => {
+            try {
+                const tx = db.transaction('descriptores', 'readonly');
+                const req = tx.objectStore('descriptores').get(url);
+                req.onsuccess = () => {
+                    const registro = req.result;
+                    resolve(registro && registro.version === this.CACHE_VERSION ? registro.descriptor : null);
+                };
+                req.onerror = () => resolve(null);
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    async guardarDescriptorCache(url, descriptor) {
+        const db = await this.dbPromise;
+        if (!db) return;
+        try {
+            const tx = db.transaction('descriptores', 'readwrite');
+            tx.objectStore('descriptores').put({ url, version: this.CACHE_VERSION, descriptor });
+        } catch (e) {
+            // Si falla el guardado la busqueda actual igual funciona; solo
+            // no queda cacheada para la proxima vez.
+        }
+    }
+
+    /* ========================================================
+       DESCRIPTOR DE UN CANDIDATO DEL CATALOGO (con cache)
+       ======================================================== */
+    async obtenerCandidato(imagen) {
+        const cacheado = await this.obtenerDescriptorCache(imagen.frontalUrl);
+        if (cacheado) return cacheado;
+        const datosFrontal = await this.cargarImagen(imagen.frontalUrl);
+        const candidato = this.crearDescriptorDesdeImageData(datosFrontal, 'catalogo-frontal-json');
+        this.guardarDescriptorCache(imagen.frontalUrl, candidato); // en segundo plano, no bloquea
+        return candidato;
+    }
+
+    /* ========================================================
+       PRECALENTAR CACHE EN SEGUNDO PLANO
+       --------------------------------------------------------
+       Apenas carga la pagina (antes de que el cliente suba una
+       foto), se van calculando y guardando en IndexedDB los
+       descriptores del catalogo que todavia no esten cacheados.
+       Se hace de a poco, en ratos libres del navegador
+       (requestIdleCallback) para no trabar la interfaz mientras
+       el cliente mira el catalogo o recorta su foto. Asi, para
+       cuando de verdad presiona "Buscar similares", buena parte
+       del catalogo ya esta lista y la busqueda es casi instantanea.
+       ======================================================== */
+    precalentarCache(todasImagenes) {
+        if (this.precalentando) return;
+        this.precalentando = true;
+        const CONCURRENCIA = 4;
+        let index = 0;
+
+        const procesarLote = async () => {
+            if (index >= todasImagenes.length) { this.precalentando = false; addDebug('✅ Cache de descriptores precalentada', 'success'); return; }
+            const lote = todasImagenes.slice(index, index + CONCURRENCIA).filter(img => !this.categoriasExcluidas.has(img.categoria));
+            index += CONCURRENCIA;
+            await Promise.all(lote.map(img => this.obtenerCandidato(img).catch(() => null)));
+            programarSiguiente();
+        };
+
+        const programarSiguiente = () => {
+            if (index >= todasImagenes.length) { this.precalentando = false; return; }
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => procesarLote(), { timeout: 2000 });
+            } else {
+                setTimeout(procesarLote, 60);
+            }
+        };
+
+        programarSiguiente();
     }
 
     /* ========================================================
@@ -3143,35 +3263,47 @@ class MotorComparacionSimple {
         const total = todasImagenes.length;
         let procesadas = 0, errores = 0;
 
-        for (const imagen of todasImagenes) {
-            try {
+        // RENDIMIENTO: en vez de cargar/comparar una ficha por vez (await
+        // secuencial), se procesan LOTES en paralelo con Promise.all. Cargar
+        // una imagen es esperar red/decodificacion (I/O), asi que el
+        // navegador puede tener varias en vuelo a la vez sin costo extra de
+        // CPU real. Ademas, cada candidato revisa primero el cache de
+        // IndexedDB (obtenerCandidato) antes de reprocesar la imagen desde
+        // cero, asi que en la practica la mayoria de las fichas ni siquiera
+        // se vuelven a cargar.
+        const LOTE = 12;
+        for (let i = 0; i < todasImagenes.length; i += LOTE) {
+            const lote = todasImagenes.slice(i, i + LOTE);
+
+            const lotePromesas = lote.map(async (imagen) => {
                 // Filtro anti-antiparra: nunca se muestran lentes de seguridad
                 // industrial como "similares" de una foto de lente normal (y
                 // viceversa), sin importar que tan parecido salga el puntaje.
-                if (this.categoriasExcluidas.has(imagen.categoria)) {
-                    procesadas++;
-                    if (onProgress) onProgress(procesadas, total);
-                    continue;
+                if (this.categoriasExcluidas.has(imagen.categoria)) return null;
+                try {
+                    const candidato = await this.obtenerCandidato(imagen);
+                    if (this.esProbableEstucheFrontal(candidato, imagen)) {
+                        addDebug(`Descartado (posible estuche): ${imagen.marca}/${imagen.nombre}`, 'warning');
+                        return null;
+                    }
+                    const score = this.comparar(referencia, candidato);
+                    if (score >= 0.22) {
+                        addDebug(`Similitud ${imagen.marca}/${imagen.nombre}: ${(score * 100).toFixed(1)}%`, score >= 0.60 ? 'success' : score >= 0.40 ? 'warning' : 'info');
+                        return { ...imagen, similitud: score, porcentaje: Math.round(score * 100), metodoComparacion: 'frontal-json' };
+                    }
+                    return null;
+                } catch (e) {
+                    errores++;
+                    if (errores <= 5) addDebug(`Error con frontal ${imagen.frontalUrl}: ${e.message}`, 'error');
+                    return null;
                 }
-                const datosFrontal = await this.cargarImagen(imagen.frontalUrl);
-                const candidato = this.crearDescriptorDesdeImageData(datosFrontal, 'catalogo-frontal-json');
-                if (this.esProbableEstucheFrontal(candidato, imagen)) {
-                    addDebug(`Descartado (posible estuche): ${imagen.marca}/${imagen.nombre}`, 'warning');
-                    procesadas++;
-                    if (onProgress) onProgress(procesadas, total);
-                    continue;
-                }
-                const score = this.comparar(referencia, candidato);
-                if (score >= 0.22) {
-                    resultados.push({ ...imagen, similitud: score, porcentaje: Math.round(score * 100), metodoComparacion: 'frontal-json' });
-                    addDebug(`Similitud ${imagen.marca}/${imagen.nombre}: ${(score * 100).toFixed(1)}%`, score >= 0.60 ? 'success' : score >= 0.40 ? 'warning' : 'info');
-                }
-            } catch (e) {
-                errores++;
-                if (errores <= 5) addDebug(`Error con frontal ${imagen.frontalUrl}: ${e.message}`, 'error');
-            }
-            procesadas++;
-            if (onProgress) onProgress(procesadas, total);
+            });
+
+            const loteResultados = await Promise.all(lotePromesas);
+            for (const r of loteResultados) { if (r) resultados.push(r); }
+
+            procesadas += lote.length;
+            if (onProgress) onProgress(Math.min(procesadas, total), total);
         }
 
         resultados.sort((a, b) => b.similitud - a.similitud);
@@ -3259,6 +3391,13 @@ class MotorComparacionSimple {
             
             addDebug(`✅ Catálogo inicializado: ${Object.keys(this.datos).length} marcas, ${this.todasLasImagenes.length} imágenes`, 'success');
             this.mostrarToast(`Catálogo listo: ${this.todasLasImagenes.length} modelos cargados`, 'success');
+
+            // Precalentar en segundo plano: para cuando el cliente realmente
+            // suba una foto y presione "Buscar similares", buena parte del
+            // catalogo ya va a estar cacheado en IndexedDB y la busqueda va
+            // a ser mucho mas rapida. No se espera (sin await): no debe
+            // trabar la carga inicial de la pagina.
+            this.motor.precalentarCache(this.todasLasImagenes);
         }
 
         cargarEventos() {
