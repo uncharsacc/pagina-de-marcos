@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÓpticaCat - Buscar por Foto</title>
+    <title>SACC & VISION - Buscar por Foto</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
     <style>
         :root {
             --primary: #0d0d14;
@@ -1561,6 +1562,19 @@
 
 
         /* Visor temporal de comparación visual */
+        /* Modal de recorte de la foto del cliente */
+        .crop-modal { display:none; position:fixed; inset:0; z-index:5200; background:rgba(5,5,12,.92); padding:1.25rem; }
+        .crop-modal.active { display:flex; align-items:center; justify-content:center; }
+        .crop-window { width:min(560px,100%); max-height:92vh; overflow:auto; margin:0 auto; background:#11111f; border:1px solid var(--border); border-radius:18px; box-shadow:0 20px 70px rgba(0,0,0,.55); padding:1.25rem; display:flex; flex-direction:column; gap:1rem; }
+        .crop-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+        .crop-title { color:#fff; font-weight:800; font-size:1.02rem; }
+        .crop-subtitle { color:var(--text-secondary); font-size:.78rem; margin-top:.2rem; }
+        .crop-close { border:1px solid var(--border); background:#1b1b2d; color:#fff; width:36px; height:36px; border-radius:10px; cursor:pointer; flex-shrink:0; }
+        .crop-canvas-wrap { width:100%; max-height:50vh; background:#0d0d18; border-radius:12px; overflow:hidden; }
+        .crop-canvas-wrap img { display:block; max-width:100%; }
+        .crop-actions { display:flex; gap:.75rem; }
+        .crop-hint { color:var(--text-secondary); font-size:.75rem; line-height:1.5; display:flex; gap:.5rem; align-items:flex-start; }
+        .crop-hint i { color: var(--accent); margin-top: 0.15rem; }
         .comparison-debug-modal { display:none; position:fixed; inset:0; z-index:5000; background:rgba(5,5,12,.92); padding:1.5rem; overflow-y:auto; }
         .comparison-debug-modal.active { display:block; }
         .comparison-debug-window { width:min(1400px,100%); margin:0 auto; background:#11111f; border:1px solid var(--border); border-radius:18px; box-shadow:0 20px 70px rgba(0,0,0,.55); padding:1.25rem; }
@@ -1881,7 +1895,10 @@
                             <i class="fas fa-search"></i>
                             Buscar similares
                         </button>
-                        <button class="btn-change-image" onclick="document.getElementById('fileInput').click()">
+                        <button class="btn-change-image" onclick="app.abrirRecorte()" title="Ajustar recorte">
+                            <i class="fas fa-crop-simple"></i>
+                        </button>
+                        <button class="btn-change-image" onclick="document.getElementById('fileInput').click()" title="Cambiar imagen">
                             <i class="fas fa-exchange-alt"></i>
                         </button>
                     </div>
@@ -2034,6 +2051,30 @@
 
 
     <!-- VISOR TEMPORAL DE COMPARACIÓN VISUAL -->
+    <div class="crop-modal" id="cropModal">
+        <div class="crop-window">
+            <div class="crop-header">
+                <div>
+                    <div class="crop-title">✂️ Ajusta el recorte</div>
+                    <div class="crop-subtitle">Encuadra solo el marco/lente. Si en la foto hay mas cosas (mano, mesa, otros objetos), dejalas afuera del recuadro.</div>
+                </div>
+                <button class="crop-close" onclick="app.cancelarRecorte()" title="Cerrar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="crop-canvas-wrap">
+                <img id="cropImage" src="" alt="Imagen a recortar">
+            </div>
+            <div class="crop-hint"><i class="fas fa-circle-info"></i><span>Arrastra las esquinas del recuadro para ajustarlo. Cuanto mas limpio quede (sin fondo de mas), mejor va a funcionar la busqueda.</span></div>
+            <div class="crop-actions">
+                <button class="btn-search-similar" onclick="app.confirmarRecorte()">
+                    <i class="fas fa-check"></i> Usar este recorte
+                </button>
+                <button class="btn-change-image" onclick="app.usarImagenCompleta()">
+                    <i class="fas fa-expand"></i> Usar foto completa
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="comparison-debug-modal" id="comparisonDebugModal">
         <div class="comparison-debug-window">
             <div class="comparison-debug-header">
@@ -2056,6 +2097,7 @@
         <p>OpticaCat &copy; 2024 - Busqueda visual de marcos de lentes</p>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
     <script src="datos-imagenes.js"></script>
 
     <script>
@@ -2068,7 +2110,7 @@
         const timestamp = new Date().toLocaleTimeString();
         debugLog.push({ timestamp, msg, type });
         actualizarDebugPanel();
-        console.log(`[ÓpticaCat ${type.toUpperCase()}] ${msg}`);
+        console.log(`[SACC & VISION ${type.toUpperCase()}] ${msg}`);
     }
 
     function actualizarDebugPanel() {
@@ -2214,6 +2256,13 @@ class MotorComparacionSimple {
         this.maxCandidatos = 12;
         this.ultimaComparacionVisual = [];
         this.ultimaReferenciaVisual = null;
+        // FILTRO ANTI-ANTIPARRA: los lentes/antiparras de seguridad industrial
+        // (categoria "SEGURIDAD Y ANTIPARRA") tienen una forma y proposito muy
+        // distinto al de un lente optico o de sol normal. Compararlos contra
+        // fotos de clientes casi siempre produce falsos positivos confusos
+        // (un lente de sol se "parece" por color/forma general a una antiparra
+        // sin serlo). Por eso se excluyen SIEMPRE de la busqueda por foto.
+        this.categoriasExcluidas = new Set(['SEGURIDAD Y ANTIPARRA']);
     }
 
     /* ========================================================
@@ -2287,6 +2336,51 @@ class MotorComparacionSimple {
     }
 
     /* ========================================================
+       ESTIMAR COLOR DE FONDO REAL
+       --------------------------------------------------------
+       Las fichas del catalogo tienen fondo blanco de estudio,
+       pero las fotos que suben los clientes casi nunca lo tienen
+       (mesa, mano, piso, pared, etc). Si asumimos "fondo = blanco"
+       siempre, la mascara de esas fotos sale mal, el recorte cae
+       en el fallback central (con ruido de fondo) y el descriptor
+       resultante ya no se parece al de la ficha -> similitud baja
+       aunque el marco sea identico. Por eso el fondo se muestrea
+       del propio borde de la imagen en vez de asumirlo.
+       ======================================================== */
+    estimarColorFondo(data, width, height) {
+        const grosor = Math.max(3, Math.round(Math.min(width, height) * 0.035));
+        const muestrasR = [], muestrasG = [], muestrasB = [];
+        const agregar = (x, y) => {
+            const idx = (y * width + x) * 4;
+            if (data[idx + 3] < 30) return;
+            muestrasR.push(data[idx]);
+            muestrasG.push(data[idx + 1]);
+            muestrasB.push(data[idx + 2]);
+        };
+        for (let x = 0; x < width; x++) {
+            for (let t = 0; t < grosor; t++) { agregar(x, t); agregar(x, height - 1 - t); }
+        }
+        for (let y = 0; y < height; y++) {
+            for (let t = 0; t < grosor; t++) { agregar(t, y); agregar(width - 1 - t, y); }
+        }
+        const mediana = (arr) => {
+            if (!arr.length) return 255;
+            const s = Float32Array.from(arr).sort();
+            return s[Math.floor(s.length / 2)];
+        };
+        const r = mediana(muestrasR), g = mediana(muestrasG), b = mediana(muestrasB);
+        // Que tan pareja es la franja del borde: si hay mucha variacion, el fondo
+        // no es uniforme (ej. fondo con textura) y hay que ser mas permisivo.
+        const desvio = (arr, media) => {
+            if (!arr.length) return 0;
+            let s = 0; for (const v of arr) s += Math.abs(v - media);
+            return s / arr.length;
+        };
+        const variacion = (desvio(muestrasR, r) + desvio(muestrasG, g) + desvio(muestrasB, b)) / 3;
+        return { r, g, b, uniforme: variacion < 18 };
+    }
+
+    /* ========================================================
        CREAR MASCARA ROBUSTA
        ======================================================== */
     crearMascara(data, width, height) {
@@ -2296,18 +2390,25 @@ class MotorComparacionSimple {
             gray[i] = this.luminancia(data[p], data[p + 1], data[p + 2]);
         }
         const thr = this.umbralOtsu(gray);
+        const fondo = this.estimarColorFondo(data, width, height);
+        // Umbral de distancia al color de fondo: mas chico (estricto) si el fondo
+        // es parejo (estudio), mas grande (tolerante) si el fondo tiene textura.
+        const umbralFondo = fondo.uniforme ? 0.10 : 0.16;
         const mask = new Uint8Array(width * height);
         for (let i = 0; i < gray.length; i++) {
             const p = i * 4;
             const a = data[p + 3];
             if (a < 30) { mask[i] = 0; continue; }
-            // Si el pixel es muy claro Y tiene poca saturacion -> probable fondo
             const r = data[p], g = data[p + 1], b = data[p + 2];
             const maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
             const sat = (maxC - minC) / 255;
+            // Distancia al color de fondo real (estimado del borde), no siempre blanco
+            const distFondo = this.distanciaColor(r, g, b, fondo.r, fondo.g, fondo.b);
+            const esFondoPorColor = distFondo < umbralFondo;
+            // Fallback clasico: fondos de estudio muy claros y sin saturacion
             const esCasiBlanco = (r > 230 && g > 230 && b > 230 && sat < 0.08);
             const esClaroUniforme = (gray[i] > 210 && sat < 0.12);
-            if (esCasiBlanco || esClaroUniforme) {
+            if (esFondoPorColor || esCasiBlanco || esClaroUniforme) {
                 mask[i] = 0;
             } else {
                 // Otsu: si es mas oscuro que el umbral -> objeto
@@ -2691,6 +2792,92 @@ class MotorComparacionSimple {
     }
 
     /* ========================================================
+       HOG LIGERO (Histograma de Gradientes Orientados)
+       --------------------------------------------------------
+       Esto es lo que mas eleva la calidad del motor: en vez de
+       solo marcar "hay borde / no hay borde" (como crearEdges),
+       se mide la DIRECCION de cada borde (horizontal, diagonal,
+       vertical, etc.) agrupada en una grilla de celdas. Dos
+       monturas con el mismo contorno general (mismos Hu moments)
+       pero con puente/varillas distintos generan un patron de
+       orientaciones diferente, y este descriptor lo detecta.
+       Es la misma idea (simplificada) que usan los detectores de
+       objetos clasicos antes de las redes neuronales.
+       ======================================================== */
+    calcularHOG(imageData, celdas = 4, bins = 8) {
+        const { data, width, height } = imageData;
+        const gray = new Float32Array(width * height);
+        for (let i = 0; i < gray.length; i++) {
+            const p = i * 4;
+            gray[i] = this.luminancia(data[p], data[p + 1], data[p + 2]);
+        }
+        const cellW = Math.max(1, Math.floor(width / celdas));
+        const cellH = Math.max(1, Math.floor(height / celdas));
+        const hist = new Float32Array(celdas * celdas * bins);
+        const gradosPorBin = 180 / bins;
+
+        for (let y = 1; y < height - 1; y++) {
+            for (let x = 1; x < width - 1; x++) {
+                const i = y * width + x;
+                const gx = gray[i + 1] - gray[i - 1];
+                const gy = gray[i + width] - gray[i - width];
+                const mag = Math.sqrt(gx * gx + gy * gy);
+                if (mag < 8) continue; // ignora zonas planas / ruido
+
+                let ang = Math.atan2(gy, gx) * 180 / Math.PI;
+                if (ang < 0) ang += 180; // sin signo: 0-180
+                const bin = Math.min(bins - 1, Math.floor(ang / gradosPorBin));
+
+                const cx = Math.min(celdas - 1, Math.floor(x / cellW));
+                const cy = Math.min(celdas - 1, Math.floor(y / cellH));
+                hist[(cy * celdas + cx) * bins + bin] += mag;
+            }
+        }
+
+        // Normalizacion L2 por celda: hace el descriptor tolerante a
+        // diferencias de brillo/contraste entre la foto del cliente y
+        // la ficha del catalogo.
+        for (let c = 0; c < celdas * celdas; c++) {
+            let norm = 0;
+            for (let b = 0; b < bins; b++) { const v = hist[c * bins + b]; norm += v * v; }
+            norm = Math.sqrt(norm) + 1e-6;
+            for (let b = 0; b < bins; b++) hist[c * bins + b] /= norm;
+        }
+        return Array.from(hist);
+    }
+
+    /* ========================================================
+       ZONAS ESTRUCTURALES DE LA MONTURA
+       --------------------------------------------------------
+       Reduce la silueta 32x32 (ya centrada) a 6 zonas (izq/centro/
+       derecha x arriba/abajo) mas un puntaje explicito de simetria
+       izquierda-derecha. Un lente real es casi simetrico y tiene dos
+       "lobulos" (lente izq/der) separados por el puente central: esto
+       hace que la comparacion distinga monturas con proporciones
+       distintas aunque el contorno general (Hu moments) sea parecido.
+       ======================================================== */
+    zonasSilueta(silhouette) {
+        const n = 32;
+        if (!silhouette || silhouette.length !== n * n) return new Array(7).fill(0);
+        const zonas = { izqSup: 0, izqInf: 0, centroSup: 0, centroInf: 0, derSup: 0, derInf: 0 };
+        const cont = { izqSup: 0, izqInf: 0, centroSup: 0, centroInf: 0, derSup: 0, derInf: 0 };
+        for (let y = 0; y < n; y++) {
+            const vert = y < n / 2 ? 'Sup' : 'Inf';
+            for (let x = 0; x < n; x++) {
+                const horiz = x < 11 ? 'izq' : x < 21 ? 'centro' : 'der';
+                const key = horiz + vert;
+                zonas[key] += silhouette[y * n + x];
+                cont[key]++;
+            }
+        }
+        const claves = ['izqSup', 'izqInf', 'centroSup', 'centroInf', 'derSup', 'derInf'];
+        const out = claves.map(k => zonas[k] / Math.max(1, cont[k]));
+        const asimetria = (Math.abs(out[0] - out[4]) + Math.abs(out[1] - out[5])) / 2;
+        out.push(this.clamp(1 - asimetria * 2));
+        return out;
+    }
+
+    /* ========================================================
        HISTOGRAMAS
        ======================================================== */
     calcularHistograma(imageData) {
@@ -2786,12 +2973,14 @@ class MotorComparacionSimple {
         const formaGris = this.calcularFormaGris(img, 32);
         const hu = this.calcularHuMoments(img);
         const glassLike = this.calcularIndiceMontura(silhouette, normalizada.box.width / Math.max(1, normalizada.box.height));
+        const hog = this.calcularHOG(img);
+        const zonas = this.zonasSilueta(silhouette);
         const box = normalizada.box;
         return {
             hR: hist.hR, hG: hist.hG, hB: hist.hB, hL: hist.hL,
             colorPromedio: hist.colorPromedio,
             pHash, edges, filas: proyecciones.filas, columnas: proyecciones.columnas,
-            silhouette, formaGris, hu, glassLike,
+            silhouette, formaGris, hu, glassLike, hog, zonas,
             aspecto: box.width / Math.max(1, box.height),
             area: (box.width * box.height) / Math.max(1, original.width * original.height),
             modo
@@ -2836,6 +3025,15 @@ class MotorComparacionSimple {
         return this.clamp(1 - diff / n);
     }
 
+    similitudCoseno(a, b) {
+        const n = Math.min(a.length, b.length);
+        if (!n) return 0;
+        let dot = 0, na = 0, nb = 0;
+        for (let i = 0; i < n; i++) { dot += a[i] * b[i]; na += a[i] * a[i]; nb += b[i] * b[i]; }
+        if (!na || !nb) return 0;
+        return this.clamp(dot / (Math.sqrt(na) * Math.sqrt(nb)));
+    }
+
     /* ========================================================
        COMPARAR DOS DESCRIPTORES
        ======================================================== */
@@ -2852,27 +3050,39 @@ class MotorComparacionSimple {
         const simSilhouette = this.similitudVector(c1.silhouette || [], c2.silhouette || []);
         const simFormaGris = this.similitudVector(c1.formaGris || [], c2.formaGris || []);
         const simHu = this.similitudHu(c1.hu || [0, 0, 0, 0, 0, 0, 0], c2.hu || [0, 0, 0, 0, 0, 0, 0]);
+        // Nuevas señales estructurales (motor mejorado):
+        // - simHOG: orientacion de los bordes por celdas -> distingue el
+        //   "dibujo" real de la montura (puente, varillas, esquinas), no
+        //   solo su contorno general.
+        // - simZonas: distribucion espacial por zonas + simetria izq/der,
+        //   propia de como se arma un lente (dos lobulos + puente).
+        const simHOG = this.similitudCoseno(c1.hog || [], c2.hog || []);
+        const simZonas = this.similitudVector(c1.zonas || [], c2.zonas || []);
 
         const diffAspecto = Math.abs(Math.log(Math.max(0.1, c1.aspecto) / Math.max(0.1, c2.aspecto)));
         const simAspecto = this.clamp(1 - diffAspecto / 1.0);
         const diffArea = Math.abs(Math.log(Math.max(0.01, c1.area) / Math.max(0.01, c2.area)));
         const simArea = this.clamp(1 - diffArea / 3);
 
-        // Ponderacion nueva: forma invariante domina
+        // Ponderacion recalibrada: la forma real (Hu + silueta + HOG + zonas)
+        // domina muy por encima del color, que es el rasgo menos confiable
+        // (cambia con la luz de la foto del cliente).
         let similitud =
-            simHu * 0.28 +
-            simSilhouette * 0.20 +
-            simFormaGris * 0.14 +
-            simEdges * 0.12 +
-            simProyecciones * 0.08 +
-            simAspecto * 0.06 +
-            simColor * 0.04 +
-            simPHash * 0.03 +
-            simLum * 0.02 +
+            simHu * 0.23 +
+            simSilhouette * 0.15 +
+            simHOG * 0.15 +
+            simFormaGris * 0.10 +
+            simZonas * 0.09 +
+            simEdges * 0.08 +
+            simProyecciones * 0.06 +
+            simAspecto * 0.05 +
+            simColor * 0.03 +
+            simPHash * 0.02 +
+            simLum * 0.01 +
             simColorAvg * 0.02 +
             simArea * 0.01;
 
-        const simForma = simHu * 0.45 + simSilhouette * 0.30 + simFormaGris * 0.15 + simEdges * 0.10;
+        const simForma = simHu * 0.32 + simSilhouette * 0.22 + simHOG * 0.22 + simFormaGris * 0.14 + simEdges * 0.10;
 
         // Penalizaciones suavizadas
         if (simFormaGris < 0.30) similitud *= 0.75;
@@ -2891,6 +3101,15 @@ class MotorComparacionSimple {
         if (simHu < 0.25) similitud *= 0.65;
         else if (simHu < 0.45) similitud *= 0.85;
 
+        // HOG detecta diferencias de "dibujo interno" (puente/varillas) que
+        // Hu y silueta a veces no capturan por si solos.
+        if (simHOG < 0.35) similitud *= 0.78;
+        else if (simHOG < 0.55) similitud *= 0.90;
+
+        // Simetria/zonas: si la distribucion izq-centro-der no calza, es
+        // muy probable que sea una montura con proporciones distintas.
+        if (simZonas < 0.55) similitud *= 0.85;
+
         return this.clamp(similitud);
     }
 
@@ -2905,11 +3124,20 @@ class MotorComparacionSimple {
     /* ========================================================
        BUSQUEDA PRINCIPAL
        ======================================================== */
-    async encontrarSimilares(imagenSrc, todasImagenes, limite = 24, onProgress = null) {
+    async encontrarSimilares(imagenSrc, todasImagenes, limite = 24, onProgress = null, actualizarDebug = true) {
         addDebug(`Iniciando busqueda directa con ${todasImagenes.length} frontales`, 'info');
         const referencia = await this.extraerCaracteristicas(imagenSrc);
-        this.ultimaReferenciaVisual = imagenSrc;
-        this.ultimaComparacionVisual = [];
+        // IMPORTANTE: solo la busqueda que arranca desde la FOTO DEL CLIENTE debe
+        // actualizar el estado que alimenta el visor de diagnostico ("Ver que parte
+        // de la ficha se esta comparando"). Las busquedas de "similares dentro del
+        // catalogo" (click en un resultado o en un producto del catalogo) usan una
+        // imagen de catalogo como referencia y NO deben pisar esta info, o el visor
+        // termina mostrando la foto de un producto en vez de la foto que subio el
+        // cliente.
+        if (actualizarDebug) {
+            this.ultimaReferenciaVisual = imagenSrc;
+            this.ultimaComparacionVisual = [];
+        }
         addDebug('Referencia normalizada: forma, silueta, Hu, bordes, color y proporcion', 'success');
         const resultados = [];
         const total = todasImagenes.length;
@@ -2917,6 +3145,14 @@ class MotorComparacionSimple {
 
         for (const imagen of todasImagenes) {
             try {
+                // Filtro anti-antiparra: nunca se muestran lentes de seguridad
+                // industrial como "similares" de una foto de lente normal (y
+                // viceversa), sin importar que tan parecido salga el puntaje.
+                if (this.categoriasExcluidas.has(imagen.categoria)) {
+                    procesadas++;
+                    if (onProgress) onProgress(procesadas, total);
+                    continue;
+                }
                 const datosFrontal = await this.cargarImagen(imagen.frontalUrl);
                 const candidato = this.crearDescriptorDesdeImageData(datosFrontal, 'catalogo-frontal-json');
                 if (this.esProbableEstucheFrontal(candidato, imagen)) {
@@ -2939,9 +3175,11 @@ class MotorComparacionSimple {
         }
 
         resultados.sort((a, b) => b.similitud - a.similitud);
-        this.ultimaComparacionVisual = resultados.slice(0, 12).map(r => ({
-            url: r.url, frontalUrl: r.frontalUrl, marca: r.marca || '', nombre: r.nombre || '', porcentaje: r.porcentaje
-        }));
+        if (actualizarDebug) {
+            this.ultimaComparacionVisual = resultados.slice(0, 12).map(r => ({
+                url: r.url, frontalUrl: r.frontalUrl, marca: r.marca || '', nombre: r.nombre || '', porcentaje: r.porcentaje
+            }));
+        }
         addDebug(`Busqueda terminada: ${resultados.length} candidatos`, 'success');
         return resultados.slice(0, limite);
     }
@@ -2988,10 +3226,14 @@ class MotorComparacionSimple {
             this.totalMarcasEl = document.getElementById('totalMarcas');
             this.totalImagenesEl = document.getElementById('totalImagenes');
             this.toastContainer = document.getElementById('toastContainer');
+            this.cropModal = document.getElementById('cropModal');
+            this.cropImage = document.getElementById('cropImage');
 
             // Estado
             this.vistaActual = 'photo';
             this.imagenSubidaSrc = null;
+            this.imagenOriginalSrc = null;
+            this.cropper = null;
             this.datos = {};
             this.logos = {};
             this.todasLasImagenes = [];
@@ -2999,6 +3241,11 @@ class MotorComparacionSimple {
             this.modalAbierto = false;
             this.busquedaEnCurso = false;
             this.scrollGuardado = 0;
+            // Guarda la ULTIMA lista de resultados de la busqueda por foto
+            // (ya ordenada de mayor a menor %). El modal la reutiliza siempre
+            // que se hace click en un resultado; nunca se vuelve a comparar
+            // contra el resultado clickeado.
+            this.ultimosResultadosFoto = [];
 
             // Inicializar
             this.init();
@@ -3085,6 +3332,7 @@ class MotorComparacionSimple {
                 }
                 if (e.key === 'Escape') {
                     this.cerrarComparacionVisual();
+                    if (this.cropModal.classList.contains('active')) this.cancelarRecorte();
                 }
             });
         }
@@ -3097,24 +3345,104 @@ class MotorComparacionSimple {
 
             const reader = new FileReader();
             reader.onload = (e) => {
-                this.imagenSubidaSrc = e.target.result;
-                this.previewImage.src = this.imagenSubidaSrc;
-                this.uploadZone.style.display = 'none';
-                this.uploadPreview.classList.add('active');
-                addDebug('✅ Imagen cargada correctamente', 'success');
-                this.mostrarToast('Imagen cargada. Haz clic en "Buscar similares"', 'success');
+                this.imagenOriginalSrc = e.target.result;
+                addDebug('✅ Imagen cargada, abriendo recorte...', 'success');
+                // Se abre el recorte apenas se sube la foto: asi el cliente puede
+                // dejar afuera mesa/mano/otros marcos y encuadrar solo el lente
+                // que le interesa, lo que mejora mucho la precision de la busqueda.
+                this.abrirRecorte();
             };
             reader.readAsDataURL(file);
         }
 
+        /* ========================================================
+           RECORTE DE LA FOTO DEL CLIENTE (Cropper.js)
+           ======================================================== */
+        abrirRecorte() {
+            if (!this.imagenOriginalSrc) return;
+            this.cropImage.src = this.imagenOriginalSrc;
+            this.cropModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Esperar a que la imagen este en el DOM antes de inicializar Cropper
+            const iniciar = () => {
+                if (this.cropper) { this.cropper.destroy(); this.cropper = null; }
+                this.cropper = new Cropper(this.cropImage, {
+                    viewMode: 1,
+                    dragMode: 'move',
+                    autoCropArea: 0.85,
+                    background: false,
+                    responsive: true,
+                    guides: true,
+                    center: true,
+                    highlight: true,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    toggleDragModeOnDblclick: false
+                });
+            };
+            if (this.cropImage.complete) iniciar();
+            else this.cropImage.onload = iniciar;
+        }
+
+        cerrarModalRecorte() {
+            this.cropModal.classList.remove('active');
+            document.body.style.overflow = '';
+            if (this.cropper) { this.cropper.destroy(); this.cropper = null; }
+        }
+
+        confirmarRecorte() {
+            if (!this.cropper) return;
+            const canvas = this.cropper.getCroppedCanvas({
+                maxWidth: 1200,
+                maxHeight: 1200,
+                imageSmoothingQuality: 'high'
+            });
+            if (!canvas) {
+                this.mostrarToast('No se pudo recortar la imagen', 'error');
+                return;
+            }
+            this.aplicarImagenFinal(canvas.toDataURL('image/jpeg', 0.92));
+            addDebug('✅ Recorte aplicado', 'success');
+        }
+
+        usarImagenCompleta() {
+            if (!this.imagenOriginalSrc) return;
+            this.aplicarImagenFinal(this.imagenOriginalSrc);
+            addDebug('Se usara la foto completa, sin recortar', 'info');
+        }
+
+        cancelarRecorte() {
+            // Si todavia no hay una imagen confirmada (primera subida), cancelar
+            // el recorte equivale a usar la foto completa para no dejar al
+            // usuario sin nada cargado. Si ya habia una imagen confirmada
+            // (estaba re-ajustando el recorte), simplemente se cierra el modal.
+            if (!this.imagenSubidaSrc) {
+                this.usarImagenCompleta();
+            } else {
+                this.cerrarModalRecorte();
+            }
+        }
+
+        aplicarImagenFinal(dataUrl) {
+            this.imagenSubidaSrc = dataUrl;
+            this.previewImage.src = dataUrl;
+            this.uploadZone.style.display = 'none';
+            this.uploadPreview.classList.add('active');
+            this.cerrarModalRecorte();
+            this.mostrarToast('Imagen lista. Haz clic en "Buscar similares"', 'success');
+        }
+
         quitarImagen() {
             this.imagenSubidaSrc = null;
+            this.imagenOriginalSrc = null;
             this.previewImage.src = '';
             this.uploadZone.style.display = 'flex';
             this.uploadPreview.classList.remove('active');
             this.fileInput.value = '';
             this.resultsSection.classList.remove('active');
             this.analysisProgress.classList.remove('active');
+            this.ultimosResultadosFoto = [];
             addDebug('Imagen removida', 'info');
         }
 
@@ -3442,6 +3770,11 @@ class MotorComparacionSimple {
         }
 
         mostrarResultados(resultados) {
+            // Se guarda tal cual: esta es la UNICA comparacion real que se hace
+            // (foto del cliente vs catalogo). Todo lo que se muestre despues
+            // en el modal sale de esta misma lista, nunca de una nueva busqueda.
+            this.ultimosResultadosFoto = resultados;
+
             this.ocultarTodo();
             this.photoSearchSection.style.display = 'block';
 
@@ -3483,6 +3816,7 @@ class MotorComparacionSimple {
         }
 
         mostrarSinResultados() {
+            this.ultimosResultadosFoto = [];
             this.ocultarTodo();
             this.photoSearchSection.style.display = 'block';
 
@@ -3720,7 +4054,7 @@ class MotorComparacionSimple {
             }
         }
 
-        async abrirModal(encodedUrl, nombre, marca, precio, precioMax, categoria) {
+        abrirModal(encodedUrl, nombre, marca, precio, precioMax, categoria) {
             const url = decodeURIComponent(encodedUrl);
             this.modalImage.src = url;
             this.modalTitle.textContent = nombre;
@@ -3734,34 +4068,15 @@ class MotorComparacionSimple {
             if (precioTxt) metaHTML += '<span class="modal-meta-price">' + precioTxt + '</span>';
             this.modalMeta.innerHTML = metaHTML;
 
-            this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)"><div class="progress-spinner" style="margin:0 auto 1rem"></div>Buscando similares...</div>';
-            this.similarCount.textContent = '...';
             this.modal.classList.add('active');
             this.modalAbierto = true;
             document.body.style.overflow = 'hidden';
 
-            try {
-                const resultados = await this.motor.encontrarSimilares(url, this.todasLasImagenes.slice(0, 100), 8);                this.similarCount.textContent = resultados.length + ' encontrados';
-
-                if (resultados.length === 0) {
-                    this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)"><i class="fas fa-search" style="font-size:2rem;opacity:0.4;margin-bottom:0.75rem;display:block"></i>Sin resultados similares</div>';
-                } else {
-                    this.similarList.innerHTML = resultados.map((r, i) => {
-                        const nivel = r.porcentaje >= 50 ? 'high' : r.porcentaje >= 25 ? 'medium' : 'low';
-                        const precioSim = formatoPrecio(r.precio, r.precioMax);
-                        return '<div class="similar-item" style="animation-delay:' + (i * 0.05) + 's" onclick="app.cambiarModalImagen(\'' + encodeURIComponent(r.url) + '\',\'' + r.nombre.replace(/'/g, "\\'") + '\',\'' + (r.marca || '').replace(/'/g, "\\'") + '\',' + (r.precio || 0) + ',' + (r.precioMax || 0) + ',\'' + (r.categoria || '').replace(/'/g, "\\'") + '\')">' +
-                            '<div class="similar-item-img"><img src="' + r.url + '" alt="' + r.nombre + '" loading="lazy"></div>' +
-                            '<div class="similarity-badge ' + nivel + '">' + r.porcentaje + '%</div>' +
-                            '<div class="similar-item-info">' +
-                                '<div class="similar-item-name">' + r.nombre + '</div>' +
-                                (precioSim ? '<div class="similar-item-price">' + precioSim + '</div>' : '') +
-                            '</div>' +
-                        '</div>';
-                    }).join('');
-                }
-            } catch (e) {
-                this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--accent)">Error al buscar similares</div>';
-            }
+            // IMPORTANTE: no se vuelve a comparar nada aqui. Se reutiliza la
+            // MISMA lista que ya se calculo una sola vez contra la foto que
+            // subio el cliente (this.ultimosResultadosFoto), solo reordenada/
+            // filtrada para no repetir el item que se esta mostrando.
+            this.renderizarSimilaresModal(url);
         }
 
         cambiarModalImagen(encodedUrl, nombre, marca, precio, precioMax, categoria) {
@@ -3778,31 +4093,43 @@ class MotorComparacionSimple {
             if (precioTxt) metaHTML += '<span class="modal-meta-price">' + precioTxt + '</span>';
             this.modalMeta.innerHTML = metaHTML;
 
-            this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)"><div class="progress-spinner" style="margin:0 auto 1rem"></div>Buscando similares...</div>';
-            this.similarCount.textContent = '...';
+            // Igual que en abrirModal: se cambia la imagen principal del modal,
+            // pero la lista de la derecha sigue siendo la comparacion original
+            // contra la foto del cliente, ordenada de mayor a menor %. Clickear
+            // un "similar" NO dispara una comparacion nueva contra ese item.
+            this.renderizarSimilaresModal(url);
+        }
 
-            this.motor.encontrarSimilares(url, this.todasLasImagenes, 8).then(resultados => {
-                this.similarCount.textContent = resultados.length + ' encontrados';
+        /* ========================================================
+           LISTA DE SIMILARES DEL MODAL (sin recomparar)
+           --------------------------------------------------------
+           Toma this.ultimosResultadosFoto (la unica busqueda real que
+           se hizo, contra la foto del cliente) y la muestra tal cual
+           llego, ordenada de mayor a menor %, quitando solo el item
+           que ya se esta mostrando como principal en el modal.
+           ======================================================== */
+        renderizarSimilaresModal(urlActual) {
+            const lista = (this.ultimosResultadosFoto || []).filter(r => r.url !== urlActual);
 
-                if (resultados.length === 0) {
-                    this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)"><i class="fas fa-search" style="font-size:2rem;opacity:0.4;margin-bottom:0.75rem;display:block"></i>Sin resultados similares</div>';
-                } else {
-                    this.similarList.innerHTML = resultados.map((r, i) => {
-                        const nivel = r.porcentaje >= 50 ? 'high' : r.porcentaje >= 25 ? 'medium' : 'low';
-                        const precioSim = formatoPrecio(r.precio, r.precioMax);
-                        return '<div class="similar-item" style="animation-delay:' + (i * 0.05) + 's" onclick="app.cambiarModalImagen(\'' + encodeURIComponent(r.url) + '\',\'' + r.nombre.replace(/'/g, "\\'") + '\',\'' + (r.marca || '').replace(/'/g, "\\'") + '\',' + (r.precio || 0) + ',' + (r.precioMax || 0) + ',\'' + (r.categoria || '').replace(/'/g, "\\'") + '\')">' +
-                            '<div class="similar-item-img"><img src="' + r.url + '" alt="' + r.nombre + '" loading="lazy"></div>' +
-                            '<div class="similarity-badge ' + nivel + '">' + r.porcentaje + '%</div>' +
-                            '<div class="similar-item-info">' +
-                                '<div class="similar-item-name">' + r.nombre + '</div>' +
-                                (precioSim ? '<div class="similar-item-price">' + precioSim + '</div>' : '') +
-                            '</div>' +
-                        '</div>';
-                    }).join('');
-                }
-            }).catch(() => {
-                this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--accent)">Error al buscar similares</div>';
-            });
+            this.similarCount.textContent = lista.length + ' encontrados';
+
+            if (lista.length === 0) {
+                this.similarList.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem;color:var(--text-muted)"><i class="fas fa-search" style="font-size:2rem;opacity:0.4;margin-bottom:0.75rem;display:block"></i>Sin más resultados de esta búsqueda</div>';
+                return;
+            }
+
+            this.similarList.innerHTML = lista.map((r, i) => {
+                const nivel = r.porcentaje >= 50 ? 'high' : r.porcentaje >= 25 ? 'medium' : 'low';
+                const precioSim = formatoPrecio(r.precio, r.precioMax);
+                return '<div class="similar-item" style="animation-delay:' + (Math.min(i, 20) * 0.05) + 's" onclick="app.cambiarModalImagen(\'' + encodeURIComponent(r.url) + '\',\'' + r.nombre.replace(/'/g, "\\'") + '\',\'' + (r.marca || '').replace(/'/g, "\\'") + '\',' + (r.precio || 0) + ',' + (r.precioMax || 0) + ',\'' + (r.categoria || '').replace(/'/g, "\\'") + '\')">' +
+                    '<div class="similar-item-img"><img src="' + r.url + '" alt="' + r.nombre + '" loading="lazy"></div>' +
+                    '<div class="similarity-badge ' + nivel + '">' + r.porcentaje + '%</div>' +
+                    '<div class="similar-item-info">' +
+                        '<div class="similar-item-name">' + r.nombre + '</div>' +
+                        (precioSim ? '<div class="similar-item-price">' + precioSim + '</div>' : '') +
+                    '</div>' +
+                '</div>';
+            }).join('');
         }
 
         cerrarModal() {
