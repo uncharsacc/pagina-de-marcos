@@ -2251,8 +2251,8 @@
 class MotorComparacionSimple {
     constructor() {
         this.cache = new Map();
-        this.size = 384;        // antes 192
-        this.descSize = 128;    // antes 64
+        this.size = 256;        // antes 192
+        this.descSize = 96;    // antes 64
         this.maxCandidatos = 12;
         this.ultimaComparacionVisual = [];
         this.ultimaReferenciaVisual = null;
@@ -2268,7 +2268,7 @@ class MotorComparacionSimple {
         // invalida automaticamente los descriptores guardados si se cambia
         // el algoritmo de analisis (para que no queden "viejos" comparando
         // contra la formula nueva).
-        this.CACHE_VERSION = 'v2-hog-zonas';
+        this.CACHE_VERSION = 'v3-size256';
         this.dbPromise = this.abrirDB();
         this.precalentando = false;
     }
@@ -3244,52 +3244,41 @@ class MotorComparacionSimple {
     /* ========================================================
        BUSQUEDA PRINCIPAL
        ======================================================== */
-    async encontrarSimilares(imagenSrc, todasImagenes, limite = 24, onProgress = null, actualizarDebug = true) {
+       async encontrarSimilares(imagenSrc, todasImagenes, limite = 24, onProgress = null, actualizarDebug = true, onResultadoParcial = null) {
         addDebug(`Iniciando busqueda directa con ${todasImagenes.length} frontales`, 'info');
         const referencia = await this.extraerCaracteristicas(imagenSrc);
-        // IMPORTANTE: solo la busqueda que arranca desde la FOTO DEL CLIENTE debe
-        // actualizar el estado que alimenta el visor de diagnostico ("Ver que parte
-        // de la ficha se esta comparando"). Las busquedas de "similares dentro del
-        // catalogo" (click en un resultado o en un producto del catalogo) usan una
-        // imagen de catalogo como referencia y NO deben pisar esta info, o el visor
-        // termina mostrando la foto de un producto en vez de la foto que subio el
-        // cliente.
+    
         if (actualizarDebug) {
             this.ultimaReferenciaVisual = imagenSrc;
             this.ultimaComparacionVisual = [];
         }
         addDebug('Referencia normalizada: forma, silueta, Hu, bordes, color y proporcion', 'success');
+    
         const resultados = [];
         const total = todasImagenes.length;
         let procesadas = 0, errores = 0;
-
-        // RENDIMIENTO: en vez de cargar/comparar una ficha por vez (await
-        // secuencial), se procesan LOTES en paralelo con Promise.all. Cargar
-        // una imagen es esperar red/decodificacion (I/O), asi que el
-        // navegador puede tener varias en vuelo a la vez sin costo extra de
-        // CPU real. Ademas, cada candidato revisa primero el cache de
-        // IndexedDB (obtenerCandidato) antes de reprocesar la imagen desde
-        // cero, asi que en la practica la mayoria de las fichas ni siquiera
-        // se vuelven a cargar.
-        const LOTE = 12;
+    
+        // LOTE adaptativo según el dispositivo
+        const LOTE = (navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8) ? 16 : 8;
+    
         for (let i = 0; i < todasImagenes.length; i += LOTE) {
             const lote = todasImagenes.slice(i, i + LOTE);
-
+    
             const lotePromesas = lote.map(async (imagen) => {
-                // Filtro anti-antiparra: nunca se muestran lentes de seguridad
-                // industrial como "similares" de una foto de lente normal (y
-                // viceversa), sin importar que tan parecido salga el puntaje.
                 if (this.categoriasExcluidas.has(imagen.categoria)) return null;
                 try {
                     const candidato = await this.obtenerCandidato(imagen);
                     if (this.esProbableEstucheFrontal(candidato, imagen)) {
-                        addDebug(`Descartado (posible estuche): ${imagen.marca}/${imagen.nombre}`, 'warning');
                         return null;
                     }
                     const score = this.comparar(referencia, candidato);
                     if (score >= 0.22) {
-                        addDebug(`Similitud ${imagen.marca}/${imagen.nombre}: ${(score * 100).toFixed(1)}%`, score >= 0.60 ? 'success' : score >= 0.40 ? 'warning' : 'info');
-                        return { ...imagen, similitud: score, porcentaje: Math.round(score * 100), metodoComparacion: 'frontal-json' };
+                        return {
+                            ...imagen,
+                            similitud: score,
+                            porcentaje: Math.round(score * 100),
+                            metodoComparacion: 'frontal-json'
+                        };
                     }
                     return null;
                 } catch (e) {
@@ -3298,20 +3287,35 @@ class MotorComparacionSimple {
                     return null;
                 }
             });
-
+    
             const loteResultados = await Promise.all(lotePromesas);
-            for (const r of loteResultados) { if (r) resultados.push(r); }
-
+    
+            for (const r of loteResultados) {
+                if (r) resultados.push(r);
+            }
+    
+            // Ordenar parcial y avisar a la UI (resultados progresivos)
+            resultados.sort((a, b) => b.similitud - a.similitud);
+            if (onResultadoParcial) {
+                onResultadoParcial(resultados.slice(0, limite));
+            }
+    
             procesadas += lote.length;
             if (onProgress) onProgress(Math.min(procesadas, total), total);
         }
-
+    
         resultados.sort((a, b) => b.similitud - a.similitud);
+    
         if (actualizarDebug) {
             this.ultimaComparacionVisual = resultados.slice(0, 12).map(r => ({
-                url: r.url, frontalUrl: r.frontalUrl, marca: r.marca || '', nombre: r.nombre || '', porcentaje: r.porcentaje
+                url: r.url,
+                frontalUrl: r.frontalUrl,
+                marca: r.marca || '',
+                nombre: r.nombre || '',
+                porcentaje: r.porcentaje
             }));
         }
+    
         addDebug(`Busqueda terminada: ${resultados.length} candidatos`, 'success');
         return resultados.slice(0, limite);
     }
@@ -3805,21 +3809,28 @@ class MotorComparacionSimple {
 
         async buscarSimilares() {
             if (!this.imagenSubidaSrc || this.busquedaEnCurso) return;
-
+        
             this.busquedaEnCurso = true;
             this.btnSearchSimilar.disabled = true;
             this.btnSearchSimilar.classList.add('loading');
             this.btnSearchSimilar.innerHTML = '<i class="fas fa-spinner"></i> Buscando...';
-
+        
             this.ocultarTodo();
             this.photoSearchSection.style.display = 'block';
             this.analysisProgress.classList.add('active');
             this.progressBarInner.style.width = '0%';
             this.progressPercent.textContent = '0%';
             this.progressSubtitle.textContent = 'Analizando imagen...';
-
+        
+            // Preparar sección de resultados vacía para ir llenándola
+            this.resultsSection.classList.add('active');
+            this.resultsGrid.innerHTML = '';
+            this.resultsCount.textContent = '0 encontrados';
+            this.referenceThumb.src = this.imagenSubidaSrc;
+            this.ultimosResultadosFoto = [];
+        
             addDebug('🔍 Iniciando búsqueda de similares...', 'info');
-
+        
             try {
                 const resultados = await this.motor.encontrarSimilares(
                     this.imagenSubidaSrc,
@@ -3830,24 +3841,30 @@ class MotorComparacionSimple {
                         this.progressBarInner.style.width = pct + '%';
                         this.progressPercent.textContent = pct + '%';
                         this.progressSubtitle.textContent = 'Comparando ' + procesadas + ' de ' + total + '...';
+                    },
+                    true,
+                    // Resultados progresivos: se van mostrando mientras avanza
+                    (parciales) => {
+                        this.ultimosResultadosFoto = parciales;
+                        this.mostrarResultados(parciales, true); // true = modo parcial (no hace scroll cada vez)
                     }
                 );
-
+        
                 this.analysisProgress.classList.remove('active');
-
+        
                 if (resultados.length === 0) {
                     addDebug('❌ No se encontraron resultados similares', 'warning');
                     this.mostrarSinResultados();
                 } else {
                     addDebug(`✅ ${resultados.length} resultados encontrados`, 'success');
-                    this.mostrarResultados(resultados);
+                    this.mostrarResultados(resultados, false); // false = final, hace scroll
                 }
             } catch (err) {
                 this.analysisProgress.classList.remove('active');
                 addDebug(`❌ Error en búsqueda: ${err.message}`, 'error');
                 this.mostrarToast('Error: ' + err.message, 'error');
             }
-
+        
             this.busquedaEnCurso = false;
             this.btnSearchSimilar.disabled = false;
             this.btnSearchSimilar.classList.remove('loading');
@@ -3908,23 +3925,21 @@ class MotorComparacionSimple {
             document.body.style.overflow = '';
         }
 
-        mostrarResultados(resultados) {
-            // Se guarda tal cual: esta es la UNICA comparacion real que se hace
-            // (foto del cliente vs catalogo). Todo lo que se muestre despues
-            // en el modal sale de esta misma lista, nunca de una nueva busqueda.
+        mostrarResultados(resultados, esParcial = false) {
             this.ultimosResultadosFoto = resultados;
-
+        
             this.ocultarTodo();
             this.photoSearchSection.style.display = 'block';
-
+            this.resultsSection.classList.add('active');
+        
             this.referenceThumb.src = this.imagenSubidaSrc;
             this.resultsCount.textContent = resultados.length + ' encontrados';
-
+        
             this.resultsGrid.innerHTML = resultados.map((r, i) => {
                 const nivel = r.porcentaje >= 50 ? 'high' : r.porcentaje >= 25 ? 'medium' : 'low';
                 const catClase = r.categoria ? categoriaClase(r.categoria) : '';
                 const precioTxt = formatoPrecio(r.precio, r.precioMax);
-
+        
                 return '<div class="result-card" data-nivel="' + nivel + '" style="animation-delay:' + (i * 0.05) + 's" onclick="app.abrirModal(\'' + encodeURIComponent(r.url) + '\',\'' + r.nombre.replace(/'/g, "\\'") + '\',\'' + (r.marca || '').replace(/'/g, "\\'") + '\',' + (r.precio || 0) + ',' + (r.precioMax || 0) + ',\'' + (r.categoria || '').replace(/'/g, "\\'") + '\')">' +
                     '<div class="result-card-image">' +
                         '<img src="' + r.url + '" alt="' + r.nombre + '" loading="lazy">' +
@@ -3942,13 +3957,14 @@ class MotorComparacionSimple {
                     '</div>' +
                 '</div>';
             }).join('');
-
-            this.resultsSection.classList.add('active');
-            
-            setTimeout(() => {
-                this.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-
+        
+            // Solo hacer scroll cuando termina la búsqueda, no en cada lote parcial
+            if (!esParcial) {
+                setTimeout(() => {
+                    this.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        
             document.querySelectorAll('.result-filter-btn').forEach(b => b.classList.remove('active'));
             const btnTodos = document.querySelector('.result-filter-btn[data-filter="all"]');
             if (btnTodos) btnTodos.classList.add('active');
