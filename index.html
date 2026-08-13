@@ -1710,6 +1710,16 @@
                 flex-wrap: wrap;
                 gap: 0.75rem;
             }
+        @media (max-width: 768px) {
+            .crop-window { padding: 1rem; }
+            .crop-actions { flex-direction: column; }
+            .crop-actions button {
+                min-height: 48px;
+                font-size: 1rem;
+                width: 100%;
+            }
+    .crop-canvas-wrap { max-height: 45vh; }
+}
 
             .header-stats {
                 display: none;
@@ -3505,16 +3515,16 @@ class MotorComparacionSimple {
                 if (this.cropper) { this.cropper.destroy(); this.cropper = null; }
                 this.cropper = new Cropper(this.cropImage, {
                     viewMode: 1,
-                    dragMode: 'move',
-                    autoCropArea: 0.85,
-                    background: false,
+                    dragMode: 'crop',           // arrastrar el recuadro, no la imagen
+                    autoCropArea: 0.9,
                     responsive: true,
-                    guides: true,
-                    center: true,
-                    highlight: true,
+                    guides: false,              // menos ruido visual
+                    center: false,
+                    highlight: false,
                     cropBoxMovable: true,
                     cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false
+                    toggleDragModeOnDblclick: false,
+                    // En móvil: botones más grandes con CSS
                 });
             };
             if (this.cropImage.complete) iniciar();
