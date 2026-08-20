@@ -417,4 +417,30 @@
                 marcoPrecio: marco,
                 costoCristales: costo,
                 precioCristalesCliente: cristalesCli,
-                montu
+                montura,
+                totalCliente: total
+            };
+
+            const btn = document.getElementById('btnEnviar');
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            try {
+                const res = await fetch('/api/cotizar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) throw new Error('Error al enviar');
+                alert('Cotización enviada. Te contactaremos pronto al ' + telefono);
+            } catch (e) {
+                console.error(e);
+                alert('No se pudo enviar. Revisa que la API esté en Vercel o inténtalo más tarde.');
+            }
+            btn.disabled = false;
+            btn.textContent = 'Solicitar cotización';
+        }
+    };
+    </script>
+</body>
+</html>
