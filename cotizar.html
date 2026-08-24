@@ -158,6 +158,41 @@
             .rx-grid { grid-template-columns: 55px 1fr 1fr; }
             .checks { grid-template-columns: 1fr; }
         }
+        
+        .ocr-loading {
+           display: none;
+    margin-top: 0.85rem;
+    padding: 1rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+.ocr-loading.active { display: block; }
+.ocr-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    margin: 0 auto 0.75rem;
+    animation: ocrSpin 0.8s linear infinite;
+}
+@keyframes ocrSpin { to { transform: rotate(360deg); } }
+.ocr-bar-wrap {
+    height: 6px;
+    background: var(--bg-input);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.65rem;
+}
+.ocr-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+    transition: width 0.2s ease;
+}
+
     </style>
 </head>
 <body>
