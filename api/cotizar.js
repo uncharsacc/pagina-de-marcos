@@ -83,36 +83,51 @@ export default async function handler(req, res) {
   const gray = rgb(0.4, 0.4, 0.4);
   const zebra = rgb(0.96, 0.95, 0.92);
 
-  // Header + logo
+  // ── HEADER ──
   page.drawRectangle({ x: 0, y: pageH - headerH, width: pageW, height: headerH, color: gold });
+
+  // Logo arriba a la derecha, centrado verticalmente en el header
+  let logoW = 0;
+  let logoH = 0;
+  try {
+    const logoPath = path.join(process.cwd(), 'logos-webp', '1772795330993.png');
+    const logoBytes = fs.readFileSync(logoPath);
+    const logoImg = await pdfDoc.embedPng(logoBytes);
+
+    logoW = 28;
+    logoH = (logoImg.height / logoImg.width) * logoW;
+    const logoX = pageW - margin - logoW; // pegado al margen derecho
+    const logoY = pageH - headerH + (headerH - logoH) / 2; // centrado vertical
+
+    page.drawImage(logoImg, {
+      x: logoX,
+      y: logoY,
+      width: logoW,
+      height: logoH
+    });
+  } catch (e) {
+    console.error('Logo:', e.message);
+  }
+
+  // Textos izquierda
   page.drawText('SACC & VISION', {
     x: margin, y: pageH - 26, size: 13, font: fontBold, color: rgb(1, 1, 1)
   });
   page.drawText('Artesanos de su Mirada', {
     x: margin, y: pageH - 38, size: 7, font, color: rgb(1, 1, 1)
   });
+
+  // Textos derecha (desplazados a la izquierda si hay logo para evitar superposición)
+  const rightBlockWidth = 95;
+  const gap = logoW > 0 ? 10 : 0;
+  const rightX = pageW - margin - logoW - gap - rightBlockWidth;
+
   page.drawText('RECETA / ORDEN', {
-    x: pageW - margin - 95, y: pageH - 26, size: 9, font: fontBold, color: rgb(1, 1, 1)
+    x: rightX, y: pageH - 26, size: 9, font: fontBold, color: rgb(1, 1, 1)
   });
   page.drawText(fecha, {
-    x: pageW - margin - 95, y: pageH - 38, size: 7, font, color: rgb(1, 1, 1)
+    x: rightX, y: pageH - 38, size: 7, font, color: rgb(1, 1, 1)
   });
-
-  try {
-    const logoPath = path.join(process.cwd(), 'logos-webp', '1772795330993.png');
-    const logoBytes = fs.readFileSync(logoPath);
-    const logoImg = await pdfDoc.embedPng(logoBytes);
-    const lw = 28;
-    const lh = (logoImg.height / logoImg.width) * lw;
-    page.drawImage(logoImg, {
-      x: pageW - margin - lw-8,
-      y: pageH - headerH + 8,
-      width: lw,
-      height: lh
-    });
-  } catch (e) {
-    console.error('Logo:', e.message);
-  }
 
   let y = pageH - headerH - 18;
 
