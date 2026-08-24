@@ -102,11 +102,11 @@ export default async function handler(req, res) {
     const logoPath = path.join(process.cwd(), 'logos-webp', '1772795330993.png');
     const logoBytes = fs.readFileSync(logoPath);
     const logoImg = await pdfDoc.embedPng(logoBytes);
-    const lw = 32;
+    const lw = 28;
     const lh = (logoImg.height / logoImg.width) * lw;
     page.drawImage(logoImg, {
-      x: pageW - margin - lw,
-      y: pageH - headerH + (headerH - lh) / 2,
+      x: pageW - margin - lw-8,
+      y: pageH - headerH + 8,
       width: lw,
       height: lh
     });
