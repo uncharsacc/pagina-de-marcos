@@ -86,7 +86,7 @@ export default async function handler(req, res) {
   // ── HEADER ──
   page.drawRectangle({ x: 0, y: pageH - headerH, width: pageW, height: headerH, color: gold });
 
-  // Logo arriba a la derecha, centrado verticalmente en el header
+  // Logo arriba a la derecha, tamaño completo del header
   let logoW = 0;
   let logoH = 0;
   try {
@@ -94,10 +94,11 @@ export default async function handler(req, res) {
     const logoBytes = fs.readFileSync(logoPath);
     const logoImg = await pdfDoc.embedPng(logoBytes);
 
-    logoW = 28;
-    logoH = (logoImg.height / logoImg.width) * logoW;
+    logoH = headerH; // ← alto igual al header (48 px)
+    logoW = (logoImg.width / logoImg.height) * logoH; // ancho proporcional
+
     const logoX = pageW - margin - logoW; // pegado al margen derecho
-    const logoY = pageH - headerH + (headerH - logoH) / 2; // centrado vertical
+    const logoY = pageH - headerH; // base exacta del header (llena todo el alto)
 
     page.drawImage(logoImg, {
       x: logoX,
@@ -119,7 +120,7 @@ export default async function handler(req, res) {
 
   // Textos derecha (desplazados a la izquierda si hay logo para evitar superposición)
   const rightBlockWidth = 95;
-  const gap = logoW > 0 ? 10 : 0;
+  const gap = logoW > 0 ? 12 : 0;
   const rightX = pageW - margin - logoW - gap - rightBlockWidth;
 
   page.drawText('RECETA / ORDEN', {
