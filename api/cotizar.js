@@ -1,4 +1,6 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import fs from 'fs';
+import path from 'path';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,7 +20,8 @@ export default async function handler(req, res) {
   const d = req.body || {};
   const fecha = new Date().toLocaleString('es-CL', { timeZone: 'America/Santiago' });
 
-  const lineas = [
+  // Mensaje Telegram (con precios, solo tú)
+  const textoTg = [
     'COTIZACION - SACC & VISION',
     '',
     'Cliente: ' + (d.nombre || '-'),
@@ -48,84 +51,173 @@ export default async function handler(req, res) {
     '---',
     'RECIBIDO - RECETA SACC & VISION',
     'Fecha: ' + fecha
-  ];
-  const texto = lineas.join('\n');
+  ].join('\n');
 
-  // --- Generar PDF ---
+  // --- PDF estilo receta (SIN precios) ---
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([595, 842]);
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const gold = rgb(0.78, 0.64, 0.30);
-  const dark = rgb(0.12, 0.12, 0.12);
-  const muted = rgb(0.35, 0.35, 0.35);
+  const dark = rgb(0.1, 0.1, 0.1);
+  const gray = rgb(0.4, 0.4, 0.4);
+  const line = rgb(0.75, 0.75, 0.75);
 
-  page.drawRectangle({ x: 0, y: 800, width: 595, height: 42, color: gold });
-  page.drawText('SACC & VISION', { x: 40, y: 814, size: 16, font: fontBold, color: rgb(1, 1, 1) });
-  page.drawText('Artesanos de su Mirada', { x: 200, y: 816, size: 10, font, color: rgb(1, 1, 1) });
+  // Header
+  page.drawRectangle({ x: 0, y: 792, width: 595, height: 50, color: gold });
+  page.drawText('SACC & VISION', {
+    x: 40, y: 812, size: 18, font: fontBold, color: rgb(1, 1, 1)
+  });
+  page.drawText('Artesanos de su Mirada', {
+    x: 40, y: 798, size: 9, font, color: rgb(1, 1, 1)
+  });
+  page.drawText('RECETA / ORDEN', {
+    x: 380, y: 812, size: 11, font: fontBold, color: rgb(1, 1, 1)
+  });
+  page.drawText(fecha, {
+    x: 380, y: 798, size: 8, font, color: rgb(1, 1, 1)
+  });
 
-  let y = 770;
-  for (const linea of lineas) {
-    const isTitle =
-      linea.startsWith('===') ||
-      linea.startsWith('COTIZACION') ||
-      linea.startsWith('RECIBIDO');
-    page.drawText(linea.substring(0, 90), {
-      x: 40,
-      y,
-      size: isTitle ? 11 : 10,
-      font: isTitle ? fontBold : font,
-      color: isTitle ? gold : dark
+  // Logo desde la carpeta del proyecto: logos-webp/1772795330993.png
+  try {
+    const logoPath = path.join(process.cwd(), 'logos-webp', '1772795330993.png');
+    const logoBytes = fs.readFileSync(logoPath);
+    const logoImg = await pdfDoc.embedPng(logoBytes);
+    const lw = 44;
+    const lh = (logoImg.height / logoImg.width) * lw;
+    page.drawImage(logoImg, {
+      x: 555 - lw,
+      y: 798,
+      width: lw,
+      height: lh
     });
-    y -= 16;
-    if (y < 80) break;
+  } catch (e) {
+    console.error('No se pudo cargar el logo local:', e.message);
   }
 
-  page.drawRectangle({
-    x: 350, y: 40, width: 200, height: 50,
-    borderColor: gold, borderWidth: 2
+  let y = 760;
+
+  page.drawText('Cliente: ' + (d.nombre || '-'), {
+    x: 40, y, size: 11, font: fontBold, color: dark
   });
-  page.drawText('RECIBIDO', { x: 400, y: 68, size: 12, font: fontBold, color: gold });
-  page.drawText('Receta SACC & VISION', { x: 365, y: 50, size: 9, font, color: muted });
+  y -= 16;
+  page.drawText('Telefono: ' + (d.telefono || '-'), {
+    x: 40, y, size: 10, font, color: gray
+  });
+  y -= 22;
+  page.drawLine({
+    start: { x: 40, y },
+    end: { x: 555, y },
+    thickness: 0.8,
+    color: line
+  });
+  y -= 28;
+
+  function seccion(titulo, odLine, oiLine) {
+    page.drawText(titulo, { x: 40, y, size: 12, font: fontBold, color: gold });
+    y -= 6;
+    page.drawLine({
+      start: { x: 40, y },
+      end: { x: 200, y },
+      thickness: 1,
+      color: gold
+    });
+    y -= 20;
+    page.drawText('OD', { x: 120, y, size: 10, font: fontBold, color: gray });
+    page.drawText('OI', { x: 340, y, size: 10, font: fontBold, color: gray });
+    y -= 18;
+    page.drawText(odLine || '—', { x: 40, y, size: 9, font, color: dark });
+    y -= 14;
+    page.drawText(oiLine || '—', { x: 40, y, size: 9, font, color: dark });
+    y -= 26;
+  }
+
+  seccion('LEJOS', 'OD: ' + (d.lejosOd || '—'), 'OI: ' + (d.lejosOi || '—'));
+  seccion('CERCA', 'OD: ' + (d.cercaOd || '—'), 'OI: ' + (d.cercaOi || '—'));
+
+  page.drawText('TIPO DE LENTES', {
+    x: 40, y, size: 12, font: fontBold, color: gold
+  });
+  y -= 6;
+  page.drawLine({
+    start: { x: 40, y },
+    end: { x: 200, y },
+    thickness: 1,
+    color: gold
+  });
+  y -= 20;
+  page.drawText('Tipo: ' + (d.tipo || '—'), {
+    x: 40, y, size: 10, font, color: dark
+  });
+  y -= 16;
+  page.drawText(
+    'Opciones: ' + ((d.tratamientos || []).join(', ') || '—'),
+    { x: 40, y, size: 10, font, color: dark }
+  );
+  y -= 16;
+  page.drawText(
+    'Marco: ' + (d.traeMarco ? 'Trae su marco' : (d.marcoNombre || '—')),
+    { x: 40, y, size: 10, font, color: dark }
+  );
+
+  // Sello RECIBIDO
+  page.drawRectangle({
+    x: 340,
+    y: 48,
+    width: 210,
+    height: 70,
+    borderColor: gold,
+    borderWidth: 2.5
+  });
+  page.drawText('RECIBIDO', {
+    x: 390, y: 92, size: 14, font: fontBold, color: gold
+  });
+  page.drawText('Receta SACC & VISION', {
+    x: 365, y: 74, size: 10, font, color: gray
+  });
+  page.drawText(fecha, {
+    x: 365, y: 58, size: 8, font, color: gray
+  });
 
   const pdfBytes = await pdfDoc.save();
 
   try {
-    // 1) Texto
-    const r1 = await fetch('https://api.telegram.org/bot' + token + '/sendMessage', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text: texto })
-    });
+    const r1 = await fetch(
+      'https://api.telegram.org/bot' + token + '/sendMessage',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: textoTg })
+      }
+    );
     const j1 = await r1.json();
     if (!j1.ok) {
-      return res.status(500).json({ error: 'Telegram texto fallo', detail: j1 });
+      return res.status(500).json({ error: 'Telegram texto', detail: j1 });
     }
 
-    // 2) PDF como archivo (multipart) — así sí lo acepta Telegram
     const form = new FormData();
     form.append('chat_id', String(chatId));
-    form.append('caption', 'PDF cotizacion - ' + (d.nombre || 'Cliente'));
+    form.append(
+      'caption',
+      'Receta PDF - ' + (d.nombre || 'Cliente') + ' (sin precios)'
+    );
     form.append(
       'document',
       new Blob([pdfBytes], { type: 'application/pdf' }),
-      'cotizacion-sacc-vision.pdf'
+      'receta-sacc-vision.pdf'
     );
 
-    const r2 = await fetch('https://api.telegram.org/bot' + token + '/sendDocument', {
-      method: 'POST',
-      body: form
-    });
+    const r2 = await fetch(
+      'https://api.telegram.org/bot' + token + '/sendDocument',
+      { method: 'POST', body: form }
+    );
     const j2 = await r2.json();
     if (!j2.ok) {
-      // El texto ya se envió; avisamos del PDF
       console.error('PDF fallo', j2);
       return res.status(200).json({ ok: true, pdf: false, detail: j2 });
     }
-
     return res.status(200).json({ ok: true, pdf: true });
   } catch (e) {
-    console.error(e);
     return res.status(500).json({ error: e.message });
   }
 }
