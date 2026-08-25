@@ -346,9 +346,6 @@
     <script>
     /* =========================================================
        1) CARGA DE PRECIOS DESDE JSON (precios_optiland.json)
-       Generado a partir de la lista de precios de laboratorio.
-       Todo lo que se cobra al cliente sale de acá, nunca de
-       números sueltos escritos en este archivo.
        ========================================================= */
     let DB = null;
     let dbListo = fetch('precios_optiland.json', { cache: 'no-cache' })
@@ -366,28 +363,26 @@
             aviso.className = 'diseno-desc visible';
             aviso.style.borderColor = '#e94560';
             aviso.style.color = '#ff9aa8';
-            aviso.textContent = 'No se pudo cargar precios_optiland.json. Revisa que el archivo se llame exactamente así (minúsculas, guión bajo) y esté en la misma carpeta que cotizar.html.';
+            aviso.textContent = 'No se pudo cargar precios_optiland.json. Revisa que el archivo se llame exactamente así y esté en la misma carpeta que cotizar.html.';
             sel.insertAdjacentElement('afterend', aviso);
             document.getElementById('btnEnviar').disabled = true;
         });
 
     function money(n) { return '$' + Math.round(Number(n || 0)).toLocaleString('es-CL'); }
 
-    /* Fórmula de negocio — NO TOCAR:
-       precio_cliente = round(costo_cristal * 1.19 * 1.60) + 16000 (cobro fijo de montaje) */
+    /* Fórmula de negocio:
+       precio_cliente = round(costo_par * 1.19 * 1.60) + 16000
+       (costo_par = precio_por_ojo × 2 + Onix si aplica) */
     function calcularPrecioCliente(costo) {
         if (costo === null || costo === undefined) return null;
         const IVA = 1.19;
         const MARGEN = 1.60;
-        const FIJO = (DB && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
-        return Math.round(costo * IVA * MARGEN) + FIJO;
+        const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
+        return Math.round(Number(costo) * IVA * MARGEN) + FIJO;
     }
 
     /* =========================================================
-       2) BUSCADOR DE MARCOS — mismo motor / mismos datos reales
-       que usa index.html (catalogoImagenes de datos-imagenes.js
-       + tabla de categorías/precios). Así el cotizador nunca
-       "inventa" marcos: solo ofrece los que existen de verdad.
+       2) BUSCADOR DE MARCOS
        ========================================================= */
     const CATEGORIAS_MARCO = {
         "ECONOMICOS": [
@@ -459,10 +454,7 @@
     }
 
     /* =========================================================
-       3) OCR — lectura de receta más rápida
-       - Precarga el worker de Tesseract apenas entra a la página.
-       - Reduce y mejora el contraste de la foto antes de leerla.
-       - Usa solo español + lista blanca de caracteres de receta.
+       3) OCR
        ========================================================= */
     let tesseractWorkerPromise = null;
     function precargarOCR() {
@@ -649,9 +641,6 @@
 
     /* =========================================================
        4) LÓGICA DE COTIZACIÓN
-       El cotizador decide SOLO, a partir del JSON, si la receta
-       cae en stock (más barata) o va a laboratorio. El cliente
-       nunca elige ni ve esa palabra: solo ve el total final.
        ========================================================= */
     const C = {
         marcoElegido: null,
@@ -768,7 +757,6 @@
             this.actualizarTotal();
         },
 
-        // --- Detección automática stock vs laboratorio ---
         redondearEsf: function (x) {
             for (const k of [2, 4, 6, 8, 10]) if (x <= k) return k;
             return null;
@@ -801,6 +789,7 @@
             return (val !== undefined && val !== null) ? val : null;
         },
 
+        /* Precios del JSON = por ojo → se multiplica × 2 (par) */
         costoCristal: function () {
             if (!DB) return { costo: null };
             const key = this.disenoActual();
@@ -808,19 +797,24 @@
             if (!d || !this.materialId) return { costo: null };
             const ar = document.getElementById('tratAR').checked;
             const tabla = ar ? d.precio_con_ar : d.precio_sin_ar;
-            const costoLab = (tabla && tabla[this.materialId] !== undefined) ? tabla[this.materialId] : null;
+
+            let costoLab = (tabla && tabla[this.materialId] !== undefined)
+                ? tabla[this.materialId] * 2
+                : null;
 
             let costo = costoLab;
 
-            // Solo se busca stock para monofocal (así viene la tabla de stock del laboratorio)
-            if (d.tipo === 'monofocal' && DB.stock_map[this.materialId]) {
+            if (d.tipo === 'monofocal' && DB.stock_map && DB.stock_map[this.materialId]) {
                 const mapa = DB.stock_map[this.materialId];
                 const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
                 if (stockKey) {
                     const esfAbs = this.maxAbs(['lejosOdEsf', 'lejosOiEsf']);
                     const cilAbs = this.maxAbs(['lejosOdCil', 'lejosOiCil']);
                     const cStock = this.precioStock(stockKey, esfAbs, cilAbs);
-                    if (cStock !== null) costo = (costoLab !== null) ? Math.min(costoLab, cStock) : cStock;
+                    if (cStock !== null) {
+                        const stockPar = cStock * 2;
+                        costo = (costoLab !== null) ? Math.min(costoLab, stockPar) : stockPar;
+                    }
                 }
             }
 
@@ -865,7 +859,7 @@
                 return;
             }
             const { costo } = this.costoCristal();
-            const precioCristalesCli = calcularPrecioCliente(costo); // ya incluye los 16.000 de montaje
+            const precioCristalesCli = calcularPrecioCliente(costo);
             if (precioCristalesCli === null) {
                 this.toast('Nos falta tu receta o el material elegido no está disponible. Revisa los datos.', false);
                 return;
@@ -887,14 +881,11 @@
             const marco = (!traeMarco && this.marcoElegido) ? this.marcoElegido.precio : 0;
             const total = precioCristalesCli + marco;
 
-            // Los 16.000 de montaje ya van dentro de precioCristalesCli
-            // Aquí los separamos solo para que Telegram los muestre como antes
             const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
             const montura = costo !== null ? FIJO : 0;
-            // precio solo de cristales (sin el fijo de montaje)
+            // precio solo de cristales (sin el fijo de montaje) para el payload
             const precioSoloCristales = precioCristalesCli - montura;
 
-            // Opciones elegidas (para que no lleguen vacías)
             const tratamientos = [];
             if (diseno) tratamientos.push(diseno.nombre_cliente || diseno.nombre_interno || disenoKey);
             if (material) tratamientos.push(material.nombre_cliente || material.nombre_interno || this.materialId);
@@ -902,11 +893,10 @@
             if (onix) tratamientos.push('Onix Premium');
 
             const payload = {
-                // --- campos que el backend/Telegram ya conoce ---
                 nombre: nombre,
                 telefono: telefono,
-                tipo: tipo,                                    // monofocal / bifocal / progresivo
-                tratamientos: tratamientos,                   // ← opciones del cliente
+                tipo: tipo,
+                tratamientos: tratamientos,
                 lejosOd: lejosOd,
                 lejosOi: lejosOi,
                 cercaOd: cercaOd,
@@ -916,12 +906,11 @@
                     ? (this.marcoElegido.nombre + ' (' + this.marcoElegido.marca + ')')
                     : null,
                 marcoPrecio: marco,
-                costoCristales: costo,                         // ← lo que te cuesta a ti (lab/stock)
-                precioCristalesCliente: precioSoloCristales,   // ← lo que paga el cliente por cristales (sin montaje)
-                montura: montura,                              // ← los 16.000 fijos
+                costoCristales: costo,
+                precioCristalesCliente: precioSoloCristales,
+                montura: montura,
                 totalCliente: total,
-
-                // --- campos extra del sistema nuevo (por si quieres usarlos después) ---
+                // extras del sistema nuevo
                 diseno: diseno ? (diseno.nombre_interno || disenoKey) : disenoKey,
                 material: material ? (material.nombre_interno || this.materialId) : this.materialId,
                 antirreflejo: ar,
