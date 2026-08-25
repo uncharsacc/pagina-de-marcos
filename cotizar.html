@@ -865,7 +865,7 @@
                 return;
             }
             const { costo } = this.costoCristal();
-            const precioCristalesCli = calcularPrecioCliente(costo);
+            const precioCristalesCli = calcularPrecioCliente(costo); // ya incluye los 16.000 de montaje
             if (precioCristalesCli === null) {
                 this.toast('Nos falta tu receta o el material elegido no está disponible. Revisa los datos.', false);
                 return;
@@ -878,26 +878,56 @@
             const ar = document.getElementById('tratAR').checked;
             const onix = document.getElementById('tratOnix').checked;
             const traeMarco = document.querySelector('input[name="tieneMarco"][value="si"]').checked;
+
             const lejosOd = 'ESF ' + this.val('lejosOdEsf') + ' | CIL ' + this.val('lejosOdCil') + ' | EJE ' + this.val('lejosOdEje') + ' | DP ' + this.val('lejosOdDp') + ' | ADD ' + this.val('lejosOdAdd');
             const lejosOi = 'ESF ' + this.val('lejosOiEsf') + ' | CIL ' + this.val('lejosOiCil') + ' | EJE ' + this.val('lejosOiEje') + ' | DP ' + this.val('lejosOiDp') + ' | ADD ' + this.val('lejosOiAdd');
             const cercaOd = 'ESF ' + this.val('cercaOdEsf') + ' | CIL ' + this.val('cercaOdCil') + ' | EJE ' + this.val('cercaOdEje') + ' | DP ' + this.val('cercaOdDp');
             const cercaOi = 'ESF ' + this.val('cercaOiEsf') + ' | CIL ' + this.val('cercaOiCil') + ' | EJE ' + this.val('cercaOiEje') + ' | DP ' + this.val('cercaOiDp');
+
             const marco = (!traeMarco && this.marcoElegido) ? this.marcoElegido.precio : 0;
             const total = precioCristalesCli + marco;
 
+            // Los 16.000 de montaje ya van dentro de precioCristalesCli
+            // Aquí los separamos solo para que Telegram los muestre como antes
+            const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
+            const montura = costo !== null ? FIJO : 0;
+            // precio solo de cristales (sin el fijo de montaje)
+            const precioSoloCristales = precioCristalesCli - montura;
+
+            // Opciones elegidas (para que no lleguen vacías)
+            const tratamientos = [];
+            if (diseno) tratamientos.push(diseno.nombre_cliente || diseno.nombre_interno || disenoKey);
+            if (material) tratamientos.push(material.nombre_cliente || material.nombre_interno || this.materialId);
+            if (ar) tratamientos.push('Antirreflejo (AR)');
+            if (onix) tratamientos.push('Onix Premium');
+
             const payload = {
-                nombre: nombre, telefono: telefono,
-                tipo: tipo, diseno: diseno ? diseno.nombre_interno : disenoKey,
-                material: material ? material.nombre_interno : this.materialId,
-                antirreflejo: ar, onix: onix,
-                lejosOd: lejosOd, lejosOi: lejosOi, cercaOd: cercaOd, cercaOi: cercaOi,
+                // --- campos que el backend/Telegram ya conoce ---
+                nombre: nombre,
+                telefono: telefono,
+                tipo: tipo,                                    // monofocal / bifocal / progresivo
+                tratamientos: tratamientos,                   // ← opciones del cliente
+                lejosOd: lejosOd,
+                lejosOi: lejosOi,
+                cercaOd: cercaOd,
+                cercaOi: cercaOi,
                 traeMarco: traeMarco,
-                marcoNombre: this.marcoElegido ? (this.marcoElegido.nombre + ' (' + this.marcoElegido.marca + ')') : null,
+                marcoNombre: this.marcoElegido
+                    ? (this.marcoElegido.nombre + ' (' + this.marcoElegido.marca + ')')
+                    : null,
                 marcoPrecio: marco,
-                costoCristal: costo,
-                precioCristalesCliente: precioCristalesCli,
-                totalCliente: total
+                costoCristales: costo,                         // ← lo que te cuesta a ti (lab/stock)
+                precioCristalesCliente: precioSoloCristales,   // ← lo que paga el cliente por cristales (sin montaje)
+                montura: montura,                              // ← los 16.000 fijos
+                totalCliente: total,
+
+                // --- campos extra del sistema nuevo (por si quieres usarlos después) ---
+                diseno: diseno ? (diseno.nombre_interno || disenoKey) : disenoKey,
+                material: material ? (material.nombre_interno || this.materialId) : this.materialId,
+                antirreflejo: ar,
+                onix: onix
             };
+
             const btn = document.getElementById('btnEnviar');
             btn.disabled = true;
             btn.textContent = 'Enviando...';
