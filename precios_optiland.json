@@ -1,0 +1,736 @@
+{
+  "version": "2025-01",
+  "laboratorio": "Optiland",
+  "materiales": [
+    {
+      "id": "cr39",
+      "nombre_interno": "CR-39 1.56",
+      "nombre_cliente": "Estándar (CR-39)"
+    },
+    {
+      "id": "blue_filter",
+      "nombre_interno": "Blue-Filter CR 1.56",
+      "nombre_cliente": "Filtro Luz Azul"
+    },
+    {
+      "id": "cr_fotocromatico",
+      "nombre_interno": "CR Fotocromático 1.56",
+      "nombre_cliente": "Fotocromático (cambia con el sol)"
+    },
+    {
+      "id": "fotocromatico_blue",
+      "nombre_interno": "Fotocromático Blue Filter 1.56",
+      "nombre_cliente": "Fotocromático + Filtro Azul"
+    },
+    {
+      "id": "policarbonato",
+      "nombre_interno": "Policarbonato 1.59",
+      "nombre_cliente": "Policarbonato (irrompible, más delgado)"
+    },
+    {
+      "id": "poli_fotogris",
+      "nombre_interno": "Poli-Fotogris 1.60",
+      "nombre_cliente": "Policarbonato Fotocromático"
+    },
+    {
+      "id": "ultravex_blue",
+      "nombre_interno": "Ultravex Blue Filter 1.60",
+      "nombre_cliente": "Adelgazado + Filtro Azul"
+    },
+    {
+      "id": "antiage_blue",
+      "nombre_interno": "Antiage Blue Filter 1.60",
+      "nombre_cliente": "Premium Antiage + Filtro Azul"
+    },
+    {
+      "id": "indice167",
+      "nombre_interno": "Índice 1.67",
+      "nombre_cliente": "Alto Índice 1.67 (más delgado)"
+    },
+    {
+      "id": "foto_cafe_167",
+      "nombre_interno": "Foto Café Blue Cut 1.67",
+      "nombre_cliente": "Fotocromático Café 1.67 (más delgado)"
+    },
+    {
+      "id": "indice174",
+      "nombre_interno": "Índice 1.74",
+      "nombre_cliente": "Ultra Índice 1.74 (extra delgado)"
+    },
+    {
+      "id": "polarizado",
+      "nombre_interno": "Polarizado 1.49",
+      "nombre_cliente": "Polarizado (sol)"
+    },
+    {
+      "id": "polarizado_espejado",
+      "nombre_interno": "Polarizado Espejado 1.49",
+      "nombre_cliente": "Polarizado Espejado (sol)"
+    },
+    {
+      "id": "foto_espejado",
+      "nombre_interno": "Foto Espejado 1.56",
+      "nombre_cliente": "Fotocromático Espejado (sol)"
+    },
+    {
+      "id": "polarix",
+      "nombre_interno": "Polarix 1.60",
+      "nombre_cliente": "Polarix (sol, premium)"
+    }
+  ],
+  "disenos": {
+    "monofocal_convencional": {
+      "tipo": "monofocal",
+      "nombre_cliente": "Monofocal Clásico",
+      "nombre_interno": "Monofocal Convencional",
+      "descripcion_cliente": "La opción de siempre: un solo foco, ideal para ver de lejos o de cerca.",
+      "precio_sin_ar": {
+        "cr39": 3500,
+        "cr_fotocromatico": 6000,
+        "policarbonato": 7000,
+        "ultravex_blue": 6000,
+        "indice167": 16000
+      },
+      "precio_con_ar": {
+        "blue_filter": 9000,
+        "cr_fotocromatico": 12500,
+        "fotocromatico_blue": 15000,
+        "policarbonato": 13500,
+        "poli_fotogris": 20000,
+        "ultravex_blue": 12500,
+        "indice167": 22500,
+        "polarizado": 9000,
+        "polarizado_espejado": 14000,
+        "foto_espejado": 14000,
+        "polarix": 33000
+      }
+    },
+    "monofocal_cross_compress": {
+      "tipo": "monofocal",
+      "nombre_cliente": "Monofocal Alta Definición",
+      "nombre_interno": "Monofocal Cross Compress 3ª Gen",
+      "descripcion_cliente": "Diseño de 3ª generación, más nitidez y mejor adaptación visual.",
+      "precio_sin_ar": {
+        "cr39": 4500,
+        "cr_fotocromatico": 11000,
+        "policarbonato": 8000,
+        "ultravex_blue": 11500,
+        "indice167": 18000
+      },
+      "precio_con_ar": {
+        "cr39": 10000,
+        "blue_filter": 17000,
+        "cr_fotocromatico": 17500,
+        "fotocromatico_blue": 20000,
+        "policarbonato": 14500,
+        "poli_fotogris": 23000,
+        "ultravex_blue": 18000,
+        "antiage_blue": 29500,
+        "indice167": 24500,
+        "foto_cafe_167": 29500,
+        "indice174": 29500,
+        "polarizado": 14000,
+        "polarizado_espejado": 19000,
+        "foto_espejado": 19000,
+        "polarix": 38000
+      }
+    },
+    "cross_myofix": {
+      "tipo": "monofocal",
+      "nombre_cliente": "Monofocal Control de Miopía (niños)",
+      "nombre_interno": "Cross MyoFix (Miopía Control) 3ª Gen",
+      "descripcion_cliente": "Diseñado para frenar el avance de la miopía en niños y adolescentes.",
+      "precio_sin_ar": {
+        "cr39": 23500,
+        "cr_fotocromatico": 30000,
+        "policarbonato": 27000,
+        "ultravex_blue": 30500,
+        "indice167": 37000
+      },
+      "precio_con_ar": {
+        "cr39": 29000,
+        "blue_filter": 36000,
+        "cr_fotocromatico": 36500,
+        "fotocromatico_blue": 39000,
+        "policarbonato": 33500,
+        "poli_fotogris": 42000,
+        "ultravex_blue": 37000,
+        "antiage_blue": 48500,
+        "indice167": 43500,
+        "foto_cafe_167": 48500,
+        "indice174": 48500,
+        "polarizado": 33000,
+        "polarizado_espejado": 38000,
+        "foto_espejado": 38000,
+        "polarix": 57000
+      }
+    },
+    "bifocal_convencional": {
+      "tipo": "bifocal",
+      "nombre_cliente": "Bifocal Clásico",
+      "nombre_interno": "Bifocal Convencional",
+      "descripcion_cliente": "Dos focos con línea visible: lejos y cerca en el mismo cristal.",
+      "precio_sin_ar": {
+        "cr39": 4500,
+        "cr_fotocromatico": 17000,
+        "policarbonato": 10000
+      },
+      "precio_con_ar": {
+        "cr39": 11000,
+        "blue_filter": 18000,
+        "cr_fotocromatico": 23500,
+        "policarbonato": 16500,
+        "ultravex_blue": 23000
+      }
+    },
+    "bifocal_cross_bsoft_ultex": {
+      "tipo": "bifocal",
+      "nombre_cliente": "Bifocal Confort",
+      "nombre_interno": "Bifocal Cross BSoft Kriptock / BSoft Ultex 3ª Gen",
+      "descripcion_cliente": "Bifocal de 3ª generación con transición más cómoda entre focos.",
+      "precio_sin_ar": {
+        "cr39": 7500,
+        "cr_fotocromatico": 18500,
+        "policarbonato": 11000,
+        "ultravex_blue": 15000,
+        "indice167": 22500
+      },
+      "precio_con_ar": {
+        "cr39": 14000,
+        "blue_filter": 21000,
+        "cr_fotocromatico": 25000,
+        "fotocromatico_blue": 27000,
+        "policarbonato": 19500,
+        "poli_fotogris": 28000,
+        "ultravex_blue": 23000,
+        "antiage_blue": 34000,
+        "indice167": 29000,
+        "foto_cafe_167": 34000,
+        "indice174": 34000,
+        "polarizado": 27000,
+        "polarizado_espejado": 32000,
+        "foto_espejado": 32000,
+        "polarix": 51000
+      }
+    },
+    "bifocal_cross_freeline": {
+      "tipo": "bifocal",
+      "nombre_cliente": "Bifocal Línea Invisible",
+      "nombre_interno": "Bifocal Cross Freeline 3ª Gen",
+      "descripcion_cliente": "La ventaja del bifocal, sin la línea visible en el cristal.",
+      "precio_sin_ar": {
+        "cr39": 7500,
+        "cr_fotocromatico": 18500,
+        "policarbonato": 11000,
+        "ultravex_blue": 15000,
+        "indice167": 22500
+      },
+      "precio_con_ar": {
+        "cr39": 14000,
+        "blue_filter": 21000,
+        "cr_fotocromatico": 25000,
+        "fotocromatico_blue": 27000,
+        "policarbonato": 19500,
+        "poli_fotogris": 28000,
+        "ultravex_blue": 23000,
+        "antiage_blue": 34000,
+        "indice167": 29000,
+        "foto_cafe_167": 34000,
+        "indice174": 34000,
+        "polarizado": 27000,
+        "polarizado_espejado": 32000,
+        "foto_espejado": 32000,
+        "polarix": 51000
+      }
+    },
+    "progresivo_cross_one": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Progresivo Esencial",
+      "nombre_interno": "Compress Cross One 3ª Gen",
+      "descripcion_cliente": "La puerta de entrada a los progresivos: lejos, intermedia y cerca, sin líneas.",
+      "precio_sin_ar": {
+        "cr39": 10000,
+        "cr_fotocromatico": 19500,
+        "policarbonato": 15500,
+        "ultravex_blue": 18500,
+        "indice167": 25500
+      },
+      "precio_con_ar": {
+        "cr39": 16500,
+        "blue_filter": 25000,
+        "cr_fotocromatico": 26000,
+        "fotocromatico_blue": 28000,
+        "policarbonato": 22000,
+        "poli_fotogris": 28500,
+        "ultravex_blue": 27000,
+        "antiage_blue": 37000,
+        "indice167": 32000,
+        "foto_cafe_167": 37000,
+        "indice174": 37000,
+        "polarizado": 30000,
+        "polarizado_espejado": 35000,
+        "foto_espejado": 35000,
+        "polarix": 54000
+      }
+    },
+    "progresivo_precisa": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Progresivo Preciso",
+      "nombre_interno": "Progressive Precisa 3ª Gen",
+      "descripcion_cliente": "Mayor precisión y campos de visión más amplios que el Esencial.",
+      "precio_sin_ar": {
+        "cr39": 19500,
+        "cr_fotocromatico": 29000,
+        "policarbonato": 25000,
+        "ultravex_blue": 28000,
+        "indice167": 35000
+      },
+      "precio_con_ar": {
+        "cr39": 26000,
+        "blue_filter": 34500,
+        "cr_fotocromatico": 35500,
+        "fotocromatico_blue": 37500,
+        "policarbonato": 31500,
+        "poli_fotogris": 38000,
+        "ultravex_blue": 36500,
+        "antiage_blue": 46500,
+        "indice167": 41500,
+        "foto_cafe_167": 46500,
+        "indice174": 46500,
+        "polarizado": 39500,
+        "polarizado_espejado": 44500,
+        "foto_espejado": 44500,
+        "polarix": 63500
+      }
+    },
+    "progresivo_cross_max": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Progresivo Premium",
+      "nombre_interno": "Progressive Cross Max 3ª Gen",
+      "descripcion_cliente": "Diseño premium con adaptación más rápida y visión más natural.",
+      "precio_sin_ar": {
+        "cr39": 24000,
+        "cr_fotocromatico": 33500,
+        "policarbonato": 29500,
+        "ultravex_blue": 32500,
+        "indice167": 39500
+      },
+      "precio_con_ar": {
+        "cr39": 30500,
+        "blue_filter": 39000,
+        "cr_fotocromatico": 40000,
+        "fotocromatico_blue": 42000,
+        "policarbonato": 36000,
+        "poli_fotogris": 42500,
+        "ultravex_blue": 41000,
+        "antiage_blue": 51000,
+        "indice167": 46000,
+        "foto_cafe_167": 51000,
+        "indice174": 51000,
+        "polarizado": 44000,
+        "polarizado_espejado": 49000,
+        "foto_espejado": 49000,
+        "polarix": 68000
+      }
+    },
+    "progresivo_dynamics": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Progresivo Dynamics (lentes virtuales)",
+      "nombre_interno": "Progressive Dynamics Virtual Lenses 3ª Gen",
+      "descripcion_cliente": "Tecnología de simulación virtual para una adaptación óptima a tu forma de vida.",
+      "precio_sin_ar": {
+        "cr39": 44000,
+        "cr_fotocromatico": 53500,
+        "policarbonato": 49500,
+        "ultravex_blue": 52500,
+        "indice167": 59500
+      },
+      "precio_con_ar": {
+        "cr39": 50500,
+        "blue_filter": 59000,
+        "cr_fotocromatico": 60000,
+        "fotocromatico_blue": 62000,
+        "policarbonato": 56000,
+        "poli_fotogris": 62500,
+        "ultravex_blue": 61000,
+        "antiage_blue": 71000,
+        "indice167": 66000,
+        "foto_cafe_167": 71000,
+        "indice174": 71000,
+        "polarizado": 64000,
+        "polarizado_espejado": 69000,
+        "foto_espejado": 69000,
+        "polarix": 88000
+      }
+    },
+    "progresivo_ailens": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Progresivo AiLens (máximo campo visual)",
+      "nombre_interno": "Progressive AiLens 3ª Gen",
+      "descripcion_cliente": "Nuestro progresivo de mayor gama: máximo campo visual y mínimas aberraciones.",
+      "precio_sin_ar": {
+        "cr39": 59000,
+        "cr_fotocromatico": 68500,
+        "policarbonato": 64500,
+        "ultravex_blue": 67500,
+        "indice167": 74500
+      },
+      "precio_con_ar": {
+        "cr39": 65500,
+        "blue_filter": 74000,
+        "cr_fotocromatico": 75000,
+        "fotocromatico_blue": 77000,
+        "policarbonato": 71000,
+        "poli_fotogris": 77500,
+        "ultravex_blue": 76000,
+        "antiage_blue": 86000,
+        "indice167": 81000,
+        "foto_cafe_167": 86000,
+        "indice174": 86000,
+        "polarizado": 79000,
+        "polarizado_espejado": 84000,
+        "foto_espejado": 84000,
+        "polarix": 103000
+      }
+    },
+    "multifocal_office": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Multifocal Oficina (cerca-intermedia)",
+      "nombre_interno": "Multifocal Office 3ª Gen",
+      "descripcion_cliente": "Pensado para pantallas y escritorio: amplía la visión de cerca e intermedia.",
+      "precio_sin_ar": {
+        "cr39": 8500,
+        "cr_fotocromatico": 19500,
+        "policarbonato": 14000,
+        "ultravex_blue": 17000,
+        "indice167": 23500
+      },
+      "precio_con_ar": {
+        "cr39": 15000,
+        "blue_filter": 22000,
+        "cr_fotocromatico": 26000,
+        "fotocromatico_blue": 28000,
+        "policarbonato": 20500,
+        "poli_fotogris": 29000,
+        "ultravex_blue": 24000,
+        "antiage_blue": 35000,
+        "indice167": 30000,
+        "foto_cafe_167": 35000,
+        "indice174": 35000,
+        "polarizado": 28000,
+        "polarizado_espejado": 33000,
+        "foto_espejado": 33000,
+        "polarix": 52000
+      }
+    },
+    "progresivo_drive": {
+      "tipo": "progresivo",
+      "nombre_cliente": "Progresivo Conducción",
+      "nombre_interno": "Progressive Drive 3ª Gen",
+      "descripcion_cliente": "Optimizado para manejar: prioriza la visión de lejos e intermedia.",
+      "precio_sin_ar": {
+        "cr39": 8500,
+        "cr_fotocromatico": 19500,
+        "policarbonato": 14000,
+        "ultravex_blue": 17000,
+        "indice167": 23500
+      },
+      "precio_con_ar": {
+        "cr39": 15000,
+        "blue_filter": 22000,
+        "cr_fotocromatico": 26000,
+        "fotocromatico_blue": 28000,
+        "policarbonato": 20500,
+        "poli_fotogris": 29000,
+        "ultravex_blue": 24000,
+        "antiage_blue": 35000,
+        "indice167": 30000,
+        "foto_cafe_167": 35000,
+        "indice174": 35000,
+        "polarizado": 28000,
+        "polarizado_espejado": 33000,
+        "foto_espejado": 33000,
+        "polarix": 52000
+      }
+    }
+  },
+  "stock": {
+    "cr39": {
+      "nombre_interno": "CR-39 Blanco 100% UV 1.56",
+      "con_ar": false,
+      "esf_solo": {
+        "2": 500,
+        "4": 500,
+        "6": 650
+      },
+      "cil2": {
+        "2": 500,
+        "4": 500,
+        "6": 650
+      },
+      "cil4": {
+        "2": 1200,
+        "4": 1200,
+        "6": 1600
+      },
+      "cil6": {
+        "2": 2000,
+        "4": 2100,
+        "6": 2400
+      },
+      "cil_solo": {
+        "2": 520,
+        "4": 1200,
+        "6": 2000
+      }
+    },
+    "cr39_ar": {
+      "nombre_interno": "CR-39 Blanco AR 1.56",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 620,
+        "4": 620,
+        "6": 940
+      },
+      "cil2": {
+        "2": 620,
+        "4": 620,
+        "6": 940
+      },
+      "cil4": {
+        "2": 1890,
+        "4": 1990,
+        "6": 2190
+      },
+      "cil6": {
+        "2": 2390,
+        "4": 2490,
+        "6": 2590
+      },
+      "cil_solo": {
+        "2": 690,
+        "4": 1890,
+        "6": 2390
+      }
+    },
+    "blue_filter_ar": {
+      "nombre_interno": "CR-39 Blue Filter AR 1.56",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 1880,
+        "4": 1880,
+        "6": 2290
+      },
+      "cil2": {
+        "2": 1880,
+        "4": 1880,
+        "6": 2290
+      },
+      "cil4": {
+        "2": 3770,
+        "4": 3770,
+        "6": 3790
+      },
+      "cil6": {
+        "2": 7700,
+        "4": 7700,
+        "6": 7700
+      },
+      "cil_solo": {
+        "2": 1880,
+        "4": 3770,
+        "6": 7700
+      }
+    },
+    "foto_cafe_ar": {
+      "nombre_interno": "CR-39 Foto Café AR 1.56",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 2890,
+        "4": 2890
+      },
+      "cil2": {
+        "2": 2890,
+        "4": 2890
+      },
+      "cil4": {
+        "2": 5790,
+        "4": 5790
+      },
+      "cil6": {},
+      "cil_solo": {
+        "2": 2890,
+        "4": 5790
+      }
+    },
+    "foto_gris_blue_ar": {
+      "nombre_interno": "CR-39 Foto Gris Blue AR 1.56",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 3500,
+        "4": 3500
+      },
+      "cil2": {
+        "2": 3500,
+        "4": 3500
+      },
+      "cil4": {},
+      "cil6": {},
+      "cil_solo": {
+        "2": 3500,
+        "4": 4000
+      }
+    },
+    "policarbonato_ar": {
+      "nombre_interno": "Policarbonato AR 1.59",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 2040,
+        "4": 2040,
+        "6": 2740
+      },
+      "cil2": {
+        "2": 2040,
+        "4": 2040,
+        "6": 2740
+      },
+      "cil4": {
+        "2": 5840,
+        "4": 5840,
+        "6": 7490
+      },
+      "cil6": {
+        "2": 8490,
+        "4": 8990,
+        "6": 9990
+      },
+      "cil_solo": {
+        "2": 2540,
+        "4": 5840,
+        "6": 8490
+      }
+    },
+    "policarbonato_blue_ar": {
+      "nombre_interno": "Policarbonato Blue AR 1.59",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 4000,
+        "4": 4000
+      },
+      "cil2": {
+        "2": 4000,
+        "4": 4000
+      },
+      "cil4": {
+        "2": 8000,
+        "4": 8000
+      },
+      "cil6": {},
+      "cil_solo": {
+        "2": 4000,
+        "4": 8000
+      }
+    },
+    "policarbonato_blanco": {
+      "nombre_interno": "Policarbonato Blanco 1.59 (solo neutro)",
+      "con_ar": false,
+      "flat_solo_neutro": 1600
+    },
+    "antiage_blue_filter": {
+      "nombre_interno": "Antiage Blue Filter 1.60",
+      "con_ar": true,
+      "esf_solo": {
+        "2": 12000,
+        "4": 12000
+      },
+      "cil2": {
+        "2": 12000,
+        "4": 12000
+      },
+      "cil4": {},
+      "cil6": {},
+      "cil_solo": {
+        "2": 12000,
+        "4": 12000
+      }
+    },
+    "alto_indice_blue_ar_167": {
+      "nombre_interno": "Alto Índice Blue AR 1.67 (desde esférico 6 a 10, con cilindro -4)",
+      "con_ar": true,
+      "esf_solo": {
+        "6": 11000,
+        "8": 11000,
+        "10": 11000
+      },
+      "cil2": {
+        "6": 11000,
+        "8": 11000,
+        "10": 11000
+      },
+      "cil4": {
+        "6": 18000,
+        "8": 18000,
+        "10": 18000
+      }
+    },
+    "foto_color": {
+      "nombre_interno": "Foto Color (Green, Purple, Pink, Blue) — solo neutro",
+      "con_ar": false,
+      "flat_solo_neutro": 3500
+    },
+    "polarizado_espejado_49": {
+      "nombre_interno": "Polarizado Espejado 1.49 (varios colores) — solo neutro",
+      "con_ar": false,
+      "flat_solo_neutro": 14000
+    }
+  },
+  "stock_map": {
+    "cr39": {
+      "sin_ar": "cr39",
+      "con_ar": "cr39_ar"
+    },
+    "blue_filter": {
+      "con_ar": "blue_filter_ar"
+    },
+    "policarbonato": {
+      "con_ar": "policarbonato_ar"
+    },
+    "antiage_blue": {
+      "con_ar": "antiage_blue_filter"
+    },
+    "indice167": {
+      "con_ar": "alto_indice_blue_ar_167"
+    },
+    "polarizado_espejado": {
+      "sin_ar": "polarizado_espejado_49",
+      "con_ar": "polarizado_espejado_49"
+    }
+  },
+  "reglas_precio_cliente": {
+    "formula_precio_cliente": "round(costo_cristal * 1.19 * 1.60) + 16000",
+    "iva": 0.19,
+    "margen": 0.6,
+    "cobro_fijo_montaje_al_marco": 16000,
+    "descripcion": "El costo del cristal (según diseño/material/AR, stock o laboratorio) se multiplica por 1.19 (IVA) y 1.60 (margen), y se le suma un cobro fijo de $16.000 por montar el cristal al marco. El precio del marco (si el cliente no trae el suyo) se agrega aparte, sin recargo adicional. Al cliente SOLO se le muestra el total final.",
+    "capa_onix_extra": {
+      "nombre_cliente": "Antirreflejo Onix Premium (16 capas, hasta 16x menos reflejos)",
+      "costo_extra_por_ojo": 5000,
+      "costo_extra_total": 10000,
+      "nota": "Se suma al costo del cristal ANTES de aplicar la fórmula de precio cliente."
+    }
+  },
+  "diametro_stock": {
+    "positivo_mm": 65,
+    "negativo_mm": 70
+  },
+  "rango_add": {
+    "freeform": {
+      "min": 0.75,
+      "max": 3.5
+    },
+    "convencional": {
+      "min": 1.0,
+      "max": 3.0
+    }
+  }
+}
