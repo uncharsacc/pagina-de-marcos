@@ -791,6 +791,7 @@
 
         /* Precios del JSON = por ojo → se multiplica × 2 (par) */
         costoCristal: function () {
+<<<<<<< HEAD
             if (!DB) return { costo: null };
             const key = this.disenoActual();
             const d = DB.disenos[key];
@@ -801,9 +802,17 @@
             let costoLab = (tabla && tabla[this.materialId] !== undefined)
                 ? tabla[this.materialId] * 2
                 : null;
+=======
+    if (!DB) return { costo: null };
+    const key = this.disenoActual();
+    const d = DB.disenos[key];
+    if (!d || !this.materialId) return { costo: null };
+>>>>>>> 12eb72b17757926ba4557a78cf75af16f8832e1a
 
-            let costo = costoLab;
+    const ar = document.getElementById('tratAR').checked;
+    const tabla = ar ? d.precio_con_ar : d.precio_sin_ar;
 
+<<<<<<< HEAD
             if (d.tipo === 'monofocal' && DB.stock_map && DB.stock_map[this.materialId]) {
                 const mapa = DB.stock_map[this.materialId];
                 const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
@@ -816,13 +825,35 @@
                         costo = (costoLab !== null) ? Math.min(costoLab, stockPar) : stockPar;
                     }
                 }
-            }
+=======
+    // JSON = por ojo → ×2 = par
+    let costoLab = (tabla && tabla[this.materialId] !== undefined)
+        ? tabla[this.materialId] * 2
+        : null;
 
-            if (costo !== null && ar && document.getElementById('tratOnix').checked) {
-                costo += (DB.reglas_precio_cliente.capa_onix_extra.costo_extra_total || 10000);
+    let costo = costoLab;
+
+    if (d.tipo === 'monofocal' && DB.stock_map && DB.stock_map[this.materialId]) {
+        const mapa = DB.stock_map[this.materialId];
+        const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
+        if (stockKey) {
+            const esfAbs = this.maxAbs(['lejosOdEsf', 'lejosOiEsf']);
+            const cilAbs = this.maxAbs(['lejosOdCil', 'lejosOiCil']);
+            const cStock = this.precioStock(stockKey, esfAbs, cilAbs);
+            if (cStock !== null) {
+                const stockPar = cStock * 2;
+                costo = (costoLab !== null) ? Math.min(costoLab, stockPar) : stockPar;
+>>>>>>> 12eb72b17757926ba4557a78cf75af16f8832e1a
             }
-            return { costo: costo };
-        },
+        }
+    }
+
+    if (costo !== null && ar && document.getElementById('tratOnix').checked) {
+        costo += (DB.reglas_precio_cliente.capa_onix_extra.costo_extra_total || 10000);
+    }
+    return { costo: costo };
+},
+                 ,
 
         actualizarTotal: function () {
             if (!DB) return;
