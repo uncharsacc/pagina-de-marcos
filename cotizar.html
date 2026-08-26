@@ -11,22 +11,22 @@
     <script src="datos-imagenes.js"></script>
     <style>
         :root {
-            --primary: #0a0f1a;
-            --primary-light: #0f1525;
-            --secondary: #131d35;
-            --accent: #C8A24C;
-            --accent-hover: #D4B05C;
-            --accent-glow: rgba(200, 162, 76, 0.4);
+            --primary: #121315;
+            --primary-light: #18191c;
+            --secondary: #1e1f23;
+            --accent: #C5A08E;
+            --accent-hover: #D8B4A2;
+            --accent-glow: rgba(197, 160, 142, 0.25);
             --success: #22C55E;
-            --bg: #080e1c;
-            --bg-card: #0b1222;
-            --bg-elevated: #131c30;
-            --bg-input: #1a2440;
-            --text: #F5F0E8;
-            --text-secondary: #A8B8C8;
-            --text-muted: #586880;
-            --border: #2a3a55;
-            --border-light: #354560;
+            --bg: #121315;
+            --bg-card: #1A1B1E;
+            --bg-elevated: #232529;
+            --bg-input: #2A2C31;
+            --text: #F7F5F0;
+            --text-secondary: #B0AAA2;
+            --text-muted: #6F6B65;
+            --border: #34363C;
+            --border-light: #44474F;
             --radius: 20px;
             --radius-sm: 10px;
             --radius-xs: 6px;
@@ -41,7 +41,7 @@
         }
         .header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(8, 14, 28, 0.92);
+            background: rgba(18, 19, 21, 0.85);
             backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--border);
             padding: 0.75rem 0;
@@ -67,7 +67,7 @@
         .hero-badge {
             display: inline-flex; align-items: center; gap: 0.5rem;
             padding: 0.35rem 1rem; background: var(--accent-glow);
-            border: 1px solid rgba(200, 162, 76, 0.35); border-radius: 50px;
+            border: 1px solid rgba(197, 160, 142, 0.35); border-radius: 50px;
             font-size: 0.75rem; font-weight: 600; color: var(--accent-hover);
             margin-bottom: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;
         }
@@ -154,8 +154,14 @@
         .btn-enviar {
             width: 100%; padding: 1rem;
             background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-            border: none; border-radius: var(--radius-sm); color: #1a1510;
+            border: none; border-radius: var(--radius-sm); color: #121315;
             font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(197, 160, 142, 0.3);
+            transition: var(--transition);
+        }
+        .btn-enviar:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(197, 160, 142, 0.45);
         }
         .btn-enviar:disabled { opacity: 0.55; cursor: not-allowed; }
         .nota { text-align: center; margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted); }
@@ -172,7 +178,7 @@
         }
         .toast.show { display: block; }
         .toast.ok { border-left: 3px solid var(--success); }
-        .toast.err { border-left: 3px solid #e94560; }
+        .toast.err { border-left: 3px solid #E06C75; }
         @media (max-width: 600px) {
             .rx-grid { grid-template-columns: 55px 1fr 1fr; }
             .checks { grid-template-columns: 1fr; }
@@ -361,8 +367,8 @@
             sel.innerHTML = '<option>No se pudo cargar precios_optiland.json</option>';
             const aviso = document.createElement('div');
             aviso.className = 'diseno-desc visible';
-            aviso.style.borderColor = '#e94560';
-            aviso.style.color = '#ff9aa8';
+            aviso.style.borderColor = '#E06C75';
+            aviso.style.color = '#FFB3BA';
             aviso.textContent = 'No se pudo cargar precios_optiland.json. Revisa que el archivo se llame exactamente así y esté en la misma carpeta que cotizar.html.';
             sel.insertAdjacentElement('afterend', aviso);
             document.getElementById('btnEnviar').disabled = true;
@@ -626,7 +632,7 @@
         } catch (e) {
             console.error(e);
             status.textContent = 'No se pudo leer la foto. Rellena los datos a mano.';
-            status.style.color = '#e94560';
+            status.style.color = '#E06C75';
         }
 
         loading.classList.remove('active');
