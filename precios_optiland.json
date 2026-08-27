@@ -692,7 +692,14 @@
     "blue_filter": {
       "con_ar": "blue_filter_ar"
     },
+    "cr_fotocromatico": {
+      "con_ar": "foto_cafe_ar"
+    },
+    "fotocromatico_blue": {
+      "con_ar": "foto_gris_blue_ar"
+    },
     "policarbonato": {
+      "sin_ar": "policarbonato_blanco",
       "con_ar": "policarbonato_ar"
     },
     "antiage_blue": {

@@ -37,6 +37,10 @@ export default async function handler(req, res) {
   const d = req.body || {};
   const fecha = new Date().toLocaleString('es-CL', { timeZone: 'America/Santiago' });
 
+  const origenTxt = d.origen
+    ? (d.origen.toLowerCase() === 'stock' ? '📦 Stock' : '🏭 Laboratorio')
+    : '🏭 Laboratorio';
+
   const textoTg = [
     'COTIZACION - SACC & VISION',
     '',
@@ -52,11 +56,12 @@ export default async function handler(req, res) {
     'OI: ' + (d.cercaOi || '-'),
     '',
     'Tipo: ' + (d.tipo || '-'),
+    'Origen cristales: ' + origenTxt,
     'Opciones: ' + ((d.tratamientos || []).join(', ') || '-'),
-    'Marco: ' + (d.traeMarco ? 'Trae su marco' : ((d.marcoNombre || '-') + ' $' + (d.marcoPrecio || 0))),
-    'Montura: $' + Number(d.montura || 0).toLocaleString('es-CL'),
+    'Marco: ' + (d.traeMarco ? 'Trae su marco' : ((d.marcoNombre || '-') + ' $' + Number(d.marcoPrecio || 0).toLocaleString('es-CL'))),
+    'Montura fija: $' + Number(d.montura || 0).toLocaleString('es-CL'),
     '',
-    'Costo cristales: $' + Number(d.costoCristales || 0).toLocaleString('es-CL'),
+    'Costo cristales (par): $' + Number(d.costoCristales || 0).toLocaleString('es-CL'),
     'Cristales cliente: $' + Number(d.precioCristalesCliente || 0).toLocaleString('es-CL'),
     'TOTAL CLIENTE: $' + Number(d.totalCliente || 0).toLocaleString('es-CL')
   ].join('\n');
