@@ -1061,6 +1061,8 @@
             gap: 1.15rem;
             position: relative;
             overflow: hidden;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 90px;
         }
 
         .brand-card::before {
@@ -1441,7 +1443,9 @@
             overflow: hidden;
             cursor: pointer;
             transition: var(--transition);
-            animation: fadeInUp 0.4s ease both;
+            animation: fadeInUp 0.3s ease both;
+            content-visibility: auto;
+            contain-intrinsic-size: auto 260px;
         }
 
         .marca-image-card:hover {
@@ -3379,24 +3383,28 @@
             this.modalAbierto = false;
             this.busquedaEnCurso = false;
             this.scrollGuardado = 0;
-            // Guarda la ULTIMA lista de resultados de la busqueda por foto
-            // (ya ordenada de mayor a menor %). El modal la reutiliza siempre
-            // que se hace click en un resultado; nunca se vuelve a comparar
-            // contra el resultado clickeado.
             this.ultimosResultadosFoto = [];
 
-            // Inicializar
+            // Paginación y rendimiento de vista de marcas / catálogo
+            this.marcaActual = null;
+            this.marcaModelos = [];
+            this.marcaOffset = 0;
+            this.MARCA_CHUNK_SIZE = 36;
+            this.marcaObserver = null;
+            this.promesaCargaComparacion = null;
+
+            // Inicializar catálogo inmediatamente
             this.init();
         }
 
-        async init() {
+        init() {
             this.cargarEventos();
-            await this.cargarDatos();
+            this.inicializarCatalogoSincrono();
             this.actualizarStats();
             this.renderizarMarcas();
-            
-            addDebug(`✅ Catálogo inicializado: ${Object.keys(this.datos).length} marcas, ${this.todasLasImagenes.length} imágenes`, 'success');
-            this.mostrarToast(`Catálogo listo: ${this.todasLasImagenes.length} modelos cargados`, 'success');
+
+            // Cargar datos de búsqueda visual en segundo plano (no bloquea la UI ni el catálogo)
+            this.promesaCargaComparacion = this.cargarDatosComparacionVisual();
 
             // Soporte para navegación directa mediante URL (?v=photo, ?v=catalogo, ?buscar=...)
             const params = new URLSearchParams(window.location.search);
@@ -3412,9 +3420,26 @@
             } else {
                 this.cambiarVista('photo');
             }
+        }
 
-            // Precalentar en segundo plano cualquier modelo no precargado
-            this.motor.precalentarCache(this.todasLasImagenes);
+        inicializarCatalogoSincrono() {
+            // Logos y catálogo cargados instantáneamente desde datos-imagenes.js
+            if (typeof mapaLogos !== 'undefined') {
+                this.logos = mapaLogos;
+            } else {
+                this.logos = {};
+            }
+
+            if (typeof catalogoImagenes !== 'undefined') {
+                this.datos = catalogoImagenes;
+            } else {
+                this.datos = {};
+            }
+
+            const totalMarcas = Object.keys(this.datos).length;
+            const totalModelosOriginales = Object.values(this.datos).reduce((total, lista) => total + lista.length, 0);
+            this.totalMarcasEl.textContent = totalMarcas + ' marcas';
+            this.totalImagenesEl.textContent = totalModelosOriginales + ' modelos';
         }
 
         cargarEventos() {
@@ -3602,29 +3627,12 @@
             addDebug('Imagen removida', 'info');
         }
 
-        async cargarDatos() {
-            // Logos
-            if (typeof mapaLogos !== 'undefined') {
-                this.logos = mapaLogos;
-            } else {
-                this.logos = {};
-                addDebug('mapaLogos no encontrado', 'warning');
-            }
+        async cargarDatosComparacionVisual() {
+            if (this.todasLasImagenes && this.todasLasImagenes.length > 0) return;
 
-            // Catálogo original: sigue viniendo de datos-imagenes.js y se usa
-            // para mostrar las fichas completas, marcas, modelos y precios.
-            if (typeof catalogoImagenes !== 'undefined') {
-                this.datos = catalogoImagenes;
-                addDebug(`Datos cargados: ${Object.keys(this.datos).length} marcas`, 'success');
-            } else {
-                addDebug('❌ catalogoImagenes no encontrado', 'error');
-                this.datos = {};
-            }
-
-            // Nuevo catálogo de frontales: contiene la relación entre la
-            // imagen original y el recorte generado externamente.
+            // Catálogo de frontales: relación entre imagen original y recorte para búsqueda por foto
             try {
-                const respuesta = await fetch('catalogo_frontal.json', { cache: 'no-cache' });
+                const respuesta = await fetch('catalogo_frontal.json');
                 if (!respuesta.ok) {
                     throw new Error(`HTTP ${respuesta.status}`);
                 }
@@ -3646,12 +3654,9 @@
                     `❌ No se pudo cargar catalogo_frontal.json: ${e.message}`,
                     'error'
                 );
-                throw new Error('No se pudo cargar catalogo_frontal.json. Abre el proyecto mediante un servidor local (por ejemplo Live Server) y verifica que el JSON esté junto a a.html.');
             }
 
-            // Construir array plano.
-            // URL      = imagen COMPLETA para mostrar al usuario.
-            // frontalUrl = recorte generado externamente para comparar.
+            // Construir array plano para motor de comparación
             this.todasLasImagenes = [];
             let sinFrontal = 0;
 
@@ -3690,23 +3695,6 @@
                 }
             }
 
-            addDebug(
-                `✅ ${this.todasLasImagenes.length} modelos tienen frontal disponible para comparar`,
-                'success'
-            );
-
-            if (sinFrontal > 0) {
-                addDebug(
-                    `⚠️ ${sinFrontal} modelos de datos-imagenes.js no tienen entrada en catalogo_frontal.json y fueron omitidos de la comparación`,
-                    'warning'
-                );
-            }
-
-            if (this.todasLasImagenes.length > 0) {
-                addDebug(`Ejemplo original: ${this.todasLasImagenes[0].url}`, 'info');
-                addDebug(`Ejemplo frontal: ${this.todasLasImagenes[0].frontalUrl}`, 'info');
-            }
-
             // Cargar descriptores precomputados para comparación instantánea (5ms)
             try {
                 const respDesc = await fetch('descriptores_catalogo.json');
@@ -3721,10 +3709,10 @@
                 addDebug(`⚠️ Carga de descriptores precomputados omitida (${e.message}), usando motor estándar`, 'info');
             }
 
-            const totalMarcas = Object.keys(this.datos).length;
-            const totalModelosOriginales = Object.values(this.datos).reduce((total, lista) => total + lista.length, 0);
-            this.totalMarcasEl.textContent = totalMarcas + ' marcas';
-            this.totalImagenesEl.textContent = totalModelosOriginales + ' imagenes';
+            // Precalentar en segundo plano de forma no invasiva
+            if (this.todasLasImagenes.length > 0) {
+                this.motor.precalentarCache(this.todasLasImagenes);
+            }
         }
 
         normalizarClaveFrontal(clave) {
@@ -3783,6 +3771,10 @@
             const info = obtenerInfoMarca(nombreMarca);
             const fotos = this.datos[nombreMarca] || [];
 
+            this.marcaActual = nombreMarca;
+            this.marcaModelos = fotos;
+            this.marcaOffset = 0;
+
             let metaHTML = '<span>' + fotos.length + ' modelos</span>';
             if (info.categoria) {
                 metaHTML += ' &middot; <span class="result-card-category ' + categoriaClase(info.categoria) + '">' + info.categoria + '</span>';
@@ -3800,32 +3792,78 @@
                     '<div class="marca-header-meta">' + metaHTML + '</div>' +
                 '</div>';
 
+            this.marcaImagesGrid.innerHTML = '';
+
             if (fotos.length === 0) {
                 this.marcaImagesGrid.innerHTML =
                     '<div class="no-results">' +
                         '<i class="fas fa-image"></i>' +
-                        '<h3>Sin imagenes</h3>' +
+                        '<h3>Sin imágenes</h3>' +
                         '<p>No hay modelos cargados para esta marca.</p>' +
                     '</div>';
             } else {
-                this.marcaImagesGrid.innerHTML = fotos.map((foto, i) => {
-                    var url = foto.indexOf('/') !== -1 ? foto : 'imagenes-webp/' + nombreMarca + '/' + foto;
-                    return '<div class="marca-image-card" style="animation-delay:' + (i * 0.04) + 's" onclick="abrirModalSimple(\'' + encodeURI(url) + '\')">' +
-                        '<div class="marca-image-card-img">' +
-                            '<img src="' + encodeURI(url) + '" alt="' + foto + '" loading="lazy">' +
-                        '</div>' +
-                        '<div class="marca-image-card-name">' +
-                            foto
-                                .split('/')
-                                .pop()
-                                .replace(/\.[^.]+$/, '') +
-                        '</div>' +
-                    '</div>';
-                }).join('');
+                this.renderizarSiguienteLoteMarca();
             }
 
             this.marcaImagesSection.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        renderizarSiguienteLoteMarca() {
+            const fotos = this.marcaModelos || [];
+            if (this.marcaOffset >= fotos.length) return;
+
+            const batch = fotos.slice(this.marcaOffset, this.marcaOffset + this.MARCA_CHUNK_SIZE);
+            this.marcaOffset += batch.length;
+
+            const existingSentinel = document.getElementById('marcaSentinel');
+            if (existingSentinel) existingSentinel.remove();
+
+            const cardsHTML = batch.map((foto) => {
+                const url = foto.indexOf('/') !== -1 ? foto : 'imagenes-webp/' + this.marcaActual + '/' + foto;
+                const nombre = foto.split('/').pop().replace(/\.[^.]+$/, '');
+                return '<div class="marca-image-card" onclick="abrirModalSimple(\'' + encodeURI(url) + '\')">' +
+                    '<div class="marca-image-card-img">' +
+                        '<img src="' + encodeURI(url) + '" alt="' + nombre + '" loading="lazy" decoding="async">' +
+                    '</div>' +
+                    '<div class="marca-image-card-name">' + nombre + '</div>' +
+                '</div>';
+            }).join('');
+
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = cardsHTML;
+            while (tempContainer.firstChild) {
+                this.marcaImagesGrid.appendChild(tempContainer.firstChild);
+            }
+
+            // Si quedan más modelos, agregar sentinel con IntersectionObserver
+            if (this.marcaOffset < fotos.length) {
+                const restantes = fotos.length - this.marcaOffset;
+                const sentinel = document.createElement('div');
+                sentinel.id = 'marcaSentinel';
+                sentinel.style.gridColumn = '1 / -1';
+                sentinel.style.padding = '1.5rem';
+                sentinel.style.textAlign = 'center';
+                sentinel.innerHTML = `<button class="btn-retry" style="padding:0.6rem 1.4rem;font-size:0.85rem;cursor:pointer" onclick="app.renderizarSiguienteLoteMarca()">
+                    <i class="fas fa-plus"></i> Cargar más modelos (${restantes} restantes)
+                </button>`;
+                this.marcaImagesGrid.appendChild(sentinel);
+
+                if ('IntersectionObserver' in window) {
+                    if (this.marcaObserver) this.marcaObserver.disconnect();
+                    this.marcaObserver = new IntersectionObserver((entries) => {
+                        if (entries[0] && entries[0].isIntersecting) {
+                            this.renderizarSiguienteLoteMarca();
+                        }
+                    }, { rootMargin: '350px' });
+                    this.marcaObserver.observe(sentinel);
+                }
+            } else {
+                if (this.marcaObserver) {
+                    this.marcaObserver.disconnect();
+                    this.marcaObserver = null;
+                }
+            }
         }
 
         volverAlCatalogo() {
@@ -3852,6 +3890,11 @@
             addDebug('🔍 Iniciando búsqueda ultrarrápida de similares...', 'info');
         
             try {
+                // Asegurar que los datos de búsqueda visual estén cargados
+                if (this.promesaCargaComparacion) {
+                    await this.promesaCargaComparacion;
+                }
+
                 await new Promise(r => requestAnimationFrame(r));
 
                 const resultados = await this.motor.encontrarSimilares(
@@ -3919,11 +3962,11 @@
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
                         <div>
                             <div style="margin-bottom:.4rem;color:var(--text-secondary);font-size:.7rem;font-weight:700">🖼️ IMAGEN COMPLETA</div>
-                            <img class="comparison-debug-crop" src="${encodeURI(item.url)}" style="width:100%;height:280px;object-fit:contain;background:#fff;border-radius:8px" alt="Imagen completa">
+                            <img class="comparison-debug-crop" src="${encodeURI(item.url)}" style="width:100%;height:280px;object-fit:contain;background:#fff;border-radius:8px" alt="Imagen completa" decoding="async">
                         </div>
                         <div>
                             <div style="margin-bottom:.4rem;color:var(--text-secondary);font-size:.7rem;font-weight:700">✂️ FRONTAL USADO EN LA COMPARACIÓN</div>
-                            <img class="comparison-debug-crop" src="${encodeURI(item.frontalUrl)}" style="width:100%;height:280px;object-fit:contain;background:#fff;border-radius:8px" alt="Frontal usado">
+                            <img class="comparison-debug-crop" src="${encodeURI(item.frontalUrl)}" style="width:100%;height:280px;object-fit:contain;background:#fff;border-radius:8px" alt="Frontal usado" decoding="async">
                         </div>
                     </div>
                     <div class="comparison-debug-meta">
@@ -3962,11 +4005,11 @@
                 const nivel = r.porcentaje >= 50 ? 'high' : r.porcentaje >= 25 ? 'medium' : 'low';
                 const catClase = r.categoria ? categoriaClase(r.categoria) : '';
                 const precioTxt = formatoPrecio(r.precio, r.precioMax);
-                const delay = i < 12 ? (i * 0.03) : 0;
+                const delay = i < 8 ? (i * 0.03) : 0;
         
                 return '<div class="result-card" data-nivel="' + nivel + '" style="animation-delay:' + delay + 's" onclick="app.abrirModal(\'' + encodeURIComponent(r.url) + '\',\'' + r.nombre.replace(/'/g, "\\'") + '\',\'' + (r.marca || '').replace(/'/g, "\\'") + '\',' + (r.precio || 0) + ',' + (r.precioMax || 0) + ',\'' + (r.categoria || '').replace(/'/g, "\\'") + '\')">' +
                     '<div class="result-card-image">' +
-                        '<img src="' + r.url + '" alt="' + r.nombre + '" loading="lazy">' +
+                        '<img src="' + r.url + '" alt="' + r.nombre + '" loading="lazy" decoding="async">' +
                         '<div class="similarity-badge ' + nivel + '">' +
                             '<i class="fas fa-bolt"></i> ' + r.porcentaje + '%' +
                         '</div>' +
@@ -4036,7 +4079,8 @@
                 let mostrar = false;
                 if (filtro === 'all') mostrar = true;
                 else if (filtro === 'high') mostrar = nivel === 'high';
-                else if (filtro === 'medium') mostrar = nivel === 'medium';                card.style.display = mostrar ? '' : 'none';
+                else if (filtro === 'medium') mostrar = nivel === 'medium';
+                card.style.display = mostrar ? '' : 'none';
                 if (mostrar) visibles++;
             });
 
@@ -4060,14 +4104,6 @@
                 return;
             }
 
-            /*
-             * IMPORTANTE:
-             * La búsqueda se hace sobre datos-imagenes.js (this.datos),
-             * NO sobre catalogo_frontal.json.
-             * catalogo_frontal.json solamente sirve para la comparación visual.
-             * De esta forma un modelo sigue apareciendo aunque todavía no tenga
-             * frontal generado.
-             */
             const modelos = [];
 
             for (const [marca, imagenes] of Object.entries(this.datos || {})) {
@@ -4085,7 +4121,6 @@
                         `${nombre} ${marca} ${imgTexto}`
                     );
 
-                    // Coincidencia exacta del modelo tiene prioridad.
                     const exacto = nombreNormalizado === f;
                     const coincide = exacto ||
                         nombreNormalizado.includes(f) ||
@@ -4114,13 +4149,11 @@
                 }
             }
 
-            // Primero los modelos cuyo nombre coincide exactamente.
             modelos.sort((a, b) => Number(b.exacto) - Number(a.exacto));
 
             if (modelos.length > 0) {
                 this.ocultarTodo();
                 this.catalogoSection.classList.add('active');
-
                 this.brandsContainer.innerHTML = '';
 
                 const titulo = document.createElement('div');
@@ -4133,20 +4166,19 @@
                 grid.className = 'brands-grid';
                 grid.style.gridTemplateColumns = 'repeat(auto-fill,minmax(200px,1fr))';
 
-                grid.innerHTML = modelos.slice(0, 60).map((m, i) => {
+                grid.innerHTML = modelos.slice(0, 60).map((m) => {
                     const precioTxt = formatoPrecio(m.precio, m.precioMax);
                     const url = encodeURIComponent(m.url);
                     const nombre = encodeURIComponent(m.nombre);
                     const marca = encodeURIComponent(m.marca);
                     const categoria = encodeURIComponent(m.categoria || '');
 
-                    return '<div class="marca-image-card" style="animation-delay:' +
-                        (i * 0.03) + 's" onclick="app.abrirModal(\'' + url +
+                    return '<div class="marca-image-card" onclick="app.abrirModal(\'' + url +
                         '\',\'' + nombre + '\',\'' + marca + '\',' +
                         (m.precio || 0) + ',' + (m.precioMax || 0) +
                         ',\'' + categoria + '\')">' +
                         '<div class="marca-image-card-img"><img src="' + m.url +
-                        '" alt="' + m.nombre + '" loading="lazy"></div>' +
+                        '" alt="' + m.nombre + '" loading="lazy" decoding="async"></div>' +
                         '<div class="marca-image-card-name">' + m.nombre + '</div>' +
                         '<div style="padding:0 .8rem .8rem;color:var(--text-muted);font-size:.75rem">' +
                         m.marca + (precioTxt ? ' · ' + precioTxt : '') + '</div>' +
@@ -4166,7 +4198,7 @@
                 return;
             }
 
-            // Si no hay modelos, intentar búsqueda por marca usando el mismo texto.
+            // Si no hay modelos, intentar búsqueda por marca
             this.catalogoSection.classList.add('active');
             this.renderizarMarcas(terminoOriginal);
 
@@ -4182,8 +4214,9 @@
         }
 
         renderizarMarcas(filtro = '') {
-            this.brandsContainer.innerHTML = '';
             const f = filtro.toLowerCase();
+            let html = '';
+            let totalMarcasVisibles = 0;
 
             for (const [catNombre, marcasCat] of Object.entries(categorias)) {
                 const marcasFiltradas = f
@@ -4191,51 +4224,42 @@
                     : marcasCat;
 
                 if (marcasFiltradas.length === 0) continue;
+                totalMarcasVisibles += marcasFiltradas.length;
 
-                const grupo = document.createElement('div');
-                grupo.className = 'categoria-group';
-                grupo.innerHTML = '<h3 class="categoria-group-title"><i class="fas fa-tag"></i> ' + catNombre + '</h3>';
-
-                const grid = document.createElement('div');
-                grid.className = 'brands-grid';
-
-                marcasFiltradas.forEach((marca, index) => {
+                const cardsHtml = marcasFiltradas.map((marca) => {
                     const logoSrc = this.logos[marca.nombre] || '';
                     const count = this.datos[marca.nombre]?.length || 0;
                     const precioTxt = formatoPrecio(marca.precio, marca.precioMax);
-
-                    const card = document.createElement('div');
-                    card.className = 'brand-card';
-                    card.style.animationDelay = (index * 0.04) + 's';
-
                     const logoHTML = logoSrc
-                        ? '<img class="brand-logo" src="' + logoSrc + '" alt="' + marca.nombre + '" loading="lazy">'
+                        ? `<img class="brand-logo" src="${logoSrc}" alt="${marca.nombre}" loading="lazy" decoding="async">`
                         : '<div class="brand-logo-placeholder">👓</div>';
 
-                    card.innerHTML = logoHTML +
-                        '<div class="brand-info">' +
-                            '<div class="brand-name">' + marca.nombre + '</div>' +
-                            '<div class="brand-count">' + count + ' modelos</div>' +
-                            (precioTxt ? '<div class="brand-price">' + precioTxt + '</div>' : '') +
-                        '</div>' +
-                        '<div class="brand-arrow"><i class="fas fa-chevron-right"></i></div>';
+                    return `<div class="brand-card" onclick="app.verMarca('${marca.nombre.replace(/'/g, "\\'")}')">
+                        ${logoHTML}
+                        <div class="brand-info">
+                            <div class="brand-name">${marca.nombre}</div>
+                            <div class="brand-count">${count} modelos</div>
+                            ${precioTxt ? `<div class="brand-price">${precioTxt}</div>` : ''}
+                        </div>
+                        <div class="brand-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>`;
+                }).join('');
 
-                    card.addEventListener('click', () => this.verMarca(marca.nombre));
-                    grid.appendChild(card);
-                });
-
-                grupo.appendChild(grid);
-                this.brandsContainer.appendChild(grupo);
+                html += `<div class="categoria-group">
+                    <h3 class="categoria-group-title"><i class="fas fa-tag"></i> ${catNombre}</h3>
+                    <div class="brands-grid">${cardsHtml}</div>
+                </div>`;
             }
 
-            if (f && this.brandsContainer.children.length === 0) {
-                this.brandsContainer.innerHTML =
-                    '<div class="no-results">' +
-                        '<i class="fas fa-search"></i>' +
-                        '<h3>Sin resultados</h3>' +
-                        '<p>No se encontraron marcas que coincidan con "' + filtro + '"</p>' +
-                    '</div>';
+            if (f && totalMarcasVisibles === 0) {
+                html = `<div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>Sin resultados</h3>
+                    <p>No se encontraron marcas que coincidan con "${this.escapeHtml(filtro)}"</p>
+                </div>`;
             }
+
+            this.brandsContainer.innerHTML = html;
         }
 
         abrirModal(encodedUrl, nombre, marca, precio, precioMax, categoria) {
