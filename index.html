@@ -339,15 +339,22 @@
             position: relative;
             cursor: pointer;
             transition: var(--transition);
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .upload-zone * {
+            pointer-events: none;
         }
 
         .upload-zone.dragover {
-            background: rgba(197, 160, 142, 0.05);
+            background: rgba(197, 160, 142, 0.08);
+            border-color: var(--accent);
         }
 
         .upload-zone.dragover .upload-ring {
             border-color: var(--accent);
-            box-shadow: 0 0 40px rgba(197, 160, 142, 0.2);
+            box-shadow: 0 0 40px rgba(197, 160, 142, 0.25);
             transform: scale(1.05);
         }
 
@@ -477,6 +484,7 @@
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
             cursor: pointer;
@@ -494,13 +502,20 @@
 
         .preview-actions {
             display: flex;
-            gap: 0.75rem;
+            flex-direction: column;
+            gap: 0.65rem;
             width: 100%;
             max-width: 320px;
         }
 
+        .preview-sub-actions {
+            display: flex;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
         .btn-search-similar {
-            flex: 1;
+            width: 100%;
             padding: 0.85rem 1.5rem;
             background: linear-gradient(135deg, var(--accent), #B38977);
             border: none;
@@ -538,19 +553,25 @@
         }
 
         .btn-change-image {
-            padding: 0.85rem 1.25rem;
+            flex: 1;
+            padding: 0.75rem 1rem;
             background: var(--bg-elevated);
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             color: var(--text-muted);
             cursor: pointer;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 500;
             transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
         }
 
         .btn-change-image:hover {
-            border-color: var(--text-muted);
+            border-color: var(--accent);
             color: var(--text);
         }
 
@@ -1207,6 +1228,8 @@
             right: 6px;
             padding: 0.15rem 0.45rem;
             font-size: 0.65rem;
+        }
+
         /* Panel de diagnóstico */
         .debug-panel {
             display: none;
@@ -1383,37 +1406,96 @@
             background: var(--accent);
         }
 
+        /* ============================================
+           RESPONSIVE DESIGN (Móvil y Tablet)
+           ============================================ */
+
+        /* Cropper Touch Adjustments */
+        .cropper-view-box,
+        .cropper-face {
+            border-radius: 4px;
+        }
+        .cropper-line {
+            background-color: var(--accent) !important;
+            opacity: 0.8 !important;
+        }
+        .cropper-point {
+            background-color: var(--accent) !important;
+            width: 12px !important;
+            height: 12px !important;
+            opacity: 0.9 !important;
+            border-radius: 50%;
+        }
+        .cropper-point.point-se {
+            width: 16px !important;
+            height: 16px !important;
+        }
+
         @media (max-width: 1024px) {
             .upload-layout {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
 
             .info-panel {
-                order: -1;
+                order: 2;
+            }
+
+            .upload-panel {
+                order: 1;
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
             }
 
             .modal-sidebar {
-                width: 300px;
+                width: 320px;
             }
         }
 
         @media (max-width: 768px) {
-            .header-content {
-                flex-wrap: wrap;
-                gap: 0.75rem;
+            /* Header & Navigation */
+            .header {
+                padding: 0.6rem 0;
             }
 
-            .crop-window { padding: 1rem; }
-            .crop-actions { flex-direction: column; }
-            .crop-actions button {
-                min-height: 48px;
-                font-size: 1rem;
-                width: 100%;
+            .header-content {
+                flex-wrap: wrap;
+                gap: 0.6rem;
+                padding: 0 1rem;
             }
-            .crop-canvas-wrap { max-height: 45vh; }
+
+            .logo {
+                font-size: 1.15rem;
+                gap: 0.5rem;
+            }
+
+            .logo-img {
+                width: 34px;
+                height: 34px;
+                border-radius: 8px;
+            }
 
             .header-stats {
                 display: none;
+            }
+
+            .main-nav {
+                order: 2;
+                width: 100%;
+                justify-content: space-between;
+                padding: 3px;
+                gap: 0.25rem;
+            }
+
+            .nav-btn {
+                flex: 1;
+                justify-content: center;
+                padding: 0.5rem 0.5rem;
+                font-size: 0.8rem;
+                gap: 0.35rem;
             }
 
             .search-container {
@@ -1422,68 +1504,443 @@
                 width: 100%;
             }
 
-            .main-nav {
-                order: 2;
+            .search-input {
+                padding: 0.6rem 1rem 0.6rem 2.4rem;
+                font-size: 0.85rem;
+            }
+
+            .search-icon {
+                left: 0.85rem;
+                font-size: 0.85rem;
+            }
+
+            /* Hero & Upload */
+            .photo-search-section {
+                padding: 1.75rem 1rem 2.5rem;
+            }
+
+            .search-hero {
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+
+            .search-hero-badge {
+                font-size: 0.72rem;
+                padding: 0.3rem 0.85rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .search-hero h1 {
+                font-size: 1.45rem;
+                line-height: 1.25;
+                margin-bottom: 0.5rem;
+            }
+
+            .search-hero p {
+                font-size: 0.85rem;
+                line-height: 1.45;
+            }
+
+            .upload-panel {
+                border-radius: var(--radius-sm);
+            }
+
+            .upload-panel-header {
+                padding: 0.9rem 1.15rem;
+                font-size: 0.9rem;
+            }
+
+            .upload-zone {
+                min-height: 250px;
+                padding: 1.75rem 1rem;
+            }
+
+            .upload-ring {
+                width: 96px;
+                height: 96px;
+                margin-bottom: 1rem;
+            }
+
+            .upload-ring i {
+                font-size: 1.8rem;
+            }
+
+            .upload-text-main {
+                font-size: 0.95rem;
+                margin-bottom: 0.25rem;
+                text-align: center;
+            }
+
+            .upload-text-sub {
+                font-size: 0.8rem;
+                margin-bottom: 1.15rem;
+                text-align: center;
+            }
+
+            .upload-btn-cta {
+                padding: 0.65rem 1.35rem;
+                font-size: 0.85rem;
+                width: auto;
+                max-width: 100%;
+            }
+
+            .upload-formats {
+                margin-top: 1rem;
+                font-size: 0.72rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .upload-preview {
+                padding: 1.25rem 1rem;
+            }
+
+            .preview-image-container {
+                max-width: 240px;
+                aspect-ratio: 1;
+            }
+
+            .preview-actions {
+                flex-direction: column;
+                width: 100%;
+                max-width: 280px;
+                gap: 0.5rem;
+            }
+
+            .preview-actions .btn-search-similar {
+                width: 100%;
+                min-height: 44px;
+                font-size: 0.9rem;
+            }
+
+            .info-panel {
+                gap: 1rem;
+            }
+
+            .info-card {
+                padding: 1.15rem 1rem;
+                border-radius: var(--radius-sm);
+            }
+
+            .info-card-title {
+                font-size: 0.88rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .tips-list {
+                gap: 0.65rem;
+            }
+
+            .tips-list li {
+                font-size: 0.8rem;
+                gap: 0.6rem;
+            }
+
+            .tips-list li .tip-icon {
+                width: 24px;
+                height: 24px;
+                font-size: 0.65rem;
+                border-radius: 6px;
+            }
+
+            .stats-row {
+                gap: 0.5rem;
+            }
+
+            .stat-box {
+                padding: 0.75rem 0.35rem;
+            }
+
+            .stat-box .stat-number {
+                font-size: 1.25rem;
+            }
+
+            .stat-box .stat-label {
+                font-size: 0.65rem;
+            }
+
+            /* Progress */
+            .analysis-progress {
+                padding: 1.5rem 1rem;
+            }
+
+            .progress-card {
+                padding: 1.5rem 1rem;
+                border-radius: var(--radius-sm);
+            }
+
+            .progress-title {
+                font-size: 1rem;
+            }
+
+            .progress-subtitle {
+                font-size: 0.82rem;
+                margin-bottom: 1.15rem;
+            }
+
+            .progress-percent {
+                font-size: 1.25rem;
+            }
+
+            /* Results Section */
+            .results-section {
+                padding: 0 1rem 3rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+                margin-bottom: 1.25rem;
+            }
+
+            .results-title-area {
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .results-title {
+                font-size: 1.2rem;
+            }
+
+            .results-count {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.65rem;
+            }
+
+            .results-actions {
+                width: 100%;
+                display: flex;
+                gap: 0.35rem;
+            }
+
+            .result-filter-btn {
+                flex: 1;
+                padding: 0.45rem 0.5rem;
+                font-size: 0.75rem;
+                text-align: center;
+            }
+
+            .reference-strip {
+                padding: 0.75rem 1rem;
+                gap: 0.75rem;
+                margin-bottom: 1.25rem;
+                border-radius: var(--radius-sm);
+                align-items: center;
+            }
+
+            .reference-strip img {
+                width: 48px;
+                height: 48px;
+            }
+
+            .reference-strip-label {
+                font-size: 0.75rem;
+            }
+
+            .reference-strip-text {
+                font-size: 0.75rem;
+                line-height: 1.35;
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.65rem;
+            }
+
+            .result-card {
+                border-radius: var(--radius-sm);
+            }
+
+            .result-card-info {
+                padding: 0.65rem 0.75rem 0.75rem;
+            }
+
+            .result-card-brand {
+                font-size: 0.68rem;
+                margin-bottom: 0.15rem;
+            }
+
+            .result-card-name {
+                font-size: 0.82rem;
+                margin-bottom: 0.35rem;
+            }
+
+            .result-card-meta {
+                margin-top: 0.25rem;
+                gap: 0.3rem;
+            }
+
+            .result-card-category {
+                font-size: 0.62rem;
+                padding: 0.1rem 0.45rem;
+            }
+
+            .result-card-price {
+                font-size: 0.88rem;
+            }
+
+            .similarity-badge {
+                top: 6px;
+                right: 6px;
+                padding: 0.2rem 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            /* Modales */
+            .crop-modal {
+                padding: 0.5rem;
+            }
+
+            .crop-window {
+                padding: 1rem;
+                max-height: 96vh;
+                border-radius: 14px;
+                gap: 0.75rem;
+            }
+
+            .crop-title {
+                font-size: 0.95rem;
+            }
+
+            .crop-subtitle {
+                font-size: 0.72rem;
+            }
+
+            .crop-canvas-wrap {
+                max-height: 46vh;
+                min-height: 180px;
+            }
+
+            .crop-hint {
+                font-size: 0.7rem;
+            }
+
+            .crop-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .crop-actions button {
+                min-height: 44px;
+                font-size: 0.88rem;
                 width: 100%;
                 justify-content: center;
             }
 
-            .nav-btn {
-                flex: 1;
-                justify-content: center;
-                padding: 0.55rem 1rem;
-                font-size: 0.85rem;
+            .modal-header {
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
             }
 
-            .photo-search-section {
-                padding: 2rem 1.25rem 3rem;
+            .modal-title {
+                font-size: 0.92rem;
             }
 
-            .search-hero h1 {
-                font-size: 1.6rem;
-            }
-
-            .upload-zone {
-                min-height: 280px;
-                padding: 2rem 1.5rem;
-            }
-
-            .upload-ring {
-                width: 110px;
-                height: 110px;
-            }
-
-            .upload-ring i {
-                font-size: 2rem;
-            }
-
-            .results-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 0.75rem;
-            }
-
-            .reference-strip {
+            .modal-meta {
                 flex-wrap: wrap;
+                gap: 0.35rem;
+                font-size: 0.72rem;
+            }
+
+            .modal-close {
+                width: 36px;
+                height: 36px;
+                font-size: 0.95rem;
             }
 
             .modal-body {
                 flex-direction: column;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .modal-image-container {
+                flex: none;
+                width: 100%;
+                min-height: 180px;
+                max-height: 38vh;
+                padding: 0.75rem;
+                background: var(--bg);
+            }
+
+            .modal-image {
+                max-height: 34vh;
+                width: auto;
+                max-width: 100%;
+                object-fit: contain;
             }
 
             .modal-sidebar {
                 width: 100%;
-                max-height: 45vh;
+                flex: 1;
                 border-left: none;
                 border-top: 1px solid var(--border);
+                max-height: none;
+                overflow: visible;
+            }
+
+            .sidebar-header {
+                padding: 0.75rem 1rem;
             }
 
             .similar-list {
-                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.55rem;
+                padding: 0.75rem 1rem 2rem;
+                overflow: visible;
+            }
+
+            .toast-container {
+                left: 1rem;
+                right: 1rem;
+                bottom: 1rem;
+                align-items: center;
+            }
+
+            .toast {
+                max-width: 100%;
+                width: 100%;
+                font-size: 0.82rem;
             }
         }
 
-        .result-card-meta {
-            margin-top: 0.25rem;
+        @media (max-width: 420px) {
+            .header-content {
+                padding: 0 0.75rem;
+            }
+
+            .main-nav {
+                gap: 0.15rem;
+                padding: 2px;
+            }
+
+            .nav-btn {
+                font-size: 0.72rem;
+                padding: 0.45rem 0.35rem;
+                gap: 0.25rem;
+            }
+
+            .nav-btn i {
+                font-size: 0.75rem;
+            }
+
+            .results-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.5rem;
+            }
+
+            .result-card-info {
+                padding: 0.5rem;
+            }
+
+            .result-card-name {
+                font-size: 0.75rem;
+            }
+
+            .result-card-price {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -1528,6 +1985,8 @@
                     <i class="fas fa-image"></i>
                     <span id="totalImagenes">0 modelos</span>
                 </div>
+            </div>
+        </div>
     </header>
 
     <!-- BUSCAR POR FOTO -->
@@ -1552,36 +2011,40 @@
                     <div class="upload-ring">
                         <i class="fas fa-camera-retro"></i>
                     </div>
-                    <div class="upload-text-main">Arrastra tu foto aqui</div>
-                    <div class="upload-text-sub">o selecciona un archivo de tu dispositivo</div>
-                    <button class="upload-btn-cta" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-text-main">Arrastra tu foto aquí</div>
+                    <div class="upload-text-sub">o haz clic para seleccionar un archivo</div>
+                    <button class="upload-btn-cta" type="button" id="uploadBtnCta">
                         <i class="fas fa-folder-open"></i>
                         Seleccionar imagen
                     </button>
                     <div class="upload-formats">
                         Formatos: <span>JPG</span> <span>PNG</span> <span>WEBP</span>
                     </div>
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
                 </div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/*" style="display: none;">
 
                 <div class="upload-preview" id="uploadPreview">
                     <div class="preview-image-container">
                         <img id="previewImage" src="" alt="Imagen de referencia">
-                        <button class="preview-remove" id="previewRemove" title="Quitar imagen">
+                        <button class="preview-remove" id="previewRemove" title="Quitar imagen" type="button">
                             <i class="fas fa-times"></i>
                         </button>
                     </div>
                     <div class="preview-actions">
-                        <button class="btn-search-similar" id="btnSearchSimilar" onclick="app.buscarSimilares()">
+                        <button class="btn-search-similar" id="btnSearchSimilar" type="button" onclick="app.buscarSimilares()">
                             <i class="fas fa-search"></i>
                             Buscar similares
                         </button>
-                        <button class="btn-change-image" onclick="app.abrirRecorte()" title="Ajustar recorte">
-                            <i class="fas fa-crop-simple"></i>
-                        </button>
-                        <button class="btn-change-image" onclick="document.getElementById('fileInput').click()" title="Cambiar imagen">
-                            <i class="fas fa-exchange-alt"></i>
-                        </button>
+                        <div class="preview-sub-actions">
+                            <button class="btn-change-image" type="button" onclick="app.abrirRecorte()" title="Ajustar recorte">
+                                <i class="fas fa-crop-simple"></i>
+                                <span>Ajustar recorte</span>
+                            </button>
+                            <button class="btn-change-image" type="button" onclick="document.getElementById('fileInput').click()" title="Cambiar imagen">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span>Cambiar foto</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1671,6 +2134,7 @@
             <span class="reference-strip-text">Mostrando marcos similares encontrados en nuestro catalogo</span>
         </div>
         <div class="results-grid" id="resultsGrid"></div>
+    </section>
     <!-- MODAL -->
     <div class="modal" id="imageModal">
         <div class="modal-header">
@@ -3014,6 +3478,13 @@
         }
 
         cargarEventos() {
+            // Prevenir comportamiento por defecto de arrastre en el navegador (evitar que se abra el archivo como URL)
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                window.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                }, false);
+            });
+
             // Buscador del header: al presionar Enter navega a catalogo.html con la búsqueda
             this.searchInput.addEventListener('keydown', (e) => {
                 if (e.key !== 'Enter') return;
@@ -3026,32 +3497,64 @@
                 location.href = 'catalogo.html?buscar=' + encodeURIComponent(termino);
             });
 
-            this.uploadZone.addEventListener('dragover', (e) => {
+            // Drag & Drop en uploadZone
+            let dragCounter = 0;
+
+            this.uploadZone.addEventListener('dragenter', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
+                dragCounter++;
                 this.uploadZone.classList.add('dragover');
             });
 
-            this.uploadZone.addEventListener('dragleave', () => {
-                this.uploadZone.classList.remove('dragover');
+            this.uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (e.dataTransfer) {
+                    e.dataTransfer.dropEffect = 'copy';
+                }
+                this.uploadZone.classList.add('dragover');
+            });
+
+            this.uploadZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dragCounter--;
+                if (dragCounter <= 0) {
+                    dragCounter = 0;
+                    this.uploadZone.classList.remove('dragover');
+                }
             });
 
             this.uploadZone.addEventListener('drop', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
+                dragCounter = 0;
                 this.uploadZone.classList.remove('dragover');
-                const file = e.dataTransfer.files[0];
-                if (file && file.type.startsWith('image/')) {
+                const dt = e.dataTransfer;
+                if (!dt || !dt.files || dt.files.length === 0) return;
+                const file = dt.files[0];
+                if (file && (file.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|bmp|avif)$/i.test(file.name))) {
                     this.procesarArchivo(file);
+                } else {
+                    this.mostrarToast('Por favor selecciona una imagen válida (JPG, PNG, WEBP)', 'error');
                 }
             });
 
-            this.uploadZone.addEventListener('click', (e) => {
-                if (e.target.closest('.upload-btn-cta')) return;
+            // Click en la zona de subida o en el botón para abrir selector
+            this.uploadZone.addEventListener('click', () => {
                 this.fileInput.click();
             });
 
+            this.fileInput.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
             this.fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) this.procesarArchivo(file);
+                const file = e.target.files && e.target.files[0];
+                if (file) {
+                    this.procesarArchivo(file);
+                }
             });
 
             this.previewRemove.addEventListener('click', () => this.quitarImagen());
@@ -3074,8 +3577,9 @@
         }
 
         procesarArchivo(file) {
+            if (!file) return;
             if (file.size > 15 * 1024 * 1024) {
-                this.mostrarToast('La imagen es muy grande (max 15MB)', 'error');
+                this.mostrarToast('La imagen es muy grande (máx 15MB)', 'error');
                 return;
             }
 
@@ -3088,6 +3592,9 @@
                 // que le interesa, lo que mejora mucho la precision de la busqueda.
                 this.abrirRecorte();
             };
+            reader.onerror = () => {
+                this.mostrarToast('Error al leer el archivo de imagen', 'error');
+            };
             reader.readAsDataURL(file);
         }
 
@@ -3096,28 +3603,41 @@
            ======================================================== */
         abrirRecorte() {
             if (!this.imagenOriginalSrc) return;
+            if (typeof Cropper === 'undefined') {
+                addDebug('Cropper no disponible, usando imagen completa', 'warning');
+                this.usarImagenCompleta();
+                return;
+            }
+
             this.cropImage.src = this.imagenOriginalSrc;
             this.cropModal.classList.add('active');
             document.body.style.overflow = 'hidden';
 
             // Esperar a que la imagen este en el DOM antes de inicializar Cropper
             const iniciar = () => {
-                if (this.cropper) { this.cropper.destroy(); this.cropper = null; }
-                this.cropper = new Cropper(this.cropImage, {
-                    viewMode: 1,
-                    dragMode: 'crop',           // arrastrar el recuadro, no la imagen
-                    autoCropArea: 0.9,
-                    responsive: true,
-                    guides: false,              // menos ruido visual
-                    center: false,
-                    highlight: false,
-                    cropBoxMovable: true,
-                    cropBoxResizable: true,
-                    toggleDragModeOnDblclick: false,
-                    // En móvil: botones más grandes con CSS
-                });
+                if (this.cropper) {
+                    try { this.cropper.destroy(); } catch (_) {}
+                    this.cropper = null;
+                }
+                try {
+                    this.cropper = new Cropper(this.cropImage, {
+                        viewMode: 1,
+                        dragMode: 'crop',           // arrastrar el recuadro, no la imagen
+                        autoCropArea: 0.9,
+                        responsive: true,
+                        guides: false,              // menos ruido visual
+                        center: false,
+                        highlight: false,
+                        cropBoxMovable: true,
+                        cropBoxResizable: true,
+                        toggleDragModeOnDblclick: false,
+                    });
+                } catch (err) {
+                    console.error('Error inicializando Cropper:', err);
+                    this.usarImagenCompleta();
+                }
             };
-            if (this.cropImage.complete) iniciar();
+            if (this.cropImage.complete && this.cropImage.naturalWidth > 0) iniciar();
             else this.cropImage.onload = iniciar;
         }
 
@@ -3559,6 +4079,11 @@
             // contra la foto del cliente, ordenada de mayor a menor %. Clickear
             // un "similar" NO dispara una comparacion nueva contra ese item.
             this.renderizarSimilaresModal(url);
+
+            const modalBody = this.modal.querySelector('.modal-body');
+            if (modalBody) {
+                modalBody.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
         /* ========================================================
