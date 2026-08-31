@@ -43,23 +43,58 @@
             position: sticky; top: 0; z-index: 100;
             background: rgba(18, 19, 21, 0.85);
             backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
             border-bottom: 1px solid var(--border);
             padding: 0.75rem 0;
         }
         .header-content {
-            max-width: 900px; margin: 0 auto; padding: 0 1.5rem;
-            display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+            max-width: 1440px; margin: 0 auto; padding: 0 1.5rem;
+            display: flex; justify-content: space-between; align-items: center; gap: 1.25rem;
         }
         .logo {
             display: flex; align-items: center; gap: 0.75rem;
-            font-size: 1.15rem; font-weight: 800; color: var(--text); text-decoration: none;
+            font-size: 1.25rem; font-weight: 800; color: var(--text); text-decoration: none;
+            white-space: nowrap; letter-spacing: -0.5px;
         }
-        .logo-img { width: 40px; height: 40px; object-fit: contain; border-radius: 10px; }
+        .logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; flex-shrink: 0; }
+        .main-nav {
+            display: flex; gap: 0.5rem; background: var(--bg-elevated);
+            border: 1px solid var(--border); border-radius: 50px; padding: 4px;
+        }
+        .nav-btn {
+            padding: 0.6rem 1.4rem; border: none; border-radius: 50px;
+            background: transparent; color: var(--text-muted); text-decoration: none;
+            font-size: 0.9rem; font-weight: 500; transition: var(--transition);
+            display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;
+        }
+        .nav-btn:hover { color: var(--text); }
+        .nav-btn.active {
+            background: var(--accent); color: #121315; font-weight: 600;
+            box-shadow: 0 4px 20px rgba(197, 160, 142, 0.35);
+        }
+        .search-container {
+            position: relative; flex: 1; max-width: 380px;
+        }
+        .search-input {
+            width: 100%; padding: 0.65rem 1rem 0.65rem 2.6rem; background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: 50px; color: var(--text);
+            font-family: inherit; font-size: 0.88rem; transition: var(--transition);
+        }
+        .search-input:focus {
+            outline: none; border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(197, 160, 142, 0.15);
+        }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-icon {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: var(--text-muted); font-size: 0.85rem;
+        }
         .btn-volver {
             padding: 0.5rem 1.1rem; background: var(--bg-elevated);
             border: 1px solid var(--border); border-radius: 50px;
             color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;
-            display: inline-flex; align-items: center; gap: 0.4rem;
+            display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap;
+            transition: var(--transition); flex-shrink: 0;
         }
         .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
         .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
@@ -179,6 +214,12 @@
         .toast.show { display: block; }
         .toast.ok { border-left: 3px solid var(--success); }
         .toast.err { border-left: 3px solid #E06C75; }
+        @media (max-width: 768px) {
+            .header-content { flex-wrap: wrap; gap: 0.75rem; }
+            .search-container { order: 3; max-width: 100%; width: 100%; }
+            .main-nav { order: 2; width: 100%; justify-content: center; }
+            .nav-btn { flex: 1; justify-content: center; padding: 0.55rem 0.75rem; font-size: 0.82rem; }
+        }
         @media (max-width: 600px) {
             .rx-grid { grid-template-columns: 55px 1fr 1fr; }
             .checks { grid-template-columns: 1fr; }
@@ -214,6 +255,24 @@
                 <img class="logo-img" src="logos-webp/logo-sacc.webp" alt="SACC & VISION" onerror="this.style.display='none'">
                 <span>SACC & VISION</span>
             </a>
+
+            <nav class="main-nav">
+                <a class="nav-btn active" href="cotizar.html">
+                    <i class="fas fa-file-invoice-dollar"></i> Cotizar
+                </a>
+                <a class="nav-btn" href="index.html?v=photo">
+                    <i class="fas fa-camera"></i> Buscar por Foto
+                </a>
+                <a class="nav-btn" href="index.html?v=catalogo">
+                    <i class="fas fa-th-large"></i> Catálogo
+                </a>
+            </nav>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="headerSearchInput" placeholder="Buscar marca o modelo..." onkeydown="if(event.key==='Enter'&&this.value.trim()){location.href='index.html?buscar='+encodeURIComponent(this.value.trim())}">
+            </div>
+
             <a class="btn-volver" href="index.html"><i class="fas fa-arrow-left"></i> Volver</a>
         </div>
     </header>
