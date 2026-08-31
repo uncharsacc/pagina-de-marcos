@@ -993,163 +993,6 @@
             color: var(--accent);
         }
 
-        .catalogo-section {
-            display: none;
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 2rem 2rem 4rem;
-        }
-
-        .catalogo-section.active {
-            display: block;
-        }
-
-        .catalogo-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            letter-spacing: -0.5px;
-        }
-
-        .catalogo-title i {
-            color: var(--accent);
-        }
-
-        .categoria-group {
-            margin-bottom: 3.5rem;
-        }
-
-        .categoria-group-title {
-            font-size: 1.2rem;
-            font-weight: 800;
-            margin-bottom: 1.25rem;
-            padding: 0.75rem 1.25rem;
-            padding-left: 1.25rem;
-            border-left: 4px solid var(--accent);
-            background: linear-gradient(90deg, rgba(197, 160, 142, 0.08), transparent 70%);
-            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-            color: var(--text);
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            letter-spacing: -0.3px;
-        }
-
-        .categoria-group-title i {
-            color: var(--accent);
-            font-size: 0.9rem;
-        }
-
-        .brands-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-        }
-
-        .brand-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.35rem 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 1.15rem;
-            position: relative;
-            overflow: hidden;
-            content-visibility: auto;
-            contain-intrinsic-size: auto 90px;
-        }
-
-        .brand-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(197, 160, 142, 0.08), transparent);
-            opacity: 0;
-            transition: var(--transition);
-        }
-
-        .brand-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .brand-card:hover::before {
-            opacity: 1;
-        }
-
-        .brand-logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            object-fit: contain;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            padding: 0.45rem;
-            position: relative;
-            z-index: 1;
-            flex-shrink: 0;
-        }
-
-        .brand-logo-placeholder {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--secondary), var(--accent));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: #121315;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-info {
-            flex: 1;
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-name {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 0.2rem;
-            letter-spacing: -0.2px;
-        }
-
-        .brand-price {
-            font-size: 0.95rem;
-            font-weight: 800;
-            color: var(--success);
-            margin-top: 0.2rem;
-        }
-
-        .brand-count {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .brand-arrow {
-            color: var(--text-muted);
-            transition: var(--transition);
-            position: relative;
-            z-index: 1;
-        }
-
-        .brand-card:hover .brand-arrow {
-            color: var(--accent);
-            transform: translateX(4px);
-        }
-
         .modal {
             display: none;
             position: fixed;
@@ -1364,185 +1207,6 @@
             right: 6px;
             padding: 0.15rem 0.45rem;
             font-size: 0.65rem;
-        }
-
-        .marca-images-section {
-            display: none;
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 2rem 2rem 4rem;
-            animation: fadeInUp 0.5s ease;
-        }
-
-        .marca-images-section.active {
-            display: block;
-        }
-
-        .marca-header {
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-            margin-bottom: 2rem;
-            padding: 1.35rem 1.75rem;
-            background: rgba(26, 27, 30, 0.92);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            position: sticky;
-            top: 68px;
-            z-index: 90;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn-volver-marca {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.6rem 1.15rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            color: var(--text);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: var(--transition);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .btn-volver-marca:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .marca-header-nombre {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: -0.3px;
-        }
-
-        .marca-header-meta {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            margin-top: 0.1rem;
-        }
-
-        .marca-images-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 1.25rem;
-        }
-
-        .marca-image-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            cursor: pointer;
-            transition: var(--transition);
-            animation: fadeInUp 0.3s ease both;
-            content-visibility: auto;
-            contain-intrinsic-size: auto 260px;
-        }
-
-        .marca-image-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: var(--shadow-glow);
-        }
-
-        .marca-image-card-img {
-            aspect-ratio: 1;
-            overflow: hidden;
-            background: var(--bg-elevated);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .marca-image-card-img img {
-            max-width: 95%;
-            max-height: 95%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            transition: transform 0.5s ease;
-            border-radius: 4px;
-        }
-
-        .marca-image-card:hover .marca-image-card-img img {
-            transform: scale(1.07);
-        }
-
-        .marca-image-card-name {
-            padding: 0.8rem 1rem;
-            font-size: 0.82rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .modal-simple {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 1100;
-            background: rgba(18, 19, 21, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            cursor: zoom-out;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .modal-simple.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-simple img {
-            max-width: 92vw;
-            max-height: 92vh;
-            object-fit: contain;
-            border-radius: var(--radius-sm);
-            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
-            animation: zoomIn 0.3s ease;
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.85); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-simple-cerrar {
-            position: absolute;
-            top: 1.25rem;
-            right: 1.25rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            color: var(--text);
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .modal-simple-cerrar:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #121315;
-        }
-
         /* Panel de diagnóstico */
         .debug-panel {
             display: none;
@@ -1812,59 +1476,12 @@
             .similar-list {
                 grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
             }
-
-            .brands-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 0.75rem;
-            }
-
-            .marca-images-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 0.75rem;
-            }
-
-            .marca-header {
-                padding: 1rem;
-                gap: 0.75rem;
-                flex-wrap: wrap;
-            }
-
-            .marca-header-nombre {
-                font-size: 1rem;
-            }
-        }
-        /* === Mejoras visuales catálogo === */
-        .brand-card {
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .brand-card:hover {
-            box-shadow: 0 8px 32px rgba(197, 160, 142, 0.15), 0 2px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .categoria-group-title i {
-            font-size: 1rem;
-            opacity: 0.9;
         }
 
         .result-card-meta {
             margin-top: 0.25rem;
         }
-
-        .marca-image-card {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-        }
-
-        .marca-image-card:hover {
-            box-shadow: 0 8px 28px rgba(197, 160, 142, 0.12), 0 2px 10px rgba(0, 0, 0, 0.25);
-        }
-
-        /* Badge de modelos en brand card */
-        .brand-count::before {
-            content: '';
-        }
     </style>
-<base target="_blank">
 </head>
 <body>
 
@@ -1876,23 +1493,21 @@
 
     <header class="header">
         <div class="header-content">
-            <div class="logo" onclick="app.irAInicio()">
-                <img class="logo-img" src="logos-webp/logo-sacc.webp" alt="SACC & VISION">
+            <a class="logo" href="index.html">
+                <img class="logo-img" src="logos-webp/logo-sacc.webp" alt="SACC & VISION" onerror="this.style.display='none'">
                 <span>SACC & VISION</span>
-            </div>
+            </a>
 
             <nav class="main-nav">
-                <button class="nav-btn" onclick="location.href='cotizar.html'">
-    <i class="fas fa-file-invoice-dollar"></i> Cotizar
-</button>
-                <button class="nav-btn active" id="navPhotoBtn" onclick="app.cambiarVista('photo')">
-                    <i class="fas fa-camera"></i>
-                    Buscar por Foto
-                </button>
-                <button class="nav-btn" id="navCatalogBtn" onclick="app.cambiarVista('catalogo')">
-                    <i class="fas fa-th-large"></i>
-                    Catalogo
-                </button>
+                <a class="nav-btn" href="cotizar.html">
+                    <i class="fas fa-file-invoice-dollar"></i> Cotizar
+                </a>
+                <a class="nav-btn active" href="index.html">
+                    <i class="fas fa-camera"></i> Buscar por Foto
+                </a>
+                <a class="nav-btn" href="catalogo.html">
+                    <i class="fas fa-th-large"></i> Catálogo
+                </a>
             </nav>
 
             <div class="search-container">
@@ -1907,10 +1522,8 @@
                 </div>
                 <div class="stat-item">
                     <i class="fas fa-image"></i>
-                    <span id="totalImagenes">0 imagenes</span>
+                    <span id="totalImagenes">0 modelos</span>
                 </div>
-            </div>
-        </div>
     </header>
 
     <!-- BUSCAR POR FOTO -->
@@ -2054,23 +1667,6 @@
             <span class="reference-strip-text">Mostrando marcos similares encontrados en nuestro catalogo</span>
         </div>
         <div class="results-grid" id="resultsGrid"></div>
-    </section>
-
-    <!-- CATÁLOGO -->
-    <section class="catalogo-section" id="catalogoSection">
-        <h2 class="catalogo-title">
-            <i class="fas fa-th-large"></i>
-            Todas las marcas
-        </h2>
-        <div id="brandsContainer"></div>
-    </section>
-
-    <!-- Vista imágenes de marca -->
-    <section class="marca-images-section" id="marcaImagesSection">
-        <div class="marca-header" id="marcaHeader"></div>
-        <div class="marca-images-grid" id="marcaImagesGrid"></div>
-    </section>
-
     <!-- MODAL -->
     <div class="modal" id="imageModal">
         <div class="modal-header">
@@ -2097,14 +1693,6 @@
                 <div class="similar-list" id="similarList"></div>
             </div>
         </div>
-    </div>
-
-    <!-- Modal simple para agrandar imagen -->
-    <div class="modal-simple" id="modalSimple" onclick="cerrarModalSimple()">
-        <button class="modal-simple-cerrar" onclick="cerrarModalSimple()">
-            <i class="fas fa-times"></i>
-        </button>
-        <img id="modalSimpleImg" src="" alt="">
     </div>
 
     <!-- Panel de diagnóstico -->
@@ -2277,24 +1865,6 @@
         if (precioMax) txt += ' - $' + precioMax.toLocaleString('es-CL');
         return txt;
     }
-
-    /* ============================================
-       MODAL SIMPLE
-       ============================================ */
-    function abrirModalSimple(url) {
-        document.getElementById('modalSimpleImg').src = url;
-        document.getElementById('modalSimple').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function cerrarModalSimple() {
-        document.getElementById('modalSimple').classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') cerrarModalSimple();
-    });
 
     /* ============================================================
     MOTOR DE COMPARACIÓN VISUAL AVANZADO
@@ -3331,18 +2901,12 @@
 
 
     /* ============================================
-       APLICACIÓN PRINCIPAL
+       APLICACIÓN PRINCIPAL (Búsqueda Visual)
        ============================================ */
     class App {
         constructor() {
             // Elementos del DOM
-            this.navPhotoBtn = document.getElementById('navPhotoBtn');
-            this.navCatalogBtn = document.getElementById('navCatalogBtn');
             this.photoSearchSection = document.getElementById('photoSearchSection');
-            this.catalogoSection = document.getElementById('catalogoSection');
-            this.marcaImagesSection = document.getElementById('marcaImagesSection');
-            this.marcaHeader = document.getElementById('marcaHeader');
-            this.marcaImagesGrid = document.getElementById('marcaImagesGrid');
             this.resultsSection = document.getElementById('resultsSection');
             this.analysisProgress = document.getElementById('analysisProgress');
             this.uploadZone = document.getElementById('uploadZone');
@@ -3358,7 +2922,6 @@
             this.resultsCount = document.getElementById('resultsCount');
             this.referenceThumb = document.getElementById('referenceThumb');
             this.searchInput = document.getElementById('searchInput');
-            this.brandsContainer = document.getElementById('brandsContainer');
             this.modal = document.getElementById('imageModal');
             this.modalImage = document.getElementById('modalImage');
             this.modalTitle = document.getElementById('modalTitle');
@@ -3372,7 +2935,6 @@
             this.cropImage = document.getElementById('cropImage');
 
             // Estado
-            this.vistaActual = 'photo';
             this.imagenSubidaSrc = null;
             this.imagenOriginalSrc = null;
             this.cropper = null;
@@ -3382,18 +2944,9 @@
             this.motor = new MotorComparacionSimple();
             this.modalAbierto = false;
             this.busquedaEnCurso = false;
-            this.scrollGuardado = 0;
             this.ultimosResultadosFoto = [];
-
-            // Paginación y rendimiento de vista de marcas / catálogo
-            this.marcaActual = null;
-            this.marcaModelos = [];
-            this.marcaOffset = 0;
-            this.MARCA_CHUNK_SIZE = 36;
-            this.marcaObserver = null;
             this.promesaCargaComparacion = null;
 
-            // Inicializar catálogo inmediatamente
             this.init();
         }
 
@@ -3401,29 +2954,13 @@
             this.cargarEventos();
             this.inicializarCatalogoSincrono();
             this.actualizarStats();
-            this.renderizarMarcas();
 
-            // Cargar datos de búsqueda visual en segundo plano (no bloquea la UI ni el catálogo)
+            // Cargar datos de búsqueda visual en segundo plano
             this.promesaCargaComparacion = this.cargarDatosComparacionVisual();
-
-            // Soporte para navegación directa mediante URL (?v=photo, ?v=catalogo, ?buscar=...)
-            const params = new URLSearchParams(window.location.search);
-            const buscarParam = params.get('buscar');
-            const vistaParam = params.get('v');
-
-            if (buscarParam) {
-                this.searchInput.value = decodeURIComponent(buscarParam);
-                this.cambiarVista('catalogo');
-                this.renderizarBusquedaCatalogo(this.searchInput.value);
-            } else if (vistaParam === 'catalogo') {
-                this.cambiarVista('catalogo');
-            } else {
-                this.cambiarVista('photo');
-            }
         }
 
         inicializarCatalogoSincrono() {
-            // Logos y catálogo cargados instantáneamente desde datos-imagenes.js
+            // Logos y catálogo cargados desde datos-imagenes.js
             if (typeof mapaLogos !== 'undefined') {
                 this.logos = mapaLogos;
             } else {
@@ -3443,32 +2980,16 @@
         }
 
         cargarEventos() {
-            // BUSCADOR GLOBAL DE MARCA / MODELO
-            // En la vista catálogo busca en tiempo real.
-            // Desde cualquier otra vista, ENTER abre el catálogo y ejecuta la búsqueda.
-            this.searchInput.addEventListener('input', () => {
-                if (this.vistaActual === 'catalogo') {
-                    this.renderizarBusquedaCatalogo(this.searchInput.value);
-                }
-            });
-
+            // Buscador del header: al presionar Enter navega a catalogo.html con la búsqueda
             this.searchInput.addEventListener('keydown', (e) => {
                 if (e.key !== 'Enter') return;
-
                 e.preventDefault();
-
                 const termino = this.searchInput.value.trim();
                 if (!termino) {
                     this.mostrarToast('Escribe una marca o modelo para buscar', 'warning');
                     return;
                 }
-
-                // Si estaba en "Buscar por foto", pasar automáticamente al catálogo.
-                if (this.vistaActual !== 'catalogo') {
-                    this.cambiarVista('catalogo');
-                } else {
-                    this.renderizarBusquedaCatalogo(termino);
-                }
+                location.href = 'catalogo.html?buscar=' + encodeURIComponent(termino);
             });
 
             this.uploadZone.addEventListener('dragover', (e) => {
@@ -3733,143 +3254,16 @@
 
         ocultarTodo() {
             this.photoSearchSection.style.display = 'none';
-            this.catalogoSection.classList.remove('active');
-            this.marcaImagesSection.classList.remove('active');
             this.resultsSection.classList.remove('active');
             this.analysisProgress.classList.remove('active');
         }
 
-        cambiarVista(vista) {
-            this.vistaActual = vista;
-            this.navPhotoBtn.classList.toggle('active', vista === 'photo');
-            this.navCatalogBtn.classList.toggle('active', vista === 'catalogo');
-            this.ocultarTodo();
-
-            if (vista === 'photo') {
-                this.photoSearchSection.style.display = 'block';
-            } else if (vista === 'catalogo') {
-                this.catalogoSection.classList.add('active');
-                this.renderizarBusquedaCatalogo(this.searchInput.value);
-            }
-
-            this.searchInput.placeholder = 'Buscar marca o modelo...';
-            
-            addDebug(`Vista cambiada a: ${vista}`, 'info');
-        }
-
         irAInicio() {
             this.searchInput.value = '';
-            this.cambiarVista('photo');
+            this.ocultarTodo();
+            this.photoSearchSection.style.display = 'block';
             this.quitarImagen();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        verMarca(nombreMarca) {
-            this.scrollGuardado = window.scrollY;
-            this.ocultarTodo();
-
-            const info = obtenerInfoMarca(nombreMarca);
-            const fotos = this.datos[nombreMarca] || [];
-
-            this.marcaActual = nombreMarca;
-            this.marcaModelos = fotos;
-            this.marcaOffset = 0;
-
-            let metaHTML = '<span>' + fotos.length + ' modelos</span>';
-            if (info.categoria) {
-                metaHTML += ' &middot; <span class="result-card-category ' + categoriaClase(info.categoria) + '">' + info.categoria + '</span>';
-            }
-            if (info.precio) {
-                metaHTML += ' &middot; <span style="color:var(--success);font-weight:700">' + formatoPrecio(info.precio, info.precioMax) + '</span>';
-            }
-
-            this.marcaHeader.innerHTML =
-                '<button class="btn-volver-marca" onclick="app.volverAlCatalogo()">' +
-                    '<i class="fas fa-arrow-left"></i> <span>Volver</span>' +
-                '</button>' +
-                '<div>' +
-                    '<div class="marca-header-nombre">' + nombreMarca + '</div>' +
-                    '<div class="marca-header-meta">' + metaHTML + '</div>' +
-                '</div>';
-
-            this.marcaImagesGrid.innerHTML = '';
-
-            if (fotos.length === 0) {
-                this.marcaImagesGrid.innerHTML =
-                    '<div class="no-results">' +
-                        '<i class="fas fa-image"></i>' +
-                        '<h3>Sin imágenes</h3>' +
-                        '<p>No hay modelos cargados para esta marca.</p>' +
-                    '</div>';
-            } else {
-                this.renderizarSiguienteLoteMarca();
-            }
-
-            this.marcaImagesSection.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'instant' });
-        }
-
-        renderizarSiguienteLoteMarca() {
-            const fotos = this.marcaModelos || [];
-            if (this.marcaOffset >= fotos.length) return;
-
-            const batch = fotos.slice(this.marcaOffset, this.marcaOffset + this.MARCA_CHUNK_SIZE);
-            this.marcaOffset += batch.length;
-
-            const existingSentinel = document.getElementById('marcaSentinel');
-            if (existingSentinel) existingSentinel.remove();
-
-            const cardsHTML = batch.map((foto) => {
-                const url = foto.indexOf('/') !== -1 ? foto : 'imagenes-webp/' + this.marcaActual + '/' + foto;
-                const nombre = foto.split('/').pop().replace(/\.[^.]+$/, '');
-                return '<div class="marca-image-card" onclick="abrirModalSimple(\'' + encodeURI(url) + '\')">' +
-                    '<div class="marca-image-card-img">' +
-                        '<img src="' + encodeURI(url) + '" alt="' + nombre + '" loading="lazy" decoding="async">' +
-                    '</div>' +
-                    '<div class="marca-image-card-name">' + nombre + '</div>' +
-                '</div>';
-            }).join('');
-
-            const tempContainer = document.createElement('div');
-            tempContainer.innerHTML = cardsHTML;
-            while (tempContainer.firstChild) {
-                this.marcaImagesGrid.appendChild(tempContainer.firstChild);
-            }
-
-            // Si quedan más modelos, agregar sentinel con IntersectionObserver
-            if (this.marcaOffset < fotos.length) {
-                const restantes = fotos.length - this.marcaOffset;
-                const sentinel = document.createElement('div');
-                sentinel.id = 'marcaSentinel';
-                sentinel.style.gridColumn = '1 / -1';
-                sentinel.style.padding = '1.5rem';
-                sentinel.style.textAlign = 'center';
-                sentinel.innerHTML = `<button class="btn-retry" style="padding:0.6rem 1.4rem;font-size:0.85rem;cursor:pointer" onclick="app.renderizarSiguienteLoteMarca()">
-                    <i class="fas fa-plus"></i> Cargar más modelos (${restantes} restantes)
-                </button>`;
-                this.marcaImagesGrid.appendChild(sentinel);
-
-                if ('IntersectionObserver' in window) {
-                    if (this.marcaObserver) this.marcaObserver.disconnect();
-                    this.marcaObserver = new IntersectionObserver((entries) => {
-                        if (entries[0] && entries[0].isIntersecting) {
-                            this.renderizarSiguienteLoteMarca();
-                        }
-                    }, { rootMargin: '350px' });
-                    this.marcaObserver.observe(sentinel);
-                }
-            } else {
-                if (this.marcaObserver) {
-                    this.marcaObserver.disconnect();
-                    this.marcaObserver = null;
-                }
-            }
-        }
-
-        volverAlCatalogo() {
-            this.ocultarTodo();
-            this.catalogoSection.classList.add('active');
-            setTimeout(() => window.scrollTo(0, this.scrollGuardado), 10);
         }
 
         async buscarSimilares() {
@@ -4085,181 +3479,6 @@
             });
 
             this.resultsCount.textContent = visibles + ' encontrados';
-        }
-
-        normalizarTextoBusqueda(texto) {
-            return String(texto || '')
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '');
-        }
-
-        renderizarBusquedaCatalogo(filtro = '') {
-            const terminoOriginal = String(filtro || '').trim();
-            const f = this.normalizarTextoBusqueda(terminoOriginal);
-
-            if (!f) {
-                this.renderizarMarcas('');
-                return;
-            }
-
-            const modelos = [];
-
-            for (const [marca, imagenes] of Object.entries(this.datos || {})) {
-                for (const img of (Array.isArray(imagenes) ? imagenes : [])) {
-                    const imgTexto = String(img || '');
-                    const nombre = imgTexto
-                        .split(/[\\/]/)
-                        .pop()
-                        .replace(/\.[^.]+$/, '');
-
-                    const nombreNormalizado = this.normalizarTextoBusqueda(nombre);
-                    const marcaNormalizada = this.normalizarTextoBusqueda(marca);
-                    const rutaNormalizada = this.normalizarTextoBusqueda(imgTexto);
-                    const textoCompleto = this.normalizarTextoBusqueda(
-                        `${nombre} ${marca} ${imgTexto}`
-                    );
-
-                    const exacto = nombreNormalizado === f;
-                    const coincide = exacto ||
-                        nombreNormalizado.includes(f) ||
-                        marcaNormalizada.includes(f) ||
-                        rutaNormalizada.includes(f) ||
-                        textoCompleto.includes(f);
-
-                    if (!coincide) continue;
-
-                    const info = obtenerInfoMarca(marca) || {};
-                    const ruta = imgTexto.includes('/')
-                        ? (imgTexto.startsWith('imagenes-webp/')
-                            ? imgTexto
-                            : 'imagenes-webp/' + imgTexto)
-                        : `imagenes-webp/${marca}/${imgTexto}`;
-
-                    modelos.push({
-                        url: ruta,
-                        nombre,
-                        marca,
-                        categoria: info.categoria || '',
-                        precio: info.precio || 0,
-                        precioMax: info.precioMax || 0,
-                        exacto
-                    });
-                }
-            }
-
-            modelos.sort((a, b) => Number(b.exacto) - Number(a.exacto));
-
-            if (modelos.length > 0) {
-                this.ocultarTodo();
-                this.catalogoSection.classList.add('active');
-                this.brandsContainer.innerHTML = '';
-
-                const titulo = document.createElement('div');
-                titulo.className = 'categoria-group';
-                titulo.innerHTML =
-                    '<h3 class="categoria-group-title"><i class="fas fa-search"></i> ' +
-                    'Modelos encontrados (' + modelos.length + ')</h3>';
-
-                const grid = document.createElement('div');
-                grid.className = 'brands-grid';
-                grid.style.gridTemplateColumns = 'repeat(auto-fill,minmax(200px,1fr))';
-
-                grid.innerHTML = modelos.slice(0, 60).map((m) => {
-                    const precioTxt = formatoPrecio(m.precio, m.precioMax);
-                    const url = encodeURIComponent(m.url);
-                    const nombre = encodeURIComponent(m.nombre);
-                    const marca = encodeURIComponent(m.marca);
-                    const categoria = encodeURIComponent(m.categoria || '');
-
-                    return '<div class="marca-image-card" onclick="app.abrirModal(\'' + url +
-                        '\',\'' + nombre + '\',\'' + marca + '\',' +
-                        (m.precio || 0) + ',' + (m.precioMax || 0) +
-                        ',\'' + categoria + '\')">' +
-                        '<div class="marca-image-card-img"><img src="' + m.url +
-                        '" alt="' + m.nombre + '" loading="lazy" decoding="async"></div>' +
-                        '<div class="marca-image-card-name">' + m.nombre + '</div>' +
-                        '<div style="padding:0 .8rem .8rem;color:var(--text-muted);font-size:.75rem">' +
-                        m.marca + (precioTxt ? ' · ' + precioTxt : '') + '</div>' +
-                        '</div>';
-                }).join('');
-
-                titulo.appendChild(grid);
-                this.brandsContainer.appendChild(titulo);
-
-                if (modelos.length > 60) {
-                    this.mostrarToast(
-                        `Se encontraron ${modelos.length} modelos. Mostrando los primeros 60.`,
-                        'info'
-                    );
-                }
-
-                return;
-            }
-
-            // Si no hay modelos, intentar búsqueda por marca
-            this.catalogoSection.classList.add('active');
-            this.renderizarMarcas(terminoOriginal);
-
-            const tieneMarcas = this.brandsContainer.children.length > 0;
-            if (!tieneMarcas) {
-                this.brandsContainer.innerHTML =
-                    '<div style="padding:3rem 1rem;text-align:center;color:var(--text-secondary)">' +
-                    '<i class="fas fa-search" style="font-size:2rem;margin-bottom:1rem;display:block"></i>' +
-                    '<strong>No se encontró "' + this.escapeHtml(terminoOriginal) + '"</strong>' +
-                    '<p style="margin-top:.5rem">Prueba con otro nombre de marca o modelo.</p>' +
-                    '</div>';
-            }
-        }
-
-        renderizarMarcas(filtro = '') {
-            const f = filtro.toLowerCase();
-            let html = '';
-            let totalMarcasVisibles = 0;
-
-            for (const [catNombre, marcasCat] of Object.entries(categorias)) {
-                const marcasFiltradas = f
-                    ? marcasCat.filter(m => m.nombre.toLowerCase().includes(f))
-                    : marcasCat;
-
-                if (marcasFiltradas.length === 0) continue;
-                totalMarcasVisibles += marcasFiltradas.length;
-
-                const cardsHtml = marcasFiltradas.map((marca) => {
-                    const logoSrc = this.logos[marca.nombre] || '';
-                    const count = this.datos[marca.nombre]?.length || 0;
-                    const precioTxt = formatoPrecio(marca.precio, marca.precioMax);
-                    const logoHTML = logoSrc
-                        ? `<img class="brand-logo" src="${logoSrc}" alt="${marca.nombre}" loading="lazy" decoding="async">`
-                        : '<div class="brand-logo-placeholder">👓</div>';
-
-                    return `<div class="brand-card" onclick="app.verMarca('${marca.nombre.replace(/'/g, "\\'")}')">
-                        ${logoHTML}
-                        <div class="brand-info">
-                            <div class="brand-name">${marca.nombre}</div>
-                            <div class="brand-count">${count} modelos</div>
-                            ${precioTxt ? `<div class="brand-price">${precioTxt}</div>` : ''}
-                        </div>
-                        <div class="brand-arrow"><i class="fas fa-chevron-right"></i></div>
-                    </div>`;
-                }).join('');
-
-                html += `<div class="categoria-group">
-                    <h3 class="categoria-group-title"><i class="fas fa-tag"></i> ${catNombre}</h3>
-                    <div class="brands-grid">${cardsHtml}</div>
-                </div>`;
-            }
-
-            if (f && totalMarcasVisibles === 0) {
-                html = `<div class="no-results">
-                    <i class="fas fa-search"></i>
-                    <h3>Sin resultados</h3>
-                    <p>No se encontraron marcas que coincidan con "${this.escapeHtml(filtro)}"</p>
-                </div>`;
-            }
-
-            this.brandsContainer.innerHTML = html;
         }
 
         abrirModal(encodedUrl, nombre, marca, precio, precioMax, categoria) {

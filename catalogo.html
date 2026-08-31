@@ -1,0 +1,1571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de marcos | SACC & VISION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #121315;
+            --primary-light: #18191c;
+            --secondary: #1e1f23;
+            --accent: #C5A08E;
+            --accent-hover: #D8B4A2;
+            --accent-glow: rgba(197, 160, 142, 0.25);
+            --success: #22C55E;
+            --success-dim: rgba(34, 197, 94, 0.15);
+            --warning: #E8A830;
+            --warning-dim: rgba(232, 168, 48, 0.15);
+            --info: #8E9EC5;
+            --info-dim: rgba(142, 158, 197, 0.15);
+            --bg: #121315;
+            --bg-card: #1A1B1E;
+            --bg-elevated: #232529;
+            --bg-input: #2A2C31;
+            --text: #F7F5F0;
+            --text-secondary: #B0AAA2;
+            --text-muted: #6F6B65;
+            --border: #34363C;
+            --border-light: #44474F;
+            --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 60px rgba(197, 160, 142, 0.12);
+            --radius: 20px;
+            --radius-sm: 10px;
+            --radius-xs: 6px;
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-animation {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            animation: blobFloat 18s ease-in-out infinite;
+        }
+
+        .bg-blob:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(197, 160, 142, 0.12), transparent 70%);
+            top: -15%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .bg-blob:nth-child(2) {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(216, 180, 162, 0.08), transparent 70%);
+            top: 40%;
+            right: -15%;
+            animation-delay: -6s;
+            animation-duration: 22s;
+        }
+
+        .bg-blob:nth-child(3) {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(184, 139, 119, 0.06), transparent 70%);
+            bottom: -10%;
+            left: 30%;
+            animation-delay: -12s;
+            animation-duration: 25s;
+        }
+
+        @keyframes blobFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(40px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(30px, 40px) scale(1.02); }
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(18, 19, 21, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 0;
+        }
+
+        .header-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text);
+            text-decoration: none;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 10px;
+            display: block;
+            flex-shrink: 0;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+        }
+
+        .nav-btn {
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            background: transparent;
+            color: var(--text-muted);
+            text-decoration: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover {
+            color: var(--text);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: #121315;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(197, 160, 142, 0.35);
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 420px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.75rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(197, 160, 142, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .stat-item i {
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero / Catálogo */
+        .catalogo-hero {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 1.5rem;
+            text-align: center;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .catalogo-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: var(--accent-glow);
+            border: 1px solid rgba(197, 160, 142, 0.3);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--accent-hover);
+            margin-bottom: 1.25rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .catalogo-hero h1 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 0.75rem;
+            letter-spacing: -1px;
+        }
+
+        .catalogo-hero h1 span {
+            background: linear-gradient(135deg, var(--accent), #D8B4A2, #E6C8B8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .catalogo-hero p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .catalogo-section {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 4rem;
+        }
+
+        .catalogo-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.5px;
+        }
+
+        .catalogo-title i {
+            color: var(--accent);
+        }
+
+        .categoria-group {
+            margin-bottom: 3.5rem;
+        }
+
+        .categoria-group-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 1.25rem;
+            padding: 0.75rem 1.25rem;
+            border-left: 4px solid var(--accent);
+            background: linear-gradient(90deg, rgba(197, 160, 142, 0.08), transparent 70%);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.3px;
+        }
+
+        .categoria-group-title i {
+            color: var(--accent);
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .brands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .brand-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.35rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1.15rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+            content-visibility: auto;
+            contain-intrinsic-size: auto 90px;
+        }
+
+        .brand-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(197, 160, 142, 0.08), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .brand-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 32px rgba(197, 160, 142, 0.15), 0 2px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .brand-card:hover::before {
+            opacity: 1;
+        }
+
+        .brand-logo {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: contain;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            padding: 0.45rem;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .brand-logo-placeholder {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: #121315;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-name {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            letter-spacing: -0.2px;
+        }
+
+        .brand-price {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--success);
+            margin-top: 0.2rem;
+        }
+
+        .brand-count {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .brand-arrow {
+            color: var(--text-muted);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-card:hover .brand-arrow {
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        /* Sección vista imágenes de marca */
+        .marca-images-section {
+            display: none;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 4rem;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .marca-images-section.active {
+            display: block;
+        }
+
+        .marca-header {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+            padding: 1.35rem 1.75rem;
+            background: rgba(26, 27, 30, 0.92);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            position: sticky;
+            top: 68px;
+            z-index: 90;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-volver-marca {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.15rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: var(--transition);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .btn-volver-marca:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .marca-header-nombre {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .marca-header-meta {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-top: 0.1rem;
+        }
+
+        .marca-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .marca-image-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: fadeInUp 0.3s ease both;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+            content-visibility: auto;
+            contain-intrinsic-size: auto 260px;
+        }
+
+        .marca-image-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 8px 28px rgba(197, 160, 142, 0.12), 0 2px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .marca-image-card-img {
+            aspect-ratio: 1;
+            overflow: hidden;
+            background: var(--bg-elevated);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .marca-image-card-img img {
+            max-width: 95%;
+            max-height: 95%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            transition: transform 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .marca-image-card:hover .marca-image-card-img img {
+            transform: scale(1.07);
+        }
+
+        .marca-image-card-name {
+            padding: 0.8rem 1rem;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Categoría badges */
+        .result-card-category {
+            font-size: 0.68rem;
+            padding: 0.15rem 0.55rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .result-card-category.economicos { background: rgba(0, 230, 118, 0.12); color: var(--success); }
+        .result-card-category.media { background: var(--info-dim); color: var(--info); }
+        .result-card-category.premium { background: rgba(255, 171, 0, 0.12); color: var(--warning); }
+        .result-card-category.sol { background: rgba(197, 160, 142, 0.15); color: var(--accent-hover); }
+        .result-card-category.ninos { background: rgba(170, 100, 255, 0.12); color: #b388ff; }
+        .result-card-category.seguridad { background: rgba(255, 255, 255, 0.06); color: var(--text-muted); }
+
+        /* Modal simple para agrandar imagen */
+        .modal-simple {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1100;
+            background: rgba(18, 19, 21, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            cursor: zoom-out;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-simple.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-simple img {
+            max-width: 92vw;
+            max-height: 92vh;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.85); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-simple-cerrar {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-simple-cerrar:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #121315;
+        }
+
+        /* Modal detalle */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+        .modal.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .modal-title-area {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .modal-meta-category {
+            padding: 0.1rem 0.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+        }
+
+        .modal-meta-price {
+            font-weight: 700;
+            color: var(--success);
+        }
+
+        .modal-close {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #121315;
+        }
+
+        .modal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .modal-image-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: var(--radius-sm);
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1.25rem;
+            color: var(--text);
+            font-size: 0.88rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+            max-width: 360px;
+        }
+
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.success i { color: var(--success); }
+        .toast.error { border-left: 3px solid var(--accent); }
+        .toast.error i { color: var(--accent); }
+        .toast.info { border-left: 3px solid var(--info); }
+        .toast.info i { color: var(--info); }
+        .toast.warning { border-left: 3px solid var(--warning); }
+        .toast.warning i { color: var(--warning); }
+
+        @keyframes slideInRight {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(60%); }
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+
+        .no-results i {
+            font-size: 3.5rem;
+            color: var(--text-muted);
+            opacity: 0.4;
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .btn-retry {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text);
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .btn-retry:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        ::-webkit-scrollbar {
+            width: 7px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 0.75rem;
+            }
+
+            .header-stats {
+                display: none;
+            }
+
+            .search-container {
+                order: 3;
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .main-nav {
+                order: 2;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-btn {
+                flex: 1;
+                justify-content: center;
+                padding: 0.55rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .catalogo-section {
+                padding: 1.5rem 1.25rem 3rem;
+            }
+
+            .catalogo-hero h1 {
+                font-size: 1.6rem;
+            }
+
+            .brands-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+
+            .marca-images-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 0.75rem;
+            }
+
+            .marca-header {
+                padding: 1rem;
+                gap: 0.75rem;
+                flex-wrap: wrap;
+            }
+
+            .marca-header-nombre {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="bg-blob"></div>
+        <div class="bg-blob"></div>
+        <div class="bg-blob"></div>
+    </div>
+
+    <header class="header">
+        <div class="header-content">
+            <a class="logo" href="index.html">
+                <img class="logo-img" src="logos-webp/logo-sacc.webp" alt="SACC & VISION" onerror="this.style.display='none'">
+                <span>SACC & VISION</span>
+            </a>
+
+            <nav class="main-nav">
+                <a class="nav-btn" href="cotizar.html">
+                    <i class="fas fa-file-invoice-dollar"></i> Cotizar
+                </a>
+                <a class="nav-btn" href="index.html">
+                    <i class="fas fa-camera"></i> Buscar por Foto
+                </a>
+                <a class="nav-btn active" href="catalogo.html">
+                    <i class="fas fa-th-large"></i> Catálogo
+                </a>
+            </nav>
+
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar marca o modelo...">
+            </div>
+
+            <div class="header-stats">
+                <div class="stat-item">
+                    <i class="fas fa-layer-group"></i>
+                    <span id="totalMarcas">0 marcas</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-image"></i>
+                    <span id="totalImagenes">0 modelos</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="catalogo-hero" id="catalogoHero">
+        <div class="catalogo-hero-badge">
+            <i class="fas fa-th-large"></i> Catálogo Completo
+        </div>
+        <h1>Explora todos nuestros <span>marcos y marcas</span></h1>
+        <p>Encuentra el marco perfecto navegando por categorías, marcas y modelos de nuestro catálogo oficial.</p>
+    </div>
+
+    <!-- CATÁLOGO -->
+    <section class="catalogo-section active" id="catalogoSection">
+        <h2 class="catalogo-title" id="catalogoTitle">
+            <i class="fas fa-th-large"></i>
+            Todas las marcas
+        </h2>
+        <div id="brandsContainer"></div>
+    </section>
+
+    <!-- Vista imágenes de marca -->
+    <section class="marca-images-section" id="marcaImagesSection">
+        <div class="marca-header" id="marcaHeader"></div>
+        <div class="marca-images-grid" id="marcaImagesGrid"></div>
+    </section>
+
+    <!-- Modal simple para agrandar imagen -->
+    <div class="modal-simple" id="modalSimple" onclick="cerrarModalSimple()">
+        <button class="modal-simple-cerrar" onclick="cerrarModalSimple()">
+            <i class="fas fa-times"></i>
+        </button>
+        <img id="modalSimpleImg" src="" alt="Vista ampliada del marco">
+    </div>
+
+    <!-- Modal de detalle de modelo -->
+    <div class="modal" id="imageModal">
+        <div class="modal-header">
+            <div class="modal-title-area">
+                <span class="modal-title" id="modalTitle">Modelo</span>
+                <div class="modal-meta" id="modalMeta"></div>
+            </div>
+            <button class="modal-close" onclick="app.cerrarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-image-container">
+                <img class="modal-image" id="modalImage" src="" alt="Marco">
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>SACC & VISION &copy; 2026 - Catálogo de marcos de lentes</p>
+    </footer>
+
+    <script src="datos-imagenes.js"></script>
+
+    <script>
+    /* ============================================
+       CATEGORÍAS Y PRECIOS
+       ============================================ */
+    const categorias = {
+        "ECONOMICOS": [
+            { nombre: "GATTIZONI", precio: 10000 },
+            { nombre: "GEORGE", precio: 10000 },
+            { nombre: "JORGIO", precio: 10000 },
+            { nombre: "LE GIRO", precio: 10000 }
+        ],
+        "MEDIA": [
+            { nombre: "ANGELO FALCONI", precio: 24000 },
+            { nombre: "JEAN DE PARIS", precio: 24000 },
+            { nombre: "FOOSE", precio: 38000 },
+            { nombre: "VESPA DEPORTIVO", precio: 28600 },
+            { nombre: "VESPA", precio: 30500, precioMax: 38000 },
+            { nombre: "LUXOR", precio: 35700 }
+        ],
+        "PREMIUM": [
+            { nombre: "LINEA VIGO", precio: 42900 },
+            { nombre: "GAME DAY", precio: 48200 },
+            { nombre: "MAXCOME", precio: 46400 },
+            { nombre: "SILMO", precio: 44000 },
+            { nombre: "SILMO ÓPTICO", precio: 44000 },
+            { nombre: "SILMO SOBRELENTE", precio: 51200 },
+            { nombre: "LINEA VIGO SOBRELENTE", precio: 46400 },
+            { nombre: "POLO", precio: 47600 }
+        ],
+        "SOL": [
+            { nombre: "VESPA SOL", precio: 35700 },
+            { nombre: "LACROSSE SOL", precio: 46400 },
+            { nombre: "ICE LOOK SOL", precio: 53600 },
+            { nombre: "SILMO SOL", precio: 40500 }
+        ],
+        "NIÑOS": [
+            { nombre: "VESPA KIDS", precio: 16700 },
+            { nombre: "VESPA KIDS SOL", precio: 24990 },
+            { nombre: "MOODKIDS", precio: 35700 },
+            { nombre: "MOODKIDS SOBRELENTE", precio: 35700 },
+            { nombre: "FOOSE", precio: 16700 },
+            { nombre: "VESPA PEBAX KIDS", precio: 44000 }
+        ],
+        "SEGURIDAD Y ANTIPARRA": [
+            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", precio: 7500, precioMax: 27500 }
+        ]
+    };
+
+    function obtenerInfoMarca(nombreMarca) {
+        for (const [catNombre, marcas] of Object.entries(categorias)) {
+            const encontrada = marcas.find(m => m.nombre === nombreMarca);
+            if (encontrada) {
+                return {
+                    categoria: catNombre,
+                    precio: encontrada.precio,
+                    precioMax: encontrada.precioMax || null
+                };
+            }
+        }
+        return { categoria: null, precio: null, precioMax: null };
+    }
+
+    function categoriaClase(nombreCat) {
+        const mapa = {
+            'ECONOMICOS': 'economicos',
+            'MEDIA': 'media',
+            'PREMIUM': 'premium',
+            'SOL': 'sol',
+            'NIÑOS': 'ninos',
+            'SEGURIDAD Y ANTIPARRA': 'seguridad'
+        };
+        return mapa[nombreCat] || 'seguridad';
+    }
+
+    function formatoPrecio(precio, precioMax) {
+        if (!precio) return '';
+        let txt = '$' + precio.toLocaleString('es-CL');
+        if (precioMax) txt += ' - $' + precioMax.toLocaleString('es-CL');
+        return txt;
+    }
+
+    /* ============================================
+       MODAL SIMPLE
+       ============================================ */
+    function abrirModalSimple(url) {
+        document.getElementById('modalSimpleImg').src = url;
+        document.getElementById('modalSimple').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModalSimple() {
+        document.getElementById('modalSimple').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalSimple();
+            if (typeof app !== 'undefined' && app.modalAbierto) {
+                app.cerrarModal();
+            }
+        }
+    });
+
+    /* ============================================
+       APLICACIÓN CATÁLOGO
+       ============================================ */
+    class CatalogoApp {
+        constructor() {
+            // Elementos del DOM
+            this.catalogoHero = document.getElementById('catalogoHero');
+            this.catalogoSection = document.getElementById('catalogoSection');
+            this.catalogoTitle = document.getElementById('catalogoTitle');
+            this.marcaImagesSection = document.getElementById('marcaImagesSection');
+            this.marcaHeader = document.getElementById('marcaHeader');
+            this.marcaImagesGrid = document.getElementById('marcaImagesGrid');
+            this.brandsContainer = document.getElementById('brandsContainer');
+            this.searchInput = document.getElementById('searchInput');
+            this.totalMarcasEl = document.getElementById('totalMarcas');
+            this.totalImagenesEl = document.getElementById('totalImagenes');
+            this.toastContainer = document.getElementById('toastContainer');
+            this.modal = document.getElementById('imageModal');
+            this.modalImage = document.getElementById('modalImage');
+            this.modalTitle = document.getElementById('modalTitle');
+            this.modalMeta = document.getElementById('modalMeta');
+
+            // Estado
+            this.datos = {};
+            this.logos = {};
+            this.modalAbierto = false;
+            this.scrollGuardado = 0;
+
+            // Paginación y rendimiento de vista de marcas
+            this.marcaActual = null;
+            this.marcaModelos = [];
+            this.marcaOffset = 0;
+            this.MARCA_CHUNK_SIZE = 36;
+            this.marcaObserver = null;
+
+            this.init();
+        }
+
+        init() {
+            this.inicializarDatos();
+            this.cargarEventos();
+
+            // Revisar parámetros de URL (?buscar=... o ?marca=...)
+            const params = new URLSearchParams(window.location.search);
+            const buscarParam = params.get('buscar');
+            const marcaParam = params.get('marca');
+
+            if (marcaParam && this.datos[marcaParam]) {
+                this.verMarca(marcaParam);
+            } else if (buscarParam) {
+                this.searchInput.value = decodeURIComponent(buscarParam);
+                this.renderizarBusquedaCatalogo(this.searchInput.value);
+            } else {
+                this.renderizarMarcas('');
+            }
+        }
+
+        inicializarDatos() {
+            if (typeof mapaLogos !== 'undefined') {
+                this.logos = mapaLogos;
+            }
+            if (typeof catalogoImagenes !== 'undefined') {
+                this.datos = catalogoImagenes;
+            }
+
+            const totalMarcas = Object.keys(this.datos).length;
+            const totalModelos = Object.values(this.datos).reduce((total, lista) => total + lista.length, 0);
+            this.totalMarcasEl.textContent = totalMarcas + ' marcas';
+            this.totalImagenesEl.textContent = totalModelos + ' modelos';
+        }
+
+        cargarEventos() {
+            // Buscador en tiempo real y con tecla Enter
+            this.searchInput.addEventListener('input', () => {
+                if (this.marcaImagesSection.classList.contains('active')) {
+                    this.volverAlCatalogo();
+                }
+                this.renderizarBusquedaCatalogo(this.searchInput.value);
+            });
+
+            this.searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (this.marcaImagesSection.classList.contains('active')) {
+                        this.volverAlCatalogo();
+                    }
+                    this.renderizarBusquedaCatalogo(this.searchInput.value);
+                }
+            });
+
+            this.modal.addEventListener('click', (e) => {
+                if (e.target === this.modal) {
+                    this.cerrarModal();
+                }
+            });
+        }
+
+        normalizarTextoBusqueda(texto) {
+            return String(texto || '')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '');
+        }
+
+        renderizarMarcas(filtro = '') {
+            const f = filtro.toLowerCase();
+            let html = '';
+            let totalMarcasVisibles = 0;
+
+            for (const [catNombre, marcasCat] of Object.entries(categorias)) {
+                const marcasFiltradas = f
+                    ? marcasCat.filter(m => m.nombre.toLowerCase().includes(f))
+                    : marcasCat;
+
+                if (marcasFiltradas.length === 0) continue;
+                totalMarcasVisibles += marcasFiltradas.length;
+
+                const cardsHtml = marcasFiltradas.map((marca) => {
+                    const logoSrc = this.logos[marca.nombre] || '';
+                    const count = this.datos[marca.nombre]?.length || 0;
+                    const precioTxt = formatoPrecio(marca.precio, marca.precioMax);
+                    const logoHTML = logoSrc
+                        ? `<img class="brand-logo" src="${logoSrc}" alt="${marca.nombre}" loading="lazy" decoding="async">`
+                        : '<div class="brand-logo-placeholder">👓</div>';
+
+                    return `<div class="brand-card" onclick="app.verMarca('${marca.nombre.replace(/'/g, "\\'")}')">
+                        ${logoHTML}
+                        <div class="brand-info">
+                            <div class="brand-name">${marca.nombre}</div>
+                            <div class="brand-count">${count} modelos</div>
+                            ${precioTxt ? `<div class="brand-price">${precioTxt}</div>` : ''}
+                        </div>
+                        <div class="brand-arrow"><i class="fas fa-chevron-right"></i></div>
+                    </div>`;
+                }).join('');
+
+                html += `<div class="categoria-group">
+                    <h3 class="categoria-group-title"><i class="fas fa-tag"></i> ${catNombre}</h3>
+                    <div class="brands-grid">${cardsHtml}</div>
+                </div>`;
+            }
+
+            if (f && totalMarcasVisibles === 0) {
+                html = `<div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>Sin resultados</h3>
+                    <p>No se encontraron marcas que coincidan con "${this.escapeHtml(filtro)}"</p>
+                </div>`;
+            }
+
+            this.brandsContainer.innerHTML = html;
+            this.catalogoTitle.style.display = 'flex';
+        }
+
+        renderizarBusquedaCatalogo(filtro = '') {
+            const terminoOriginal = String(filtro || '').trim();
+            const f = this.normalizarTextoBusqueda(terminoOriginal);
+
+            if (!f) {
+                this.renderizarMarcas('');
+                return;
+            }
+
+            const modelos = [];
+
+            for (const [marca, imagenes] of Object.entries(this.datos || {})) {
+                for (const img of (Array.isArray(imagenes) ? imagenes : [])) {
+                    const imgTexto = String(img || '');
+                    const nombre = imgTexto
+                        .split(/[\\/]/)
+                        .pop()
+                        .replace(/\.[^.]+$/, '');
+
+                    const nombreNormalizado = this.normalizarTextoBusqueda(nombre);
+                    const marcaNormalizada = this.normalizarTextoBusqueda(marca);
+                    const rutaNormalizada = this.normalizarTextoBusqueda(imgTexto);
+                    const textoCompleto = this.normalizarTextoBusqueda(`${nombre} ${marca} ${imgTexto}`);
+
+                    const exacto = nombreNormalizado === f;
+                    const coincide = exacto ||
+                        nombreNormalizado.includes(f) ||
+                        marcaNormalizada.includes(f) ||
+                        rutaNormalizada.includes(f) ||
+                        textoCompleto.includes(f);
+
+                    if (!coincide) continue;
+
+                    const info = obtenerInfoMarca(marca) || {};
+                    const ruta = imgTexto.includes('/')
+                        ? (imgTexto.startsWith('imagenes-webp/')
+                            ? imgTexto
+                            : 'imagenes-webp/' + imgTexto)
+                        : `imagenes-webp/${marca}/${imgTexto}`;
+
+                    modelos.push({
+                        url: ruta,
+                        nombre,
+                        marca,
+                        categoria: info.categoria || '',
+                        precio: info.precio || 0,
+                        precioMax: info.precioMax || 0,
+                        exacto
+                    });
+                }
+            }
+
+            modelos.sort((a, b) => Number(b.exacto) - Number(a.exacto));
+
+            if (modelos.length > 0) {
+                this.catalogoTitle.style.display = 'none';
+                this.brandsContainer.innerHTML = '';
+
+                const titulo = document.createElement('div');
+                titulo.className = 'categoria-group';
+                titulo.innerHTML =
+                    '<h3 class="categoria-group-title"><i class="fas fa-search"></i> ' +
+                    'Modelos encontrados (' + modelos.length + ')</h3>';
+
+                const grid = document.createElement('div');
+                grid.className = 'brands-grid';
+                grid.style.gridTemplateColumns = 'repeat(auto-fill,minmax(200px,1fr))';
+
+                grid.innerHTML = modelos.slice(0, 60).map((m) => {
+                    const precioTxt = formatoPrecio(m.precio, m.precioMax);
+                    const url = encodeURI(m.url);
+                    const nombreEnc = encodeURIComponent(m.nombre);
+                    const marcaEnc = encodeURIComponent(m.marca);
+                    const categoriaEnc = encodeURIComponent(m.categoria || '');
+
+                    return '<div class="marca-image-card" onclick="app.abrirModal(\'' + url +
+                        '\',\'' + nombreEnc + '\',\'' + marcaEnc + '\',' +
+                        (m.precio || 0) + ',' + (m.precioMax || 0) +
+                        ',\'' + categoriaEnc + '\')">' +
+                        '<div class="marca-image-card-img"><img src="' + url +
+                        '" alt="' + m.nombre + '" loading="lazy" decoding="async"></div>' +
+                        '<div class="marca-image-card-name">' + m.nombre + '</div>' +
+                        '<div style="padding:0 .8rem .8rem;color:var(--text-muted);font-size:.75rem">' +
+                        m.marca + (precioTxt ? ' · ' + precioTxt : '') + '</div>' +
+                        '</div>';
+                }).join('');
+
+                titulo.appendChild(grid);
+                this.brandsContainer.appendChild(titulo);
+
+                if (modelos.length > 60) {
+                    this.mostrarToast(
+                        `Se encontraron ${modelos.length} modelos. Mostrando los primeros 60.`,
+                        'info'
+                    );
+                }
+                return;
+            }
+
+            // Si no hay modelos por ese término, buscar marcas que coincidan
+            this.renderizarMarcas(terminoOriginal);
+
+            const tieneMarcas = this.brandsContainer.children.length > 0 && !this.brandsContainer.querySelector('.no-results');
+            if (!tieneMarcas) {
+                this.catalogoTitle.style.display = 'none';
+                this.brandsContainer.innerHTML =
+                    '<div class="no-results">' +
+                    '<i class="fas fa-search"></i>' +
+                    '<h3>No se encontró "' + this.escapeHtml(terminoOriginal) + '"</h3>' +
+                    '<p>Prueba con otro nombre de marca o código de modelo.</p>' +
+                    '<button class="btn-retry" onclick="app.limpiarBusqueda()">' +
+                    '<i class="fas fa-arrow-left"></i> Ver todas las marcas' +
+                    '</button>' +
+                    '</div>';
+            }
+        }
+
+        limpiarBusqueda() {
+            this.searchInput.value = '';
+            this.renderizarMarcas('');
+        }
+
+        verMarca(nombreMarca) {
+            this.scrollGuardado = window.scrollY;
+            this.catalogoHero.style.display = 'none';
+            this.catalogoSection.style.display = 'none';
+            this.catalogoSection.classList.remove('active');
+
+            const info = obtenerInfoMarca(nombreMarca);
+            const fotos = this.datos[nombreMarca] || [];
+
+            this.marcaActual = nombreMarca;
+            this.marcaModelos = fotos;
+            this.marcaOffset = 0;
+
+            let metaHTML = '<span>' + fotos.length + ' modelos</span>';
+            if (info.categoria) {
+                metaHTML += ' &middot; <span class="result-card-category ' + categoriaClase(info.categoria) + '">' + info.categoria + '</span>';
+            }
+            if (info.precio) {
+                metaHTML += ' &middot; <span style="color:var(--success);font-weight:700">' + formatoPrecio(info.precio, info.precioMax) + '</span>';
+            }
+
+            this.marcaHeader.innerHTML =
+                '<button class="btn-volver-marca" onclick="app.volverAlCatalogo()">' +
+                    '<i class="fas fa-arrow-left"></i> <span>Volver al catálogo</span>' +
+                '</button>' +
+                '<div>' +
+                    '<div class="marca-header-nombre">' + nombreMarca + '</div>' +
+                    '<div class="marca-header-meta">' + metaHTML + '</div>' +
+                '</div>';
+
+            this.marcaImagesGrid.innerHTML = '';
+
+            if (fotos.length === 0) {
+                this.marcaImagesGrid.innerHTML =
+                    '<div class="no-results">' +
+                        '<i class="fas fa-image"></i>' +
+                        '<h3>Sin imágenes</h3>' +
+                        '<p>No hay modelos cargados para esta marca.</p>' +
+                    '</div>';
+            } else {
+                this.renderizarSiguienteLoteMarca();
+            }
+
+            this.marcaImagesSection.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
+
+        renderizarSiguienteLoteMarca() {
+            const fotos = this.marcaModelos || [];
+            if (this.marcaOffset >= fotos.length) return;
+
+            const batch = fotos.slice(this.marcaOffset, this.marcaOffset + this.MARCA_CHUNK_SIZE);
+            this.marcaOffset += batch.length;
+
+            const existingSentinel = document.getElementById('marcaSentinel');
+            if (existingSentinel) existingSentinel.remove();
+
+            const cardsHTML = batch.map((foto) => {
+                const url = foto.indexOf('/') !== -1 ? foto : 'imagenes-webp/' + this.marcaActual + '/' + foto;
+                const nombre = foto.split('/').pop().replace(/\.[^.]+$/, '');
+                return '<div class="marca-image-card" onclick="abrirModalSimple(\'' + encodeURI(url) + '\')">' +
+                    '<div class="marca-image-card-img">' +
+                        '<img src="' + encodeURI(url) + '" alt="' + nombre + '" loading="lazy" decoding="async">' +
+                    '</div>' +
+                    '<div class="marca-image-card-name">' + nombre + '</div>' +
+                '</div>';
+            }).join('');
+
+            const tempContainer = document.createElement('div');
+            tempContainer.innerHTML = cardsHTML;
+            while (tempContainer.firstChild) {
+                this.marcaImagesGrid.appendChild(tempContainer.firstChild);
+            }
+
+            // Paginación continua con IntersectionObserver
+            if (this.marcaOffset < fotos.length) {
+                const restantes = fotos.length - this.marcaOffset;
+                const sentinel = document.createElement('div');
+                sentinel.id = 'marcaSentinel';
+                sentinel.style.gridColumn = '1 / -1';
+                sentinel.style.padding = '1.5rem';
+                sentinel.style.textAlign = 'center';
+                sentinel.innerHTML = `<button class="btn-retry" style="padding:0.6rem 1.4rem;font-size:0.85rem;cursor:pointer" onclick="app.renderizarSiguienteLoteMarca()">
+                    <i class="fas fa-plus"></i> Cargar más modelos (${restantes} restantes)
+                </button>`;
+                this.marcaImagesGrid.appendChild(sentinel);
+
+                if ('IntersectionObserver' in window) {
+                    if (this.marcaObserver) this.marcaObserver.disconnect();
+                    this.marcaObserver = new IntersectionObserver((entries) => {
+                        if (entries[0] && entries[0].isIntersecting) {
+                            this.renderizarSiguienteLoteMarca();
+                        }
+                    }, { rootMargin: '350px' });
+                    this.marcaObserver.observe(sentinel);
+                }
+            } else {
+                if (this.marcaObserver) {
+                    this.marcaObserver.disconnect();
+                    this.marcaObserver = null;
+                }
+            }
+        }
+
+        volverAlCatalogo() {
+            this.marcaImagesSection.classList.remove('active');
+            this.catalogoHero.style.display = 'block';
+            this.catalogoSection.style.display = 'block';
+            this.catalogoSection.classList.add('active');
+            setTimeout(() => window.scrollTo(0, this.scrollGuardado), 10);
+        }
+
+        abrirModal(url, nombreEnc, marcaEnc, precio, precioMax, categoriaEnc) {
+            const nombre = decodeURIComponent(nombreEnc);
+            const marca = decodeURIComponent(marcaEnc);
+            const categoria = decodeURIComponent(categoriaEnc);
+            
+            this.modalImage.src = url;
+            this.modalTitle.textContent = (marca ? marca + ' - ' : '') + nombre;
+
+            const precioTxt = formatoPrecio(precio || null, precioMax || null);
+            let metaHTML = '';
+            if (marca) metaHTML += '<span style="color:var(--text-muted)">' + marca + '</span>';
+            if (categoria) {
+                metaHTML += '<span class="modal-meta-category result-card-category ' + categoriaClase(categoria) + '">' + categoria + '</span>';
+            }
+            if (precioTxt) metaHTML += '<span class="modal-meta-price">' + precioTxt + '</span>';
+            this.modalMeta.innerHTML = metaHTML;
+
+            this.modal.classList.add('active');
+            this.modalAbierto = true;
+            document.body.style.overflow = 'hidden';
+        }
+
+        cerrarModal() {
+            this.modal.classList.remove('active');
+            this.modalAbierto = false;
+            document.body.style.overflow = '';
+        }
+
+        escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        mostrarToast(mensaje, tipo = 'info') {
+            const iconos = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + tipo;
+            toast.innerHTML = '<i class="fas ' + (iconos[tipo] || iconos.info) + '"></i><span>' + mensaje + '</span>';
+            this.toastContainer.appendChild(toast);
+            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3200);
+        }
+    }
+
+    const app = new CatalogoApp();
+    window.app = app;
+    </script>
+</body>
+</html>
