@@ -89,14 +89,49 @@
             position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
             color: var(--text-muted); font-size: 0.85rem;
         }
-        .btn-volver {
-            padding: 0.5rem 1.1rem; background: var(--bg-elevated);
-            border: 1px solid var(--border); border-radius: 50px;
-            color: var(--text-secondary); text-decoration: none; font-size: 0.85rem;
-            display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap;
-            transition: var(--transition); flex-shrink: 0;
+        .badge-sugerido {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+            padding: 0.15rem 0.55rem; border-radius: 50px;
+            background: rgba(34, 197, 94, 0.15); color: var(--success);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            margin-left: 0.35rem; letter-spacing: 0.3px;
         }
-        .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
+        .badge-incompatible {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.68rem; font-weight: 600;
+            padding: 0.15rem 0.5rem; border-radius: 50px;
+            background: rgba(224, 108, 117, 0.15); color: #E06C75;
+            border: 1px solid rgba(224, 108, 117, 0.35);
+            margin-left: 0.35rem;
+        }
+        .badge-secundario {
+            display: inline-flex; align-items: center; gap: 0.25rem;
+            font-size: 0.68rem; font-weight: 600;
+            padding: 0.15rem 0.5rem; border-radius: 50px;
+            background: var(--bg-elevated); color: var(--text-muted);
+            border: 1px solid var(--border);
+            margin-left: 0.35rem;
+        }
+        .origen-box {
+            margin-top: 1.1rem; padding-top: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+        .origen-aviso {
+            font-size: 0.8rem; color: var(--text-secondary);
+            margin-top: 0.55rem; padding: 0.5rem 0.8rem;
+            background: var(--bg-elevated); border-left: 3px solid var(--accent);
+            border-radius: var(--radius-xs); display: none; line-height: 1.4;
+        }
+        .sugerencia-nota {
+            margin-top: 0.85rem; padding: 0.7rem 0.9rem;
+            background: rgba(197, 160, 142, 0.08);
+            border: 1px solid rgba(197, 160, 142, 0.25);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem; color: var(--text-secondary);
+            line-height: 1.45;
+        }
+        .sugerencia-nota strong { color: var(--accent-hover); }
         .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
         .hero { text-align: center; margin-bottom: 1.5rem; }
         .hero-badge {
@@ -272,8 +307,6 @@
                 <i class="fas fa-search search-icon"></i>
                 <input type="text" class="search-input" id="headerSearchInput" placeholder="Buscar marca o modelo..." onkeydown="if(event.key==='Enter'&&this.value.trim()){location.href='index.html?buscar='+encodeURIComponent(this.value.trim())}">
             </div>
-
-            <a class="btn-volver" href="index.html"><i class="fas fa-arrow-left"></i> Volver</a>
         </div>
     </header>
 
@@ -306,20 +339,20 @@
                 <div class="rx-head">OD</div>
                 <div class="rx-head">OI</div>
                 <label>ESF</label>
-                <input type="text" id="lejosOdEsf" placeholder="+0.00" inputmode="decimal" oninput="C.actualizarTotal()">
-                <input type="text" id="lejosOiEsf" placeholder="+0.00" inputmode="decimal" oninput="C.actualizarTotal()">
+                <input type="text" id="lejosOdEsf" placeholder="+0.00" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiEsf" placeholder="+0.00" inputmode="decimal" oninput="C.recalcularTodo()">
                 <label>CIL</label>
-                <input type="text" id="lejosOdCil" placeholder="-0.00" inputmode="decimal" oninput="C.actualizarTotal()">
-                <input type="text" id="lejosOiCil" placeholder="-0.00" inputmode="decimal" oninput="C.actualizarTotal()">
+                <input type="text" id="lejosOdCil" placeholder="-0.00" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiCil" placeholder="-0.00" inputmode="decimal" oninput="C.recalcularTodo()">
                 <label>EJE</label>
-                <input type="text" id="lejosOdEje" placeholder="180" inputmode="numeric">
-                <input type="text" id="lejosOiEje" placeholder="180" inputmode="numeric">
+                <input type="text" id="lejosOdEje" placeholder="180" inputmode="numeric" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiEje" placeholder="180" inputmode="numeric" oninput="C.recalcularTodo()">
                 <label>DP</label>
-                <input type="text" id="lejosOdDp" placeholder="32" inputmode="decimal">
-                <input type="text" id="lejosOiDp" placeholder="32" inputmode="decimal">
+                <input type="text" id="lejosOdDp" placeholder="32" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiDp" placeholder="32" inputmode="decimal" oninput="C.recalcularTodo()">
                 <label>ADD</label>
-                <input type="text" id="lejosOdAdd" placeholder="" inputmode="decimal">
-                <input type="text" id="lejosOiAdd" placeholder="" inputmode="decimal">
+                <input type="text" id="lejosOdAdd" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiAdd" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
             </div>
         </div>
 
@@ -330,29 +363,61 @@
                 <div class="rx-head">OD</div>
                 <div class="rx-head">OI</div>
                 <label>ESF</label>
-                <input type="text" id="cercaOdEsf" placeholder="" inputmode="decimal">
-                <input type="text" id="cercaOiEsf" placeholder="" inputmode="decimal">
+                <input type="text" id="cercaOdEsf" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiEsf" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
                 <label>CIL</label>
-                <input type="text" id="cercaOdCil" placeholder="" inputmode="decimal">
-                <input type="text" id="cercaOiCil" placeholder="" inputmode="decimal">
+                <input type="text" id="cercaOdCil" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiCil" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
                 <label>EJE</label>
-                <input type="text" id="cercaOdEje" placeholder="" inputmode="numeric">
-                <input type="text" id="cercaOiEje" placeholder="" inputmode="numeric">
+                <input type="text" id="cercaOdEje" placeholder="" inputmode="numeric" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiEje" placeholder="" inputmode="numeric" oninput="C.recalcularTodo()">
                 <label>DP</label>
-                <input type="text" id="cercaOdDp" placeholder="" inputmode="decimal">
-                <input type="text" id="cercaOiDp" placeholder="" inputmode="decimal">
+                <input type="text" id="cercaOdDp" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiDp" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
             </div>
         </div>
 
         <div class="card">
             <h3><i class="fas fa-layer-group"></i> Tipo de lentes</h3>
-            <div class="radios" style="margin-bottom:1.1rem" id="tipoLenteRadios">
-                <label><input type="radio" name="tipoLente" value="monofocal" checked onchange="C.cambiarTipo()"> Monofocal</label>
-                <label><input type="radio" name="tipoLente" value="bifocal" onchange="C.cambiarTipo()"> Bifocal</label>
-                <label><input type="radio" name="tipoLente" value="progresivo" onchange="C.cambiarTipo()"> Progresivo / Multifocal</label>
+            <div class="radios" style="margin-bottom:0.75rem" id="tipoLenteRadios">
+                <label id="lblTipoMonofocal">
+                    <input type="radio" name="tipoLente" value="monofocal" checked onchange="C.seleccionarTipoManual('monofocal')">
+                    <span>Monofocal</span><span id="badgeMonofocal"></span>
+                </label>
+                <label id="lblTipoProgresivo">
+                    <input type="radio" name="tipoLente" value="progresivo" onchange="C.seleccionarTipoManual('progresivo')">
+                    <span>Progresivo / Multifocal</span><span id="badgeProgresivo"></span>
+                </label>
+                <label id="lblTipoBifocal">
+                    <input type="radio" name="tipoLente" value="bifocal" onchange="C.seleccionarTipoManual('bifocal')">
+                    <span>Bifocal</span><span id="badgeBifocal"></span>
+                </label>
             </div>
+            <div id="tipoLenteNota" style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 0.85rem;padding:0.45rem 0.75rem;background:var(--bg-elevated);border-left:3px solid var(--accent);border-radius:var(--radius-xs);display:none"></div>
+
+            <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:0.35rem">
+                Diseño del cristal:
+            </label>
             <select class="sel" id="disenoSelect" onchange="C.cambiarDiseno()"></select>
             <div class="diseno-desc" id="disenoDesc"></div>
+
+            <!-- Opción de confección y entrega -->
+            <div class="origen-box">
+                <label style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:0.5rem">
+                    <i class="fas fa-clock"></i> Opción de confección y entrega:
+                </label>
+                <div class="radios" id="origenRadios">
+                    <label id="lblOrigenStock" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.88rem;cursor:pointer">
+                        <input type="radio" name="origenFabricacion" value="stock" checked onchange="C.seleccionarOrigenManual('stock')">
+                        <span><strong>Entrega rápida</strong> (Listo en pocos días)</span><span id="badgeStock"></span>
+                    </label>
+                    <label id="lblOrigenLab" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.88rem;cursor:pointer">
+                        <input type="radio" name="origenFabricacion" value="laboratorio" onchange="C.seleccionarOrigenManual('laboratorio')">
+                        <span><strong>Fabricación a medida</strong> (Tallado digital personalizado)</span><span id="badgeLab"></span>
+                    </label>
+                </div>
+                <div class="origen-aviso" id="origenAviso"></div>
+            </div>
         </div>
 
         <div class="card">
@@ -397,8 +462,15 @@
                 <span id="marcoTxt">Trae su marco</span>
             </div>
             <div class="total-line">
-                <span>Total a pagar</span>
+                <div>
+                    <span>Total estimado</span>
+                    <small style="display:block;font-size:0.75rem;color:var(--text-muted);font-weight:400">Cristales + montaje al marco</small>
+                </div>
                 <span id="totalTxt">Completa tu receta</span>
+            </div>
+            <div class="sugerencia-nota">
+                <i class="fas fa-info-circle"></i> <strong>Esta es una cotización sugerida según los datos ingresados.</strong>
+                Al solicitarla, un asesor óptico revisará tu receta y confirmará los detalles contigo antes de iniciar la confección.
             </div>
         </div>
 
@@ -687,7 +759,7 @@
 
             status.textContent = 'Listo. Revisa los números, corrige si hace falta y elige tratamientos.';
             status.style.color = 'var(--success)';
-            C.actualizarTotal();
+            C.recalcularTodo();
         } catch (e) {
             console.error(e);
             status.textContent = 'No se pudo leer la foto. Rellena los datos a mano.';
@@ -705,35 +777,117 @@
     });
 
     /* =========================================================
-       4) LÓGICA DE COTIZACIÓN
+       4) LÓGICA DE COTIZACIÓN ÓPTICA AVANZADA
        ========================================================= */
     const C = {
         marcoElegido: null,
         materialId: 'cr39',
+        origenElegido: 'stock', // 'stock' | 'laboratorio'
+        tipoManualUsuario: null,
+        costoActual: null,
+        origenActual: 'stock',
+
+        // 1. Lectura y análisis de la graduación real en los inputs
+        obtenerGraduacion: function () {
+            const parse = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return 0;
+                const raw = String(el.value || '').trim().replace(/\s+/g, '').replace(',', '.');
+                if (raw === '' || raw === '+' || raw === '-') return 0;
+                const n = parseFloat(raw);
+                return isNaN(n) ? 0 : n;
+            };
+            const hasText = (id) => {
+                const el = document.getElementById(id);
+                if (!el) return false;
+                const v = String(el.value || '').trim();
+                return v !== '' && v !== '0' && v !== '+0' && v !== '-0' && v !== '+0.00' && v !== '-0.00' && v !== '0.00';
+            };
+
+            const odEsf = parse('lejosOdEsf');
+            const oiEsf = parse('lejosOiEsf');
+            const odCil = parse('lejosOdCil');
+            const oiCil = parse('lejosOiCil');
+            const odAdd = parse('lejosOdAdd');
+            const oiAdd = parse('lejosOiAdd');
+
+            const maxEsf = Math.max(Math.abs(odEsf), Math.abs(oiEsf));
+            const maxCil = Math.max(Math.abs(odCil), Math.abs(oiCil));
+            const maxAdd = Math.max(Math.abs(odAdd), Math.abs(oiAdd));
+
+            // ADD positivo en cualquiera de los dos ojos (> 0)
+            const tieneAdd = (maxAdd > 0) || (hasText('lejosOdAdd') && odAdd > 0) || (hasText('lejosOiAdd') && oiAdd > 0);
+            const tieneReceta = hasText('lejosOdEsf') || hasText('lejosOiEsf') || hasText('lejosOdCil') || hasText('lejosOiCil') || tieneAdd;
+
+            return {
+                odEsf, oiEsf, odCil, oiCil, odAdd, oiAdd,
+                maxEsf, maxCil, maxAdd,
+                tieneAdd,
+                tieneReceta
+            };
+        },
 
         armarSelectDiseno: function () {
-            this.cambiarTipo();
+            this.recalcularTodo();
         },
 
         disenosDeTipo: function (tipo) {
-            if (!DB) return [];
+            if (!DB || !DB.disenos) return [];
             return Object.entries(DB.disenos)
                 .filter(([k, d]) => d.tipo === tipo)
                 .map(([k, d]) => ({ id: k, ...d }));
         },
 
-        cambiarTipo: function () {
-            if (!DB) return;
-            const tipo = document.querySelector('input[name="tipoLente"]:checked').value;
-            const sel = document.getElementById('disenoSelect');
-            const opciones = this.disenosDeTipo(tipo);
-            sel.innerHTML = opciones.map(d => '<option value="' + d.id + '">' + d.nombre_cliente + '</option>').join('');
-            this.cambiarDiseno();
-        },
-
         disenoActual: function () {
             const sel = document.getElementById('disenoSelect');
             return sel ? sel.value : null;
+        },
+
+        tipoActual: function () {
+            const checked = document.querySelector('input[name="tipoLente"]:checked');
+            return checked ? checked.value : 'monofocal';
+        },
+
+        seleccionarTipoManual: function (tipo) {
+            const grad = this.obtenerGraduacion();
+            if (tipo === 'monofocal' && grad.tieneAdd) {
+                this.toast('Tu receta incluye adición para cerca (ADD). Para Monofocal borra el campo ADD, o continúa con Progresivo.', false);
+                const rProg = document.querySelector('input[name="tipoLente"][value="progresivo"]');
+                if (rProg) rProg.checked = true;
+                return;
+            }
+            if ((tipo === 'progresivo' || tipo === 'bifocal') && !grad.tieneAdd) {
+                this.toast('Para lentes multifocales o progresivos, ingresa el valor de ADD (adición) en tu receta.', false);
+                const addInput = document.getElementById('lejosOdAdd');
+                if (addInput) {
+                    addInput.focus();
+                    addInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                const rMono = document.querySelector('input[name="tipoLente"][value="monofocal"]');
+                if (rMono) rMono.checked = true;
+                return;
+            }
+            this.tipoManualUsuario = tipo;
+            this.recalcularTodo();
+        },
+
+        seleccionarOrigenManual: function (origen) {
+            const grad = this.obtenerGraduacion();
+            const tipo = this.tipoActual();
+            const ar = document.getElementById('tratAR') ? document.getElementById('tratAR').checked : true;
+            const stockCheck = this.verificarCompatibilidadStock(grad, tipo, this.materialId, ar);
+
+            if (origen === 'stock' && !stockCheck.compatible) {
+                this.toast(stockCheck.razon || 'Esta opción no está disponible para tu graduación.', false);
+                this.origenElegido = 'laboratorio';
+                const rLab = document.querySelector('input[name="origenFabricacion"][value="laboratorio"]');
+                if (rLab) rLab.checked = true;
+                this.recalcularTodo();
+                return;
+            }
+
+            this.origenElegido = origen;
+            this.recalcularTodo();
         },
 
         cambiarDiseno: function () {
@@ -748,13 +902,14 @@
                 desc.classList.remove('visible');
             }
             this.armarMateriales();
-            this.actualizarTotal();
+            this.recalcularTodo();
         },
 
         cambiarAR: function () {
-            document.getElementById('onixWrap').classList.toggle('visible', document.getElementById('tratAR').checked);
+            const arChecked = document.getElementById('tratAR').checked;
+            document.getElementById('onixWrap').classList.toggle('visible', arChecked);
             this.armarMateriales();
-            this.actualizarTotal();
+            this.recalcularTodo();
         },
 
         armarMateriales: function () {
@@ -769,18 +924,20 @@
                 this.materialId = disponibles[0] || null;
             }
             const box = document.getElementById('materialChecks');
-            box.innerHTML = disponibles.map(id => {
-                const mat = DB.materiales.find(m => m.id === id);
-                const nombre = mat ? mat.nombre_cliente : id;
-                const checked = id === this.materialId ? 'checked' : '';
-                return '<label class="check"><input type="radio" name="material" value="' + id +
-                    '" ' + checked + ' onchange="C.elegirMaterial(\'' + id + '\')"> ' + nombre + '</label>';
-            }).join('') || '<span style="color:var(--text-muted);font-size:0.85rem">No hay materiales disponibles para esta combinación, contáctanos.</span>';
+            if (box) {
+                box.innerHTML = disponibles.map(id => {
+                    const mat = DB.materiales.find(m => m.id === id);
+                    const nombre = mat ? mat.nombre_cliente : id;
+                    const checked = id === this.materialId ? 'checked' : '';
+                    return '<label class="check"><input type="radio" name="material" value="' + id +
+                        '" ' + checked + ' onchange="C.elegirMaterial(\'' + id + '\')"> ' + nombre + '</label>';
+                }).join('') || '<span style="color:var(--text-muted);font-size:0.85rem">No hay materiales disponibles para esta combinación, contáctanos.</span>';
+            }
         },
 
         elegirMaterial: function (id) {
             this.materialId = id;
-            this.actualizarTotal();
+            this.recalcularTodo();
         },
 
         toggleMarco: function () {
@@ -826,18 +983,9 @@
             for (const k of [2, 4, 6, 8, 10]) if (x <= k) return k;
             return null;
         },
-        maxAbs: function (idsCampo) {
-            let max = 0;
-            idsCampo.forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                const clean = (el.value || '').replace(/\s+/g, '').replace(',', '.');
-                const v = parseFloat(clean);
-                if (!isNaN(v)) max = Math.max(max, Math.abs(v));
-            });
-            return max;
-        },
+
         precioStock: function (stockKey, esfAbs, cilAbs) {
+            if (!DB || !DB.stock) return null;
             const m = DB.stock[stockKey];
             if (!m) return null;
             if (m.flat_solo_neutro !== undefined) {
@@ -865,56 +1013,267 @@
             return (val !== undefined && val !== null) ? val : null;
         },
 
-        /* Precios del JSON = por ojo → se multiplica × 2 (par) */
-        costoCristal: function () {
-            if (!DB) return { costo: null, origen: null };
-            const key = this.disenoActual();
-            const d = DB.disenos[key];
-            if (!d || !this.materialId) return { costo: null, origen: null };
-            const ar = document.getElementById('tratAR').checked;
-            const tabla = ar ? d.precio_con_ar : d.precio_sin_ar;
+        verificarCompatibilidadStock: function (grad, tipo, materialId, ar) {
+            if (!DB || !DB.stock || !DB.stock_map) {
+                return { compatible: false, razon: 'Opciones de confección no disponibles temporalmente', precioUnitario: null };
+            }
 
-            let costoLab = (tabla && tabla[this.materialId] !== undefined)
-                ? tabla[this.materialId] * 2
-                : null;
+            // Regla óptica: Progresivo / Multifocal / Bifocal siempre se fabrica a medida
+            if (tipo !== 'monofocal' || grad.tieneAdd) {
+                return {
+                    compatible: false,
+                    razon: 'Los lentes multifocales y progresivos se confeccionan siempre <strong>a medida</strong> mediante tallado digital personalizado.',
+                    precioUnitario: null
+                };
+            }
 
-            let costo = costoLab;
-            let origen = costoLab !== null ? 'laboratorio' : null;
+            const mapa = DB.stock_map[materialId];
+            if (!mapa) {
+                return {
+                    compatible: false,
+                    razon: 'Este material de alta tecnología se confecciona exclusivamente mediante <strong>fabricación a medida</strong>.',
+                    precioUnitario: null
+                };
+            }
 
-            // STOCK solo aplica para monofocal si el material está mapeado y en rango
-            if (d.tipo === 'monofocal' && DB.stock_map && DB.stock_map[this.materialId]) {
-                const mapa = DB.stock_map[this.materialId];
-                const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
-                if (stockKey) {
-                    const esfAbs = this.maxAbs(['lejosOdEsf', 'lejosOiEsf']);
-                    const cilAbs = this.maxAbs(['lejosOdCil', 'lejosOiCil']);
-                    const cStock = this.precioStock(stockKey, esfAbs, cilAbs);
-                    if (cStock !== null) {
-                        const stockPar = cStock * 2;
-                        // Si hay stock y lab → se elige el MÁS BARATO (min)
-                        if (costoLab === null || stockPar < costoLab) {
-                            costo = stockPar;
-                            origen = 'stock';
-                        } else {
-                            costo = costoLab;
-                            origen = 'laboratorio';
-                        }
-                    }
+            const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
+            if (!stockKey || !DB.stock[stockKey]) {
+                return {
+                    compatible: false,
+                    razon: 'Esta combinación de material y tratamiento se confecciona mediante <strong>fabricación a medida</strong>.',
+                    precioUnitario: null
+                };
+            }
+
+            const precioUnitario = this.precioStock(stockKey, grad.maxEsf, grad.maxCil);
+            if (precioUnitario === null) {
+                let detalle = 'Graduación especial';
+                if (grad.maxEsf > 6) detalle = 'Graduación esférica alta (+/-' + grad.maxEsf.toFixed(2) + ')';
+                else if (grad.maxCil > 4) detalle = 'Astigmatismo/cilindro alto (-' + grad.maxCil.toFixed(2) + ')';
+                return {
+                    compatible: false,
+                    razon: detalle + ': tus cristales requieren <strong>fabricación personalizada a medida</strong> para asegurar máxima nitidez y menor grosor.',
+                    precioUnitario: null
+                };
+            }
+
+            return {
+                compatible: true,
+                razon: 'Graduación compatible con confección de entrega rápida.',
+                precioUnitario: precioUnitario
+            };
+        },
+
+        /* ========================================================
+           MOTOR CENTRAL: RECALCULAR TODO EN TIEMPO REAL
+           ======================================================== */
+        recalcularTodo: function () {
+            if (!DB) return;
+
+            const grad = this.obtenerGraduacion();
+            const ar = document.getElementById('tratAR') ? document.getElementById('tratAR').checked : true;
+
+            // 1. REGLA MONOFOCAL vs MULTIFOCAL
+            const rMonofocal = document.querySelector('input[name="tipoLente"][value="monofocal"]');
+            const rProgresivo = document.querySelector('input[name="tipoLente"][value="progresivo"]');
+            const rBifocal = document.querySelector('input[name="tipoLente"][value="bifocal"]');
+            const lblTipoMonofocal = document.getElementById('lblTipoMonofocal');
+            const lblTipoProgresivo = document.getElementById('lblTipoProgresivo');
+            const lblTipoBifocal = document.getElementById('lblTipoBifocal');
+            const badgeMonofocal = document.getElementById('badgeMonofocal');
+            const badgeProgresivo = document.getElementById('badgeProgresivo');
+            const badgeBifocal = document.getElementById('badgeBifocal');
+            const tipoNota = document.getElementById('tipoLenteNota');
+
+            let tipoDeseado = this.tipoActual();
+
+            if (grad.tieneAdd) {
+                // Hay ADD -> Bloquear Monofocal y habilitar/recomendar Progresivo
+                if (rMonofocal) {
+                    rMonofocal.disabled = true;
+                    rMonofocal.checked = false;
+                }
+                if (lblTipoMonofocal) {
+                    lblTipoMonofocal.style.opacity = '0.45';
+                    lblTipoMonofocal.style.cursor = 'not-allowed';
+                }
+                if (badgeMonofocal) {
+                    badgeMonofocal.innerHTML = '<span class="badge-incompatible"><i class="fas fa-ban"></i> No recomendado (tiene ADD)</span>';
+                }
+
+                if (rProgresivo) rProgresivo.disabled = false;
+                if (rBifocal) rBifocal.disabled = false;
+                if (lblTipoProgresivo) { lblTipoProgresivo.style.opacity = '1'; lblTipoProgresivo.style.cursor = 'pointer'; }
+                if (lblTipoBifocal) { lblTipoBifocal.style.opacity = '1'; lblTipoBifocal.style.cursor = 'pointer'; }
+
+                if (badgeProgresivo) badgeProgresivo.innerHTML = '<span class="badge-sugerido"><i class="fas fa-check"></i> Recomendado</span>';
+                if (badgeBifocal) badgeBifocal.innerHTML = '<span class="badge-secundario">Alternativa</span>';
+
+                // Si el usuario eligió bifocal, mantenerlo; sino, Progresivo por defecto
+                if (this.tipoManualUsuario === 'bifocal') {
+                    tipoDeseado = 'bifocal';
+                } else {
+                    tipoDeseado = 'progresivo';
+                    this.tipoManualUsuario = 'progresivo';
+                }
+
+                if (tipoNota) {
+                    tipoNota.style.display = 'block';
+                    tipoNota.innerHTML = '<i class="fas fa-magic"></i> <strong>Tu receta incluye visión de cerca (ADD +' + grad.maxAdd.toFixed(2) + '):</strong> Recomendamos <strong>Progresivo</strong> para ver nítido de lejos, intermedio (pantallas) y cerca sin líneas divisorias.';
+                }
+            } else {
+                // Sin ADD -> Monofocal habilitado, Progresivo y Bifocal bloqueados
+                if (rMonofocal) {
+                    rMonofocal.disabled = false;
+                }
+                if (lblTipoMonofocal) {
+                    lblTipoMonofocal.style.opacity = '1';
+                    lblTipoMonofocal.style.cursor = 'pointer';
+                }
+                if (badgeMonofocal) badgeMonofocal.innerHTML = '<span class="badge-sugerido"><i class="fas fa-check"></i> Recomendado</span>';
+
+                if (rProgresivo) rProgresivo.disabled = true;
+                if (rBifocal) rBifocal.disabled = true;
+                if (lblTipoProgresivo) { lblTipoProgresivo.style.opacity = '0.45'; lblTipoProgresivo.style.cursor = 'not-allowed'; }
+                if (lblTipoBifocal) { lblTipoBifocal.style.opacity = '0.45'; lblTipoBifocal.style.cursor = 'not-allowed'; }
+
+                if (badgeProgresivo) badgeProgresivo.innerHTML = '<span class="badge-secundario">Requiere ADD</span>';
+                if (badgeBifocal) badgeBifocal.innerHTML = '<span class="badge-secundario">Requiere ADD</span>';
+
+                tipoDeseado = 'monofocal';
+                this.tipoManualUsuario = 'monofocal';
+
+                if (tipoNota) {
+                    tipoNota.style.display = 'none';
                 }
             }
 
-            // Onix se suma al costo ANTES de la fórmula (solo si AR está marcado, 10.000 total par)
-            if (costo !== null && ar && document.getElementById('tratOnix').checked) {
+            // Actualizar radio buttons de tipoLente
+            const radioTarget = document.querySelector('input[name="tipoLente"][value="' + tipoDeseado + '"]');
+            if (radioTarget && !radioTarget.checked) {
+                radioTarget.checked = true;
+            }
+
+            // 2. ACTUALIZAR SELECT DE DISEÑOS SEGÚN TIPO
+            const selDiseno = document.getElementById('disenoSelect');
+            const disenosDisponibles = this.disenosDeTipo(tipoDeseado);
+            const disenoPrevio = selDiseno.value;
+            const sigueValido = disenosDisponibles.some(d => d.id === disenoPrevio);
+
+            selDiseno.innerHTML = disenosDisponibles.map(d => {
+                return '<option value="' + d.id + '">' + d.nombre_cliente + '</option>';
+            }).join('');
+
+            if (sigueValido) {
+                selDiseno.value = disenoPrevio;
+            } else if (disenosDisponibles.length > 0) {
+                selDiseno.value = disenosDisponibles[0].id;
+            }
+
+            const disenoKey = selDiseno.value;
+            const disenoObj = DB.disenos[disenoKey];
+            const desc = document.getElementById('disenoDesc');
+            if (disenoObj && disenoObj.descripcion_cliente) {
+                desc.textContent = disenoObj.descripcion_cliente;
+                desc.classList.add('visible');
+            } else {
+                desc.classList.remove('visible');
+            }
+
+            // 3. REARMAR MATERIALES SI CAMBIÓ EL DISEÑO
+            const tablaPrecios = ar ? (disenoObj && disenoObj.precio_con_ar) : (disenoObj && disenoObj.precio_sin_ar);
+            const materialesDisponibles = Object.keys(tablaPrecios || {});
+            if (!materialesDisponibles.includes(this.materialId)) {
+                this.materialId = materialesDisponibles[0] || null;
+            }
+            const boxMat = document.getElementById('materialChecks');
+            if (boxMat) {
+                boxMat.innerHTML = materialesDisponibles.map(id => {
+                    const mat = DB.materiales.find(m => m.id === id);
+                    const nombre = mat ? mat.nombre_cliente : id;
+                    const checked = id === this.materialId ? 'checked' : '';
+                    return '<label class="check"><input type="radio" name="material" value="' + id +
+                        '" ' + checked + ' onchange="C.elegirMaterial(\'' + id + '\')"> ' + nombre + '</label>';
+                }).join('') || '<span style="color:var(--text-muted);font-size:0.85rem">No hay materiales disponibles para esta combinación, contáctanos.</span>';
+            }
+
+            // 4. VERIFICAR MODO DE CONFECCIÓN (Entrega rápida vs Fabricación a medida)
+            const stockInfo = this.verificarCompatibilidadStock(grad, tipoDeseado, this.materialId, ar);
+            const lblStock = document.getElementById('lblOrigenStock');
+            const lblLab = document.getElementById('lblOrigenLab');
+            const inputStock = document.querySelector('input[name="origenFabricacion"][value="stock"]');
+            const inputLab = document.querySelector('input[name="origenFabricacion"][value="laboratorio"]');
+            const badgeStock = document.getElementById('badgeStock');
+            const badgeLab = document.getElementById('badgeLab');
+            const origenAviso = document.getElementById('origenAviso');
+
+            // Diseños de alta definición como Cross Compress o MyoFix requieren siempre fabricación a medida
+            const disenoRequiereLab = (disenoKey === 'monofocal_cross_compress' || disenoKey === 'cross_myofix' || tipoDeseado !== 'monofocal');
+
+            if (stockInfo.compatible && !disenoRequiereLab) {
+                if (inputStock) inputStock.disabled = false;
+                if (lblStock) { lblStock.style.opacity = '1'; lblStock.style.pointerEvents = ''; }
+                if (badgeStock) badgeStock.innerHTML = '<span class="badge-sugerido">Disponible</span>';
+                if (badgeLab) badgeLab.innerHTML = '<span class="badge-secundario">Personalizado</span>';
+
+                // Si el usuario no forzó a medida, usar entrega rápida
+                if (this.origenElegido !== 'laboratorio') {
+                    this.origenElegido = 'stock';
+                    if (inputStock) inputStock.checked = true;
+                } else {
+                    if (inputLab) inputLab.checked = true;
+                }
+
+                if (origenAviso) origenAviso.style.display = 'none';
+            } else {
+                // Entrega rápida no disponible -> Fabricación a medida obligatoria
+                if (inputStock) inputStock.disabled = true;
+                if (lblStock) { lblStock.style.opacity = '0.45'; lblStock.style.pointerEvents = 'none'; }
+                if (badgeStock) badgeStock.innerHTML = '<span class="badge-incompatible">No disponible para tu receta</span>';
+                if (badgeLab) badgeLab.innerHTML = '<span class="badge-sugerido"><i class="fas fa-check"></i> Recomendado para tu receta</span>';
+
+                this.origenElegido = 'laboratorio';
+                if (inputLab) inputLab.checked = true;
+
+                if (origenAviso) {
+                    origenAviso.style.display = 'block';
+                    const mensaje = disenoRequiereLab && stockInfo.compatible
+                        ? 'El diseño seleccionado (' + (disenoObj ? disenoObj.nombre_cliente : '') + ') se confecciona exclusivamente mediante <strong>fabricación a medida digital</strong>.'
+                        : stockInfo.razon;
+                    origenAviso.innerHTML = '<i class="fas fa-info-circle"></i> ' + mensaje;
+                }
+            }
+
+            // 5. CALCULAR COSTO Y PRECIO FINAL
+            let costo = null;
+            let origenFinal = this.origenElegido;
+
+            if (this.origenElegido === 'stock' && stockInfo.compatible && !disenoRequiereLab) {
+                costo = stockInfo.precioUnitario * 2;
+                origenFinal = 'stock';
+            } else {
+                const costoLabUnitario = tablaPrecios && tablaPrecios[this.materialId] !== undefined
+                    ? tablaPrecios[this.materialId]
+                    : null;
+                costo = costoLabUnitario !== null ? costoLabUnitario * 2 : null;
+                origenFinal = 'laboratorio';
+            }
+
+            // Extra Onix si aplica
+            if (costo !== null && ar && document.getElementById('tratOnix') && document.getElementById('tratOnix').checked) {
                 const onixExtra = (DB.reglas_precio_cliente && DB.reglas_precio_cliente.capa_onix_extra && DB.reglas_precio_cliente.capa_onix_extra.costo_extra_total) || 10000;
                 costo += onixExtra;
             }
-            return { costo: costo, origen: origen };
+
+            this.costoActual = costo;
+            this.origenActual = origenFinal;
+
+            this.actualizarTotal();
         },
 
         actualizarTotal: function () {
             if (!DB) return;
-            const { costo } = this.costoCristal();
-            const precioCristalesCli = calcularPrecioCliente(costo);
+            const precioCristalesCli = calcularPrecioCliente(this.costoActual);
             const trae = document.querySelector('input[name="tieneMarco"][value="si"]').checked;
             const marco = (!trae && this.marcoElegido) ? this.marcoElegido.precio : 0;
 
@@ -923,11 +1282,17 @@
                 : (this.marcoElegido ? this.marcoElegido.nombre : 'Sin marco elegido');
 
             const totalEl = document.getElementById('totalTxt');
+            const grad = this.obtenerGraduacion();
+
             if (precioCristalesCli === null) {
-                totalEl.textContent = 'Completa tu receta';
+                totalEl.textContent = grad.tieneReceta ? 'Combinación no disponible' : 'Completa tu receta';
                 return;
             }
             totalEl.textContent = money(precioCristalesCli + marco);
+        },
+
+        costoCristal: function () {
+            return { costo: this.costoActual, origen: this.origenActual };
         },
 
         val: function (id) {
@@ -952,7 +1317,7 @@
                 return;
             }
             const nombre = (document.getElementById('nombre').value || '').trim() || 'Sin nombre';
-            const tipo = document.querySelector('input[name="tipoLente"]:checked').value;
+            const tipo = this.tipoActual();
             const disenoKey = this.disenoActual();
             const diseno = DB.disenos[disenoKey];
             const material = DB.materiales.find(m => m.id === this.materialId);
@@ -970,7 +1335,6 @@
 
             const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
             const montura = costo !== null ? FIJO : 0;
-            // precio solo de cristales (sin el fijo de montaje) para el payload
             const precioSoloCristales = precioCristalesCli - montura;
 
             const tratamientos = [];
@@ -998,7 +1362,6 @@
                 precioCristalesCliente: precioSoloCristales,
                 montura: montura,
                 totalCliente: total,
-                // extras del sistema nuevo
                 diseno: diseno ? (diseno.nombre_interno || disenoKey) : disenoKey,
                 material: material ? (material.nombre_interno || this.materialId) : this.materialId,
                 antirreflejo: ar,
