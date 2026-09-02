@@ -3,92 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cotizar cristales | SACC & VISION</title>
+    <title>Cotizador de Cristales y Recetas Ópticas | SACC & VISION Santiago</title>
+    <meta name="description" content="Cotiza online el precio exacto de tus cristales con tu receta médica. Monofocales, bifocales, multifocales con antirreflejo y filtro azul en Santiago de Chile.">
+    <meta name="keywords" content="cotizar cristales, precio lentes ópticos, cristales monofocales, multifocales precio, cotizador receta óptica, antirreflejo Onix, óptica Santiago cristales">
+    <meta name="author" content="SACC & VISION">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://saccvision.cl/cotizar.html">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SACC & VISION">
+    <meta property="og:url" content="https://saccvision.cl/cotizar.html">
+    <meta property="og:title" content="Cotizador de Cristales y Recetas Ópticas | SACC & VISION">
+    <meta property="og:description" content="Cotiza online el valor de tus cristales ópticos con tu receta. Monofocales, multifocales y tratamientos premium en Santiago.">
+    <meta property="og:image" content="https://saccvision.cl/icons/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Cotizador de Cristales SACC & VISION">
+    <meta property="og:locale" content="es_CL">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Cotizador de Cristales Ópticos | SACC & VISION">
+    <meta name="twitter:description" content="Calcula el valor de tus cristales ópticos en segundos con tu receta en Santiago de Chile.">
+    <meta name="twitter:image" content="https://saccvision.cl/icons/og-image.png">
+
+    <!-- Favicon & PWA -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121315">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SACC & VISION">
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <!-- Mismo catálogo real de marcos que usa index.html (no se inventan marcos) -->
     <script src="datos-imagenes.js"></script>
+    <script src="js/utils.js"></script>
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Cotizador de Cristales Ópticos y Recetas - SACC & VISION",
+      "serviceType": "Cotización de Cristales y Montaje Óptico",
+      "provider": {
+        "@type": "Optician",
+        "name": "SACC & VISION",
+        "image": "https://saccvision.cl/icons/og-image.png",
+        "logo": "https://saccvision.cl/logos-webp/logo-sacc.webp",
+        "telephone": "+56912345678",
+        "priceRange": "$$",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Santiago",
+          "addressRegion": "Región Metropolitana",
+          "addressCountry": "CL"
+        }
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://saccvision.cl/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Cotizador de Cristales",
+            "item": "https://saccvision.cl/cotizar.html"
+          }
+        ]
+      }
+    }
+    </script>
     <style>
-        :root {
-            --primary: #121315;
-            --primary-light: #18191c;
-            --secondary: #1e1f23;
-            --accent: #C5A08E;
-            --accent-hover: #D8B4A2;
-            --accent-glow: rgba(197, 160, 142, 0.25);
-            --success: #22C55E;
-            --bg: #121315;
-            --bg-card: #1A1B1E;
-            --bg-elevated: #232529;
-            --bg-input: #2A2C31;
-            --text: #F7F5F0;
-            --text-secondary: #B0AAA2;
-            --text-muted: #6F6B65;
-            --border: #34363C;
-            --border-light: #44474F;
-            --radius: 20px;
-            --radius-sm: 10px;
-            --radius-xs: 6px;
-            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-        .header {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(18, 19, 21, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border);
-            padding: 0.75rem 0;
-        }
-        .header-content {
-            max-width: 1440px; margin: 0 auto; padding: 0 1.5rem;
-            display: flex; justify-content: space-between; align-items: center; gap: 1.25rem;
-        }
-        .logo {
-            display: flex; align-items: center; gap: 0.75rem;
-            font-size: 1.25rem; font-weight: 800; color: var(--text); text-decoration: none;
-            white-space: nowrap; letter-spacing: -0.5px;
-        }
-        .logo-img { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; flex-shrink: 0; }
-        .main-nav {
-            display: flex; gap: 0.5rem; background: var(--bg-elevated);
-            border: 1px solid var(--border); border-radius: 50px; padding: 4px;
-        }
-        .nav-btn {
-            padding: 0.6rem 1.4rem; border: none; border-radius: 50px;
-            background: transparent; color: var(--text-muted); text-decoration: none;
-            font-size: 0.9rem; font-weight: 500; transition: var(--transition);
-            display: flex; align-items: center; gap: 0.5rem; white-space: nowrap;
-        }
-        .nav-btn:hover { color: var(--text); }
-        .nav-btn.active {
-            background: var(--accent); color: #121315; font-weight: 600;
-            box-shadow: 0 4px 20px rgba(197, 160, 142, 0.35);
-        }
-        .search-container {
-            position: relative; flex: 1; max-width: 380px;
-        }
-        .search-input {
-            width: 100%; padding: 0.65rem 1rem 0.65rem 2.6rem; background: var(--bg-input);
-            border: 1px solid var(--border); border-radius: 50px; color: var(--text);
-            font-family: inherit; font-size: 0.88rem; transition: var(--transition);
-        }
-        .search-input:focus {
-            outline: none; border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(197, 160, 142, 0.15);
-        }
-        .search-input::placeholder { color: var(--text-muted); }
-        .search-icon {
-            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
-            color: var(--text-muted); font-size: 0.85rem;
-        }
         .badge-sugerido {
             display: inline-flex; align-items: center; gap: 0.25rem;
             font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
@@ -240,21 +243,6 @@
             display: none; max-width: 100%; max-height: 180px; margin-top: 0.75rem;
             border-radius: 8px; border: 1px solid var(--border);
         }
-        .toast {
-            position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
-            background: var(--bg-elevated); border: 1px solid var(--border);
-            padding: 0.85rem 1.25rem; border-radius: var(--radius-sm);
-            z-index: 999; font-size: 0.9rem; display: none; max-width: 90%;
-        }
-        .toast.show { display: block; }
-        .toast.ok { border-left: 3px solid var(--success); }
-        .toast.err { border-left: 3px solid #E06C75; }
-        @media (max-width: 768px) {
-            .header-content { flex-wrap: wrap; gap: 0.75rem; }
-            .search-container { order: 3; max-width: 100%; width: 100%; }
-            .main-nav { order: 2; width: 100%; justify-content: center; }
-            .nav-btn { flex: 1; justify-content: center; padding: 0.55rem 0.75rem; font-size: 0.82rem; }
-        }
         @media (max-width: 600px) {
             .rx-grid { grid-template-columns: 55px 1fr 1fr; }
             .checks { grid-template-columns: 1fr; }
@@ -305,7 +293,7 @@
 
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="headerSearchInput" placeholder="Buscar marca o modelo..." onkeydown="if(event.key==='Enter'&&this.value.trim()){location.href='catalogo.html?buscar='+encodeURIComponent(this.value.trim())}">
+                <input type="text" class="search-input" id="headerSearchInput" placeholder="Buscar marca o modelo..." aria-label="Buscar marca o modelo de marco" onkeydown="if(event.key==='Enter'&&this.value.trim()){location.href='catalogo.html?buscar='+encodeURIComponent(this.value.trim())}">
             </div>
         </div>
     </header>
@@ -322,14 +310,14 @@
             <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.75rem">
                 Sube una foto clara y derecha. Intentaremos rellenar lejos/cerca solos. Luego puedes corregir y elegir tratamientos.
             </p>
-            <input class="file-input" type="file" id="fotoReceta" accept="image/*" capture="environment">
+            <input class="file-input" type="file" id="fotoReceta" accept="image/*" capture="environment" aria-label="Subir foto de la receta médica">
             <div id="ocrStatus"></div>
             <div class="ocr-loading" id="ocrLoading">
                 <div class="ocr-spinner"></div>
                 <div id="ocrLoadingText">Preparando lectura…</div>
                 <div class="ocr-bar-wrap"><div class="ocr-bar" id="ocrBar"></div></div>
             </div>
-            <img id="ocrPreview" alt="Vista previa receta">
+            <img id="ocrPreview" alt="Vista previa de receta médica" decoding="async">
         </div>
 
         <div class="card">
@@ -338,21 +326,21 @@
                 <div></div>
                 <div class="rx-head">OD</div>
                 <div class="rx-head">OI</div>
-                <label>ESF</label>
-                <input type="text" id="lejosOdEsf" placeholder="+0.00" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="lejosOiEsf" placeholder="+0.00" inputmode="decimal" oninput="C.recalcularTodo()">
-                <label>CIL</label>
-                <input type="text" id="lejosOdCil" placeholder="-0.00" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="lejosOiCil" placeholder="-0.00" inputmode="decimal" oninput="C.recalcularTodo()">
-                <label>EJE</label>
-                <input type="text" id="lejosOdEje" placeholder="180" inputmode="numeric" oninput="C.recalcularTodo()">
-                <input type="text" id="lejosOiEje" placeholder="180" inputmode="numeric" oninput="C.recalcularTodo()">
-                <label>DP</label>
-                <input type="text" id="lejosOdDp" placeholder="32" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="lejosOiDp" placeholder="32" inputmode="decimal" oninput="C.recalcularTodo()">
-                <label>ADD</label>
-                <input type="text" id="lejosOdAdd" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="lejosOiAdd" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
+                <label for="lejosOdEsf">ESF</label>
+                <input type="text" id="lejosOdEsf" placeholder="+0.00" inputmode="decimal" aria-label="Esfera Ojo Derecho Lejos" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiEsf" placeholder="+0.00" inputmode="decimal" aria-label="Esfera Ojo Izquierdo Lejos" oninput="C.recalcularTodo()">
+                <label for="lejosOdCil">CIL</label>
+                <input type="text" id="lejosOdCil" placeholder="-0.00" inputmode="decimal" aria-label="Cilindro Ojo Derecho Lejos" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiCil" placeholder="-0.00" inputmode="decimal" aria-label="Cilindro Ojo Izquierdo Lejos" oninput="C.recalcularTodo()">
+                <label for="lejosOdEje">EJE</label>
+                <input type="text" id="lejosOdEje" placeholder="180" inputmode="numeric" aria-label="Eje Ojo Derecho Lejos" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiEje" placeholder="180" inputmode="numeric" aria-label="Eje Ojo Izquierdo Lejos" oninput="C.recalcularTodo()">
+                <label for="lejosOdDp">DP</label>
+                <input type="text" id="lejosOdDp" placeholder="32" inputmode="decimal" aria-label="Distancia Pupilar Ojo Derecho Lejos" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiDp" placeholder="32" inputmode="decimal" aria-label="Distancia Pupilar Ojo Izquierdo Lejos" oninput="C.recalcularTodo()">
+                <label for="lejosOdAdd">ADD</label>
+                <input type="text" id="lejosOdAdd" placeholder="" inputmode="decimal" aria-label="Adición Ojo Derecho Lejos" oninput="C.recalcularTodo()">
+                <input type="text" id="lejosOiAdd" placeholder="" inputmode="decimal" aria-label="Adición Ojo Izquierdo Lejos" oninput="C.recalcularTodo()">
             </div>
         </div>
 
@@ -362,18 +350,18 @@
                 <div></div>
                 <div class="rx-head">OD</div>
                 <div class="rx-head">OI</div>
-                <label>ESF</label>
-                <input type="text" id="cercaOdEsf" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="cercaOiEsf" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
-                <label>CIL</label>
-                <input type="text" id="cercaOdCil" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="cercaOiCil" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
-                <label>EJE</label>
-                <input type="text" id="cercaOdEje" placeholder="" inputmode="numeric" oninput="C.recalcularTodo()">
-                <input type="text" id="cercaOiEje" placeholder="" inputmode="numeric" oninput="C.recalcularTodo()">
-                <label>DP</label>
-                <input type="text" id="cercaOdDp" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
-                <input type="text" id="cercaOiDp" placeholder="" inputmode="decimal" oninput="C.recalcularTodo()">
+                <label for="cercaOdEsf">ESF</label>
+                <input type="text" id="cercaOdEsf" placeholder="" inputmode="decimal" aria-label="Esfera Ojo Derecho Cerca" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiEsf" placeholder="" inputmode="decimal" aria-label="Esfera Ojo Izquierdo Cerca" oninput="C.recalcularTodo()">
+                <label for="cercaOdCil">CIL</label>
+                <input type="text" id="cercaOdCil" placeholder="" inputmode="decimal" aria-label="Cilindro Ojo Derecho Cerca" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiCil" placeholder="" inputmode="decimal" aria-label="Cilindro Ojo Izquierdo Cerca" oninput="C.recalcularTodo()">
+                <label for="cercaOdEje">EJE</label>
+                <input type="text" id="cercaOdEje" placeholder="" inputmode="numeric" aria-label="Eje Ojo Derecho Cerca" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiEje" placeholder="" inputmode="numeric" aria-label="Eje Ojo Izquierdo Cerca" oninput="C.recalcularTodo()">
+                <label for="cercaOdDp">DP</label>
+                <input type="text" id="cercaOdDp" placeholder="" inputmode="decimal" aria-label="Distancia Pupilar Ojo Derecho Cerca" oninput="C.recalcularTodo()">
+                <input type="text" id="cercaOiDp" placeholder="" inputmode="decimal" aria-label="Distancia Pupilar Ojo Izquierdo Cerca" oninput="C.recalcularTodo()">
             </div>
         </div>
 
@@ -395,10 +383,10 @@
             </div>
             <div id="tipoLenteNota" style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 0.85rem;padding:0.45rem 0.75rem;background:var(--bg-elevated);border-left:3px solid var(--accent);border-radius:var(--radius-xs);display:none"></div>
 
-            <label style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:0.35rem">
+            <label for="disenoSelect" style="font-size:0.8rem;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:0.35rem">
                 Diseño del cristal:
             </label>
-            <select class="sel" id="disenoSelect" onchange="C.cambiarDiseno()"></select>
+            <select class="sel" id="disenoSelect" aria-label="Seleccionar diseño del cristal" onchange="C.cambiarDiseno()"></select>
             <div class="diseno-desc" id="disenoDesc"></div>
 
             <!-- Opción de confección y entrega -->
@@ -408,7 +396,7 @@
                 </label>
                 <div class="radios" id="origenRadios">
                     <label id="lblOrigenStock" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.88rem;cursor:pointer">
-                        <input type="radio" name="origenFabricacion" value="stock" checked onchange="C.seleccionarOrigenManual('stock')">
+                    <input type="radio" name="origenFabricacion" value="stock" checked onchange="C.seleccionarOrigenManual('stock')">
                         <span><strong>Entrega rápida</strong> (Listo en pocos días)</span><span id="badgeStock"></span>
                     </label>
                     <label id="lblOrigenLab" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.88rem;cursor:pointer">
@@ -444,7 +432,7 @@
                 <label><input type="radio" name="tieneMarco" value="no" onchange="C.toggleMarco()"> Elegir marco del catálogo</label>
             </div>
             <div class="marco-wrap" id="marcoWrap">
-                <input type="text" id="marcoBuscar" placeholder="Escribe marca o modelo (ej. Vespa, Silmo...)" oninput="C.buscarMarco(this.value)">
+                <input type="text" id="marcoBuscar" placeholder="Escribe marca o modelo (ej. Vespa, Silmo...)" aria-label="Buscar marca o modelo de marco" oninput="C.buscarMarco(this.value)">
                 <div class="marco-sugerencias" id="marcoSugerencias"></div>
                 <div id="marcoSeleccionado"></div>
             </div>
@@ -452,8 +440,8 @@
 
         <div class="card">
             <h3><i class="fas fa-phone"></i> Tus datos</h3>
-            <input class="contact-input" type="text" id="nombre" placeholder="Nombre">
-            <input class="contact-input" type="tel" id="telefono" placeholder="Teléfono / WhatsApp *">
+            <input class="contact-input" type="text" id="nombre" placeholder="Nombre" aria-label="Nombre completo" autocomplete="name">
+            <input class="contact-input" type="tel" id="telefono" placeholder="Teléfono / WhatsApp *" aria-label="Número de teléfono o WhatsApp" autocomplete="tel">
         </div>
 
         <div class="total-box">
@@ -478,14 +466,20 @@
         <p class="nota">Te contactaremos al teléfono indicado para coordinar demora y entrega.</p>
     </main>
 
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>SACC & VISION &copy; 2026 - Cotizador de cristales ópticos</p>
+    </footer>
+
     <div class="toast" id="toast"></div>
 
     <script>
     /* =========================================================
-       1) CARGA DE PRECIOS DESDE JSON (precios_optiland.json)
+       1) CARGA DE PRECIOS DESDE JSON (data/precios_optiland.json)
        ========================================================= */
     let DB = null;
-    let dbListo = fetch('precios_optiland.json', { cache: 'no-cache' })
+    let dbListo = fetch('data/precios_optiland.json', { cache: 'no-cache' })
+        .catch(() => fetch('precios_optiland.json', { cache: 'no-cache' }))
         .then(r => {
             if (!r.ok) throw new Error('HTTP ' + r.status + ' al pedir precios_optiland.json');
             return r.json();
@@ -500,12 +494,10 @@
             aviso.className = 'diseno-desc visible';
             aviso.style.borderColor = '#E06C75';
             aviso.style.color = '#FFB3BA';
-            aviso.textContent = 'No se pudo cargar precios_optiland.json. Revisa que el archivo se llame exactamente así y esté en la misma carpeta que cotizar.html.';
+            aviso.textContent = 'No se pudo cargar precios_optiland.json. Revisa que el archivo se encuentre en data/precios_optiland.json.';
             sel.insertAdjacentElement('afterend', aviso);
             document.getElementById('btnEnviar').disabled = true;
         });
-
-    function money(n) { return '$' + Math.round(Number(n || 0)).toLocaleString('es-CL'); }
 
     /* Fórmula de negocio:
        precio_cliente = round(costo_par * 1.19 * 1.60) + 16000
@@ -516,78 +508,6 @@
         const MARGEN = 1.60;
         const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
         return Math.round(Number(costo) * IVA * MARGEN) + FIJO;
-    }
-
-    /* =========================================================
-       2) BUSCADOR DE MARCOS
-       ========================================================= */
-    const CATEGORIAS_MARCO = {
-        "ECONOMICOS": [
-            { nombre: "GATTIZONI", precio: 10000 }, { nombre: "GEORGE", precio: 10000 },
-            { nombre: "JORGIO", precio: 10000 }, { nombre: "LE GIRO", precio: 10000 }
-        ],
-        "MEDIA": [
-            { nombre: "ANGELO FALCONI", precio: 24000 }, { nombre: "JEAN DE PARIS", precio: 24000 },
-            { nombre: "FOOSE", precio: 38000 }, { nombre: "VESPA DEPORTIVO", precio: 28600 },
-            { nombre: "VESPA", precio: 30500, precioMax: 38000 }, { nombre: "LUXOR", precio: 35700 }
-        ],
-        "PREMIUM": [
-            { nombre: "LINEA VIGO", precio: 42900 }, { nombre: "GAME DAY", precio: 48200 },
-            { nombre: "MAXCOME", precio: 46400 }, { nombre: "SILMO", precio: 44000 },
-            { nombre: "SILMO ÓPTICO", precio: 44000 }, { nombre: "SILMO SOBRELENTE", precio: 51200 },
-            { nombre: "LINEA VIGO SOBRELENTE", precio: 46400 }, { nombre: "POLO", precio: 47600 }
-        ],
-        "SOL": [
-            { nombre: "VESPA SOL", precio: 35700 }, { nombre: "LACROSSE SOL", precio: 46400 },
-            { nombre: "ICE LOOK SOL", precio: 53600 }, { nombre: "SILMO SOL", precio: 40500 }
-        ],
-        "NIÑOS": [
-            { nombre: "VESPA KIDS", precio: 16700 }, { nombre: "VESPA KIDS SOL", precio: 24990 },
-            { nombre: "MOODKIDS", precio: 35700 }, { nombre: "MOODKIDS SOBRELENTE", precio: 35700 },
-            { nombre: "FOOSE", precio: 16700 }, { nombre: "VESPA PEBAX KIDS", precio: 44000 }
-        ],
-        "SEGURIDAD Y ANTIPARRA": [
-            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", precio: 7500, precioMax: 27500 }
-        ]
-    };
-    function obtenerInfoMarcaLocal(nombreMarca) {
-        for (const marcas of Object.values(CATEGORIAS_MARCO)) {
-            const enc = marcas.find(m => m.nombre === nombreMarca);
-            if (enc) return { precio: enc.precio, precioMax: enc.precioMax || null };
-        }
-        return { precio: 0, precioMax: null };
-    }
-    function normalizarTextoBusqueda(texto) {
-        return String(texto || '')
-            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase().replace(/[^a-z0-9]+/g, '');
-    }
-    function formatoPrecioMarco(precio, precioMax) {
-        if (!precio) return '';
-        let txt = money(precio);
-        if (precioMax) txt += ' - ' + money(precioMax);
-        return txt;
-    }
-    function buscarMarcosReal(query, limite) {
-        const f = normalizarTextoBusqueda(query);
-        if (!f || typeof catalogoImagenes === 'undefined') return [];
-        const out = [];
-        for (const [marca, imagenes] of Object.entries(catalogoImagenes || {})) {
-            for (const img of (Array.isArray(imagenes) ? imagenes : [])) {
-                const imgTexto = String(img || '');
-                const nombre = imgTexto.split(/[\\/]/).pop().replace(/\.[^.]+$/, '');
-                const nn = normalizarTextoBusqueda(nombre);
-                const mn = normalizarTextoBusqueda(marca);
-                if (!(nn.includes(f) || mn.includes(f))) continue;
-                const info = obtenerInfoMarcaLocal(marca);
-                const ruta = imgTexto.includes('/')
-                    ? (imgTexto.startsWith('imagenes-webp/') ? imgTexto : 'imagenes-webp/' + imgTexto)
-                    : `imagenes-webp/${marca}/${imgTexto}`;
-                out.push({ url: ruta, nombre, marca, precio: info.precio || 0, precioMax: info.precioMax || null, exacto: nn === f });
-            }
-        }
-        out.sort((a, b) => Number(b.exacto) - Number(a.exacto));
-        return out.slice(0, limite || 8);
     }
 
     /* =========================================================
@@ -964,7 +884,7 @@
                 const precioTxt = formatoPrecioMarco(m.precio, m.precioMax);
                 return '<div class="marco-item" onclick="C.elegirMarco(\'' + m.nombre.replace(/'/g, "\\'") + '\',\'' +
                     m.marca.replace(/'/g, "\\'") + '\',' + (m.precio || 0) + ',\'' + m.url.replace(/'/g, "\\'") + '\')">' +
-                    '<img src="' + m.url + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' +
+                    '<img src="' + m.url + '" alt="Marco ' + m.nombre.replace(/"/g, '&quot;') + '" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">' +
                     '<div class="marco-item-info"><span class="marco-item-name">' + m.nombre + '</span>' +
                     '<span class="marco-item-meta">' + m.marca + (precioTxt ? ' · ' + precioTxt : '') + '</span></div>' +
                     '</div>';
@@ -973,7 +893,7 @@
         elegirMarco: function (nombre, marca, precio, url) {
             this.marcoElegido = { nombre: nombre, marca: marca, precio: Number(precio) || 0, url: url };
             document.getElementById('marcoSeleccionado').innerHTML =
-                '<img src="' + url + '" alt="" onerror="this.style.display=\'none\'"><span>Seleccionado: ' + nombre + ' (' + marca + ')</span>';
+                '<img src="' + url + '" alt="Marco ' + (nombre || '').replace(/"/g, '&quot;') + '" decoding="async" onerror="this.style.display=\'none\'"><span>Seleccionado: ' + nombre + ' (' + marca + ')</span>';
             document.getElementById('marcoSugerencias').innerHTML = '';
             document.getElementById('marcoBuscar').value = nombre;
             this.actualizarTotal();
@@ -1269,6 +1189,73 @@
             this.origenActual = origenFinal;
 
             this.actualizarTotal();
+            this.consultarBackendDebounced();
+        },
+
+        consultarBackendDebounced: function () {
+            clearTimeout(this._calcTimer);
+            this._calcTimer = setTimeout(() => this.consultarBackend(), 150);
+        },
+
+        consultarBackend: async function () {
+            const grad = this.obtenerGraduacion();
+            const totalEl = document.getElementById('totalTxt');
+            if (!grad.tieneReceta) {
+                totalEl.textContent = 'Completa tu receta';
+                return;
+            }
+            const disenoKey = this.disenoActual();
+            const ar = document.getElementById('tratAR') ? document.getElementById('tratAR').checked : true;
+            const onix = ar && document.getElementById('tratOnix') ? document.getElementById('tratOnix').checked : false;
+            const traeMarco = document.querySelector('input[name="tieneMarco"][value="si"]')?.checked ?? true;
+            const marcoPrecio = (!traeMarco && this.marcoElegido) ? this.marcoElegido.precio : 0;
+
+            const payload = {
+                action: 'calcular',
+                tipo: this.tipoActual(),
+                diseno: disenoKey,
+                material: this.materialId,
+                antirreflejo: ar,
+                onix: onix,
+                origen: this.origenElegido,
+                traeMarco: traeMarco,
+                marcoPrecio: marcoPrecio,
+                lejosOdEsf: this.val('lejosOdEsf'),
+                lejosOdCil: this.val('lejosOdCil'),
+                lejosOdEje: this.val('lejosOdEje'),
+                lejosOdDp: this.val('lejosOdDp'),
+                lejosOdAdd: this.val('lejosOdAdd'),
+                lejosOiEsf: this.val('lejosOiEsf'),
+                lejosOiCil: this.val('lejosOiCil'),
+                lejosOiEje: this.val('lejosOiEje'),
+                lejosOiDp: this.val('lejosOiDp'),
+                lejosOiAdd: this.val('lejosOiAdd'),
+                cercaOdEsf: this.val('cercaOdEsf'),
+                cercaOdCil: this.val('cercaOdCil'),
+                cercaOdEje: this.val('cercaOdEje'),
+                cercaOdDp: this.val('cercaOdDp'),
+                cercaOiEsf: this.val('cercaOiEsf'),
+                cercaOiCil: this.val('cercaOiCil'),
+                cercaOiEje: this.val('cercaOiEje'),
+                cercaOiDp: this.val('cercaOiDp')
+            };
+
+            try {
+                const res = await fetch('/api/cotizar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.ok && data.totalCliente !== undefined) {
+                        this.precioBackend = data.totalCliente;
+                        totalEl.textContent = money(data.totalCliente);
+                    }
+                }
+            } catch (err) {
+                // Fallback silencioso a cálculo local si /api/cotizar no está disponible localmente
+            }
         },
 
         actualizarTotal: function () {
@@ -1310,7 +1297,7 @@
                 this.toast('Indica tu teléfono para coordinar la entrega.', false);
                 return;
             }
-            const { costo, origen } = this.costoCristal();
+            const { costo } = this.costoCristal();
             const precioCristalesCli = calcularPrecioCliente(costo);
             if (precioCristalesCli === null) {
                 this.toast('Nos falta tu receta o el material elegido no está disponible. Revisa los datos.', false);
@@ -1319,8 +1306,6 @@
             const nombre = (document.getElementById('nombre').value || '').trim() || 'Sin nombre';
             const tipo = this.tipoActual();
             const disenoKey = this.disenoActual();
-            const diseno = DB.disenos[disenoKey];
-            const material = DB.materiales.find(m => m.id === this.materialId);
             const ar = document.getElementById('tratAR').checked;
             const onix = ar && document.getElementById('tratOnix').checked;
             const traeMarco = document.querySelector('input[name="tieneMarco"][value="si"]').checked;
@@ -1331,41 +1316,27 @@
             const cercaOi = 'ESF ' + this.val('cercaOiEsf') + ' | CIL ' + this.val('cercaOiCil') + ' | EJE ' + this.val('cercaOiEje') + ' | DP ' + this.val('cercaOiDp');
 
             const marco = (!traeMarco && this.marcoElegido) ? this.marcoElegido.precio : 0;
-            const total = precioCristalesCli + marco;
 
-            const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
-            const montura = costo !== null ? FIJO : 0;
-            const precioSoloCristales = precioCristalesCli - montura;
-
-            const tratamientos = [];
-            if (diseno) tratamientos.push(diseno.nombre_cliente || diseno.nombre_interno || disenoKey);
-            if (material) tratamientos.push(material.nombre_cliente || material.nombre_interno || this.materialId);
-            if (ar) tratamientos.push('Antirreflejo (AR)');
-            if (onix) tratamientos.push('Onix Premium');
-
+            // Enviamos únicamente datos de receta, opciones y contacto.
+            // El backend recalcula y valida el precio usando precios_optiland.json
             const payload = {
                 nombre: nombre,
                 telefono: telefono,
                 tipo: tipo,
-                origen: origen || 'laboratorio',
-                tratamientos: tratamientos,
-                lejosOd: lejosOd,
-                lejosOi: lejosOi,
-                cercaOd: cercaOd,
-                cercaOi: cercaOi,
+                diseno: disenoKey,
+                material: this.materialId,
+                antirreflejo: ar,
+                onix: onix,
+                origen: this.origenElegido,
                 traeMarco: traeMarco,
                 marcoNombre: this.marcoElegido
                     ? (this.marcoElegido.nombre + ' (' + this.marcoElegido.marca + ')')
                     : null,
                 marcoPrecio: marco,
-                costoCristales: costo,
-                precioCristalesCliente: precioSoloCristales,
-                montura: montura,
-                totalCliente: total,
-                diseno: diseno ? (diseno.nombre_interno || disenoKey) : disenoKey,
-                material: material ? (material.nombre_interno || this.materialId) : this.materialId,
-                antirreflejo: ar,
-                onix: onix
+                lejosOd: lejosOd,
+                lejosOi: lejosOi,
+                cercaOd: cercaOd,
+                cercaOi: cercaOi
             };
 
             const btn = document.getElementById('btnEnviar');
@@ -1377,11 +1348,17 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!res.ok) throw new Error('Error ' + res.status);
-                this.toast('Cotización enviada. Te contactaremos pronto.', true);
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || ('Error ' + res.status));
+                }
+                if (data.totalCliente !== undefined) {
+                    document.getElementById('totalTxt').textContent = money(data.totalCliente);
+                }
+                this.toast('¡Cotización enviada con éxito! Total confirmado: ' + (data.totalCliente ? money(data.totalCliente) : '') + '. Te contactaremos pronto.', true);
             } catch (e) {
                 console.error(e);
-                this.toast('No se pudo enviar. Revisa la API o intenta más tarde.', false);
+                this.toast(e.message || 'No se pudo enviar. Revisa la API o intenta más tarde.', false);
             }
             btn.disabled = false;
             btn.textContent = 'Solicitar cotización';

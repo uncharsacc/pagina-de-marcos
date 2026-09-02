@@ -3,246 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de marcos | SACC & VISION</title>
+    <title>Catálogo de Marcos y Lentes | SACC & VISION Santiago</title>
+    <meta name="description" content="Explora nuestro catálogo exclusivo de marcos de lentes: Vespa, Silmo, Luxor, MoodKids, Jean de Paris y más. Modelos ópticos y de sol en Santiago de Chile.">
+    <meta name="keywords" content="catálogo de marcos, marcos de lentes Chile, lentes ópticos, anteojos de sol, marcas de marcos, Silmo, Vespa, Luxor, MoodKids, Santiago óptica">
+    <meta name="author" content="SACC & VISION">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://saccvision.cl/catalogo.html">
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="SACC & VISION">
+    <meta property="og:url" content="https://saccvision.cl/catalogo.html">
+    <meta property="og:title" content="Catálogo de Marcos y Lentes | SACC & VISION">
+    <meta property="og:description" content="Explora nuestro catálogo completo con cientos de modelos de marcos ópticos y de sol en Santiago de Chile.">
+    <meta property="og:image" content="https://saccvision.cl/icons/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Catálogo de Marcos SACC & VISION">
+    <meta property="og:locale" content="es_CL">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Catálogo de Marcos y Lentes | SACC & VISION">
+    <meta name="twitter:description" content="Explora más de 1.000 modelos de marcos ópticos y de sol en Santiago de Chile.">
+    <meta name="twitter:image" content="https://saccvision.cl/icons/og-image.png">
+
+    <!-- Favicon & PWA -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#121315">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SACC & VISION">
+
+    <!-- Preconnect & Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": "Catálogo de Marcos y Lentes - SACC & VISION",
+      "description": "Catálogo completo de marcos ópticos y de sol en Santiago de Chile con marcas exclusivas como Silmo, Vespa, Luxor y más.",
+      "url": "https://saccvision.cl/catalogo.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "SACC & VISION",
+        "logo": "https://saccvision.cl/logos-webp/logo-sacc.webp"
+      },
+      "breadcrumb": {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://saccvision.cl/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Catálogo de Marcos",
+            "item": "https://saccvision.cl/catalogo.html"
+          }
+        ]
+      }
+    }
+    </script>
     <style>
-        :root {
-            --primary: #121315;
-            --primary-light: #18191c;
-            --secondary: #1e1f23;
-            --accent: #C5A08E;
-            --accent-hover: #D8B4A2;
-            --accent-glow: rgba(197, 160, 142, 0.25);
-            --success: #22C55E;
-            --success-dim: rgba(34, 197, 94, 0.15);
-            --warning: #E8A830;
-            --warning-dim: rgba(232, 168, 48, 0.15);
-            --info: #8E9EC5;
-            --info-dim: rgba(142, 158, 197, 0.15);
-            --bg: #121315;
-            --bg-card: #1A1B1E;
-            --bg-elevated: #232529;
-            --bg-input: #2A2C31;
-            --text: #F7F5F0;
-            --text-secondary: #B0AAA2;
-            --text-muted: #6F6B65;
-            --border: #34363C;
-            --border-light: #44474F;
-            --shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
-            --shadow-glow: 0 0 60px rgba(197, 160, 142, 0.12);
-            --radius: 20px;
-            --radius-sm: 10px;
-            --radius-xs: 6px;
-            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        .bg-animation {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .bg-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.4;
-            animation: blobFloat 18s ease-in-out infinite;
-        }
-
-        .bg-blob:nth-child(1) {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(197, 160, 142, 0.12), transparent 70%);
-            top: -15%;
-            left: -10%;
-            animation-delay: 0s;
-        }
-
-        .bg-blob:nth-child(2) {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(216, 180, 162, 0.08), transparent 70%);
-            top: 40%;
-            right: -15%;
-            animation-delay: -6s;
-            animation-duration: 22s;
-        }
-
-        .bg-blob:nth-child(3) {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(184, 139, 119, 0.06), transparent 70%);
-            bottom: -10%;
-            left: 30%;
-            animation-delay: -12s;
-            animation-duration: 25s;
-        }
-
-        @keyframes blobFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(40px, -30px) scale(1.05); }
-            50% { transform: translate(-20px, 20px) scale(0.95); }
-            75% { transform: translate(30px, 40px) scale(1.02); }
-        }
-
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(18, 19, 21, 0.85);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border);
-            padding: 0.75rem 0;
-        }
-
-        .header-content {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text);
-            text-decoration: none;
-            white-space: nowrap;
-            letter-spacing: -0.5px;
-            cursor: pointer;
-        }
-
-        .logo-img {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-            border-radius: 10px;
-            display: block;
-            flex-shrink: 0;
-        }
-
-        .main-nav {
-            display: flex;
-            gap: 0.5rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 4px;
-        }
-
-        .nav-btn {
-            padding: 0.6rem 1.5rem;
-            border: none;
-            border-radius: 50px;
-            background: transparent;
-            color: var(--text-muted);
-            text-decoration: none;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            white-space: nowrap;
-        }
-
-        .nav-btn:hover {
-            color: var(--text);
-        }
-
-        .nav-btn.active {
-            background: var(--accent);
-            color: #121315;
-            font-weight: 600;
-            box-shadow: 0 4px 20px rgba(197, 160, 142, 0.35);
-        }
-
-        .search-container {
-            position: relative;
-            flex: 1;
-            max-width: 420px;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 0.7rem 1rem 0.7rem 2.75rem;
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(197, 160, 142, 0.15);
-        }
-
-        .search-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .header-stats {
-            display: flex;
-            gap: 1.25rem;
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 0.35rem;
-        }
-
-        .stat-item i {
-            color: var(--accent);
-            font-size: 0.8rem;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         /* Hero / Catálogo */
         .catalogo-hero {
             max-width: 1440px;
@@ -645,321 +482,7 @@
             border-color: var(--accent);
             color: #121315;
         }
-
-        /* Modal detalle */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-
-        .modal.active {
-            display: flex;
-            flex-direction: column;
-            animation: fadeIn 0.25s ease;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .modal-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-
-        .modal-title-area {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-        }
-
-        .modal-meta {
-            display: flex;
-            gap: 0.75rem;
-            align-items: center;
-            font-size: 0.8rem;
-        }
-
-        .modal-meta-category {
-            padding: 0.1rem 0.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.7rem;
-        }
-
-        .modal-meta-price {
-            font-weight: 700;
-            color: var(--success);
-        }
-
-        .modal-close {
-            width: 40px;
-            height: 40px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            color: var(--text);
-            cursor: pointer;
-            font-size: 1.1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-        }
-
-        .modal-close:hover {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #121315;
-        }
-
-        .modal-body {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-
-        .modal-image-container {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .modal-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            border-radius: var(--radius-sm);
-        }
-
-        /* Toast notifications */
-        .toast-container {
-            position: fixed;
-            bottom: 2rem;
-            right: 2rem;
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .toast {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 0.9rem 1.25rem;
-            color: var(--text);
-            font-size: 0.88rem;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
-            max-width: 360px;
-        }
-
-        .toast.success { border-left: 3px solid var(--success); }
-        .toast.success i { color: var(--success); }
-        .toast.error { border-left: 3px solid var(--accent); }
-        .toast.error i { color: var(--accent); }
-        .toast.info { border-left: 3px solid var(--info); }
-        .toast.info i { color: var(--info); }
-        .toast.warning { border-left: 3px solid var(--warning); }
-        .toast.warning i { color: var(--warning); }
-
-        @keyframes slideInRight {
-            from { transform: translateX(120%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes fadeOut {
-            to { opacity: 0; transform: translateX(60%); }
-        }
-
-        .no-results {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 4rem 2rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-        }
-
-        .no-results i {
-            font-size: 3.5rem;
-            color: var(--text-muted);
-            opacity: 0.4;
-            margin-bottom: 1rem;
-        }
-
-        .no-results h3 {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .no-results p {
-            color: var(--text-muted);
-            font-size: 0.92rem;
-            max-width: 400px;
-            margin: 0 auto 1.5rem;
-        }
-
-        .btn-retry {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.7rem 1.5rem;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            color: var(--text);
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .btn-retry:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* Panel de diagnóstico */
-        .debug-panel {
-            display: none;
-            position: fixed;
-            bottom: 1rem;
-            left: 1rem;
-            z-index: 2000;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 1rem;
-            max-width: 400px;
-            max-height: 300px;
-            overflow-y: auto;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            box-shadow: var(--shadow);
-        }
-
-        .debug-panel.active {
-            display: block;
-        }
-
-        .debug-panel h4 {
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .debug-panel .debug-line {
-            padding: 0.25rem 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .debug-panel .debug-success { color: var(--success); }
-        .debug-panel .debug-error { color: var(--accent); }
-        .debug-panel .debug-warning { color: var(--warning); }
-        .debug-panel .debug-info { color: var(--info); }
-
-        .debug-toggle {
-            display: none;
-            position: fixed;
-            bottom: 2rem;
-            left: 2rem;
-            z-index: 2000;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--accent);
-            border: none;
-            color: #121315;
-            cursor: pointer;
-            font-size: 1rem;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(197, 160, 142, 0.35);
-            transition: var(--transition);
-        }
-
-        .debug-toggle.active {
-            display: flex;
-        }
-
-        .debug-toggle:hover {
-            transform: scale(1.1);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.82rem;
-            border-top: 1px solid var(--border);
-            margin-top: 2rem;
-        }
-
-        ::-webkit-scrollbar {
-            width: 7px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent);
-        }
-
         @media (max-width: 768px) {
-            .header-content {
-                flex-wrap: wrap;
-                gap: 0.75rem;
-            }
-
-            .header-stats {
-                display: none;
-            }
-
-            .search-container {
-                order: 3;
-                max-width: 100%;
-                width: 100%;
-            }
-
-            .main-nav {
-                order: 2;
-                width: 100%;
-                justify-content: center;
-            }
-
-            .nav-btn {
-                flex: 1;
-                justify-content: center;
-                padding: 0.55rem 1rem;
-                font-size: 0.85rem;
-            }
-
             .catalogo-section {
                 padding: 1.5rem 1.25rem 3rem;
             }
@@ -1019,7 +542,7 @@
 
             <div class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" id="searchInput" placeholder="Buscar marca o modelo...">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar marca o modelo..." aria-label="Buscar marca o modelo de marco">
             </div>
 
             <div class="header-stats">
@@ -1059,34 +582,34 @@
     </section>
 
     <!-- Modal simple para agrandar imagen -->
-    <div class="modal-simple" id="modalSimple" onclick="cerrarModalSimple()">
-        <button class="modal-simple-cerrar" onclick="cerrarModalSimple()">
+    <div class="modal-simple" id="modalSimple" role="dialog" aria-modal="true" aria-label="Vista ampliada del marco" onclick="cerrarModalSimple()">
+        <button class="modal-simple-cerrar" onclick="cerrarModalSimple()" aria-label="Cerrar vista ampliada">
             <i class="fas fa-times"></i>
         </button>
-        <img id="modalSimpleImg" src="" alt="Vista ampliada del marco">
+        <img id="modalSimpleImg" src="" alt="Vista ampliada del marco" decoding="async">
     </div>
 
     <!-- Modal de detalle de modelo -->
-    <div class="modal" id="imageModal">
+    <div class="modal" id="imageModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
         <div class="modal-header">
             <div class="modal-title-area">
                 <span class="modal-title" id="modalTitle">Modelo</span>
                 <div class="modal-meta" id="modalMeta"></div>
             </div>
-            <button class="modal-close" onclick="app.cerrarModal()">
+            <button class="modal-close" onclick="app.cerrarModal()" aria-label="Cerrar ventana de detalle">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
             <div class="modal-image-container">
-                <img class="modal-image" id="modalImage" src="" alt="Marco">
+                <img class="modal-image" id="modalImage" src="" alt="Detalle del marco de lente" decoding="async">
             </div>
         </div>
     </div>
 
     <!-- PANEL DE DIAGNÓSTICO (Oculto por defecto) -->
-    <div class="debug-panel" id="debugPanel"></div>
-    <button class="debug-toggle" id="debugToggle" title="Panel de diagnóstico" onclick="toggleDebug()">
+    <div class="debug-panel" id="debugPanel" role="dialog" aria-modal="true" aria-label="Panel de diagnóstico"></div>
+    <button class="debug-toggle" id="debugToggle" title="Panel de diagnóstico" aria-label="Abrir panel de diagnóstico" onclick="toggleDebug()">
         <i class="fas fa-bug"></i>
     </button>
 
@@ -1099,6 +622,7 @@
     </footer>
 
     <script src="datos-imagenes.js"></script>
+    <script src="js/utils.js"></script>
 
     <script>
     /* ============================================
@@ -1119,7 +643,7 @@
         if (!panel || !panel.classList.contains('active')) return;
         
         const lastLogs = debugLog.slice(-30);
-        panel.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem"><h4 style="margin:0">🔍 Diagnóstico Catálogo</h4><button onclick="toggleDebug()" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem;padding:0.2rem" title="Cerrar"><i class="fas fa-times"></i></button></div>' +
+        panel.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem"><h4 style="margin:0">🔍 Diagnóstico Catálogo</h4><button onclick="toggleDebug()" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem;padding:0.2rem" title="Cerrar" aria-label="Cerrar diagnóstico"><i class="fas fa-times"></i></button></div>' +
             lastLogs.map(log =>
                 `<div class="debug-line debug-${log.type}">[${log.timestamp}] ${log.msg}</div>`
             ).join('');
@@ -1136,6 +660,9 @@
         }
         if (isActive) {
             actualizarDebugPanel();
+            if (typeof activateFocusTrap === 'function') activateFocusTrap(panel);
+        } else {
+            if (typeof deactivateFocusTrap === 'function') deactivateFocusTrap(panel);
         }
     }
 
@@ -1163,101 +690,29 @@
     })();
 
     /* ============================================
-       CATEGORÍAS Y PRECIOS
-       ============================================ */
-    const categorias = {
-        "ECONOMICOS": [
-            { nombre: "GATTIZONI", precio: 10000 },
-            { nombre: "GEORGE", precio: 10000 },
-            { nombre: "JORGIO", precio: 10000 },
-            { nombre: "LE GIRO", precio: 10000 }
-        ],
-        "MEDIA": [
-            { nombre: "ANGELO FALCONI", precio: 24000 },
-            { nombre: "JEAN DE PARIS", precio: 24000 },
-            { nombre: "FOOSE", precio: 38000 },
-            { nombre: "VESPA DEPORTIVO", precio: 28600 },
-            { nombre: "VESPA", precio: 30500, precioMax: 38000 },
-            { nombre: "LUXOR", precio: 35700 }
-        ],
-        "PREMIUM": [
-            { nombre: "LINEA VIGO", precio: 42900 },
-            { nombre: "GAME DAY", precio: 48200 },
-            { nombre: "MAXCOME", precio: 46400 },
-            { nombre: "SILMO", precio: 44000 },
-            { nombre: "SILMO ÓPTICO", precio: 44000 },
-            { nombre: "SILMO SOBRELENTE", precio: 51200 },
-            { nombre: "LINEA VIGO SOBRELENTE", precio: 46400 },
-            { nombre: "POLO", precio: 47600 }
-        ],
-        "SOL": [
-            { nombre: "VESPA SOL", precio: 35700 },
-            { nombre: "LACROSSE SOL", precio: 46400 },
-            { nombre: "ICE LOOK SOL", precio: 53600 },
-            { nombre: "SILMO SOL", precio: 40500 }
-        ],
-        "NIÑOS": [
-            { nombre: "VESPA KIDS", precio: 16700 },
-            { nombre: "VESPA KIDS SOL", precio: 24990 },
-            { nombre: "MOODKIDS", precio: 35700 },
-            { nombre: "MOODKIDS SOBRELENTE", precio: 35700 },
-            { nombre: "FOOSE", precio: 16700 },
-            { nombre: "VESPA PEBAX KIDS", precio: 44000 }
-        ],
-        "SEGURIDAD Y ANTIPARRA": [
-            { nombre: "LENTE Y ANTIPARRA DE SEGURIDAD", precio: 7500, precioMax: 27500 }
-        ]
-    };
-
-    function obtenerInfoMarca(nombreMarca) {
-        for (const [catNombre, marcas] of Object.entries(categorias)) {
-            const encontrada = marcas.find(m => m.nombre === nombreMarca);
-            if (encontrada) {
-                return {
-                    categoria: catNombre,
-                    precio: encontrada.precio,
-                    precioMax: encontrada.precioMax || null
-                };
-            }
-        }
-        return { categoria: null, precio: null, precioMax: null };
-    }
-
-    function categoriaClase(nombreCat) {
-        const mapa = {
-            'ECONOMICOS': 'economicos',
-            'MEDIA': 'media',
-            'PREMIUM': 'premium',
-            'SOL': 'sol',
-            'NIÑOS': 'ninos',
-            'SEGURIDAD Y ANTIPARRA': 'seguridad'
-        };
-        return mapa[nombreCat] || 'seguridad';
-    }
-
-    function formatoPrecio(precio, precioMax) {
-        if (!precio) return '';
-        let txt = '$' + precio.toLocaleString('es-CL');
-        if (precioMax) txt += ' - $' + precioMax.toLocaleString('es-CL');
-        return txt;
-    }
-
-    /* ============================================
        MODAL SIMPLE
        ============================================ */
     function abrirModalSimple(url) {
+        const modal = document.getElementById('modalSimple');
         document.getElementById('modalSimpleImg').src = url;
-        document.getElementById('modalSimple').classList.add('active');
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        if (typeof activateFocusTrap === 'function') activateFocusTrap(modal);
     }
 
     function cerrarModalSimple() {
-        document.getElementById('modalSimple').classList.remove('active');
+        const modal = document.getElementById('modalSimple');
+        modal.classList.remove('active');
         document.body.style.overflow = '';
+        if (typeof deactivateFocusTrap === 'function') deactivateFocusTrap(modal);
     }
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
+            const panel = document.getElementById('debugPanel');
+            if (panel && panel.classList.contains('active')) {
+                toggleDebug();
+            }
             cerrarModalSimple();
             if (typeof app !== 'undefined' && app.modalAbierto) {
                 app.cerrarModal();
@@ -1313,7 +768,7 @@
             const marcaParam = params.get('marca');
 
             if (marcaParam && this.datos[marcaParam]) {
-                this.verMarca(marcaParam);
+                this.verMarca(marcaParam, false);
             } else if (buscarParam) {
                 this.searchInput.value = decodeURIComponent(buscarParam);
                 this.renderizarBusquedaCatalogo(this.searchInput.value);
@@ -1341,8 +796,17 @@
             // Buscador en tiempo real y con tecla Enter
             this.searchInput.addEventListener('input', () => {
                 if (this.marcaImagesSection.classList.contains('active')) {
-                    this.volverAlCatalogo();
+                    this.volverAlCatalogo(false);
                 }
+                const url = new URL(window.location.href);
+                if (this.searchInput.value.trim()) {
+                    url.searchParams.set('buscar', this.searchInput.value.trim());
+                    url.searchParams.delete('marca');
+                } else {
+                    url.searchParams.delete('buscar');
+                    url.searchParams.delete('marca');
+                }
+                window.history.replaceState({}, '', url.toString());
                 this.renderizarBusquedaCatalogo(this.searchInput.value);
             });
 
@@ -1350,9 +814,31 @@
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     if (this.marcaImagesSection.classList.contains('active')) {
-                        this.volverAlCatalogo();
+                        this.volverAlCatalogo(false);
                     }
                     this.renderizarBusquedaCatalogo(this.searchInput.value);
+                }
+            });
+
+            // Soporte del botón atrás/adelante del navegador (history.pushState)
+            window.addEventListener('popstate', (e) => {
+                const params = new URLSearchParams(window.location.search);
+                const marcaParam = params.get('marca');
+                const buscarParam = params.get('buscar');
+
+                if (marcaParam && this.datos[marcaParam]) {
+                    this.verMarca(marcaParam, false);
+                } else {
+                    if (this.marcaImagesSection.classList.contains('active')) {
+                        this.volverAlCatalogo(false);
+                    }
+                    if (buscarParam) {
+                        this.searchInput.value = decodeURIComponent(buscarParam);
+                        this.renderizarBusquedaCatalogo(this.searchInput.value);
+                    } else {
+                        this.searchInput.value = '';
+                        this.renderizarMarcas('');
+                    }
                 }
             });
 
@@ -1364,11 +850,7 @@
         }
 
         normalizarTextoBusqueda(texto) {
-            return String(texto || '')
-                .normalize('NFD')
-                .replace(/[\u0300-\u036f]/g, '')
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '');
+            return normalizarTextoBusqueda(texto);
         }
 
         renderizarMarcas(filtro = '') {
@@ -1540,10 +1022,14 @@
 
         limpiarBusqueda() {
             this.searchInput.value = '';
+            const url = new URL(window.location.href);
+            url.searchParams.delete('buscar');
+            url.searchParams.delete('marca');
+            window.history.pushState({}, '', url.toString());
             this.renderizarMarcas('');
         }
 
-        verMarca(nombreMarca) {
+        verMarca(nombreMarca, actualizarHistorial = true) {
             this.scrollGuardado = window.scrollY;
             this.catalogoHero.style.display = 'none';
             this.catalogoSection.style.display = 'none';
@@ -1569,7 +1055,7 @@
                     '<i class="fas fa-arrow-left"></i> <span>Volver al catálogo</span>' +
                 '</button>' +
                 '<div>' +
-                    '<div class="marca-header-nombre">' + nombreMarca + '</div>' +
+                    '<div class="marca-header-nombre">' + escapeHtml(nombreMarca) + '</div>' +
                     '<div class="marca-header-meta">' + metaHTML + '</div>' +
                 '</div>';
 
@@ -1588,6 +1074,13 @@
 
             this.marcaImagesSection.classList.add('active');
             window.scrollTo({ top: 0, behavior: 'instant' });
+
+            if (actualizarHistorial) {
+                const url = new URL(window.location.href);
+                url.searchParams.set('marca', nombreMarca);
+                url.searchParams.delete('buscar');
+                window.history.pushState({ marca: nombreMarca }, '', url.toString());
+            }
         }
 
         renderizarSiguienteLoteMarca() {
@@ -1647,11 +1140,19 @@
             }
         }
 
-        volverAlCatalogo() {
+        volverAlCatalogo(actualizarHistorial = true) {
             this.marcaImagesSection.classList.remove('active');
             this.catalogoHero.style.display = 'block';
             this.catalogoSection.style.display = 'block';
             this.catalogoSection.classList.add('active');
+            this.marcaActual = null;
+
+            if (actualizarHistorial) {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('marca');
+                window.history.pushState({ marca: null }, '', url.toString());
+            }
+
             setTimeout(() => window.scrollTo(0, this.scrollGuardado), 10);
         }
 
@@ -1675,27 +1176,22 @@
             this.modal.classList.add('active');
             this.modalAbierto = true;
             document.body.style.overflow = 'hidden';
+            if (typeof activateFocusTrap === 'function') activateFocusTrap(this.modal);
         }
 
         cerrarModal() {
             this.modal.classList.remove('active');
             this.modalAbierto = false;
             document.body.style.overflow = '';
+            if (typeof deactivateFocusTrap === 'function') deactivateFocusTrap(this.modal);
         }
 
         escapeHtml(value) {
-            return String(value || '').replace(/[&<>"']/g, c => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[c]));
+            return escapeHtml(value);
         }
 
         mostrarToast(mensaje, tipo = 'info') {
-            const iconos = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
-            const toast = document.createElement('div');
-            toast.className = 'toast ' + tipo;
-            toast.innerHTML = '<i class="fas ' + (iconos[tipo] || iconos.info) + '"></i><span>' + mensaje + '</span>';
-            this.toastContainer.appendChild(toast);
-            setTimeout(() => { if (toast.parentNode) toast.remove(); }, 3200);
+            mostrarToast(mensaje, tipo);
         }
     }
 

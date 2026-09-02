@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://saccvision.cl/sitemap.xml

@@ -1,0 +1,61 @@
+{
+  "name": "SACC & VISION - Óptica & Estilo",
+  "short_name": "SACC & VISION",
+  "description": "Catálogo exclusivo de marcos, búsqueda visual inteligente con IA y cotizador de cristales ópticos en Santiago de Chile.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#121315",
+  "theme_color": "#C5A08E",
+  "lang": "es",
+  "categories": ["shopping", "medical", "lifestyle"],
+  "icons": [
+    {
+      "src": "icons/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buscar por Foto",
+      "short_name": "Buscar Foto",
+      "description": "Encuentra marcos idénticos o similares a partir de una foto",
+      "url": "./index.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Catálogo de Marcos",
+      "short_name": "Catálogo",
+      "description": "Explora toda la colección de marcos y marcas exclusivas",
+      "url": "./catalogo.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Cotizador de Cristales",
+      "short_name": "Cotizar",
+      "description": "Calcula el precio de tus cristales ópticos y recetas",
+      "url": "./cotizar.html",
+      "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+﻿# Dependencias
+node_modules/
+
+# Agentes y configuración local
+.agents/
+
+# Builds y despliegue
+.vercel/
+dist/
+
+# Variables de entorno
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Archivos de prueba y respaldo
+probar.html
+respaldo.html
+
+# PDFs y documentos internos
+*.pdf
