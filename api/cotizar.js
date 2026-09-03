@@ -2,24 +2,35 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import fs from 'fs';
 import path from 'path';
 
-let DB = null;
-function getDB() {
-  if (DB) return DB;
-  try {
-    let jsonPath = path.join(process.cwd(), 'data', 'precios_optiland.json');
-    if (!fs.existsSync(jsonPath)) {
-      jsonPath = path.join(process.cwd(), 'precios_optiland.json');
+let DB_STOCK = null;
+let DB_LAB_SIN_AR = null;
+let DB_LAB_CON_AR = null;
+
+function cargarJSON(nombre) {
+  const rutas = [
+    path.join(process.cwd(), 'OPTILAND', nombre),
+    path.join(process.cwd(), 'data', nombre),
+    path.join(process.cwd(), nombre)
+  ];
+  for (const r of rutas) {
+    if (fs.existsSync(r)) {
+      try {
+        return JSON.parse(fs.readFileSync(r, 'utf8'));
+      } catch (e) {
+        console.error('Error parseando ' + r, e);
+      }
     }
-    const data = fs.readFileSync(jsonPath, 'utf8');
-    DB = JSON.parse(data);
-    return DB;
-  } catch (e) {
-    console.error('Error cargando precios_optiland.json en el servidor:', e);
-    return null;
   }
+  return null;
 }
 
-function parseNumeroRx(val) {
+function initDBs() {
+  if (!DB_STOCK) DB_STOCK = cargarJSON('precios_stock.json');
+  if (!DB_LAB_SIN_AR) DB_LAB_SIN_AR = cargarJSON('precios_lab_sin_ar.json');
+  if (!DB_LAB_CON_AR) DB_LAB_CON_AR = cargarJSON('precios_lab_con_ar.json');
+}
+
+export function parseNumeroRx(val) {
   if (val === undefined || val === null || val === '') return 0;
   const raw = String(val).trim().replace(/\s+/g, '').replace(',', '.');
   if (raw === '' || raw === '+' || raw === '-' || raw === '—') return 0;
@@ -44,7 +55,7 @@ function parseLineaRx(str) {
   };
 }
 
-function extraerGraduacion(body) {
+export function extraerGraduacion(body) {
   const lejosOd = typeof body.lejosOd === 'object' && body.lejosOd !== null ? body.lejosOd : parseLineaRx(body.lejosOd);
   const lejosOi = typeof body.lejosOi === 'object' && body.lejosOi !== null ? body.lejosOi : parseLineaRx(body.lejosOi);
   const cercaOd = typeof body.cercaOd === 'object' && body.cercaOd !== null ? body.cercaOd : parseLineaRx(body.cercaOd);
@@ -70,59 +81,85 @@ function extraerGraduacion(body) {
   };
 }
 
-function redondearEsf(x) {
-  for (const k of [2, 4, 6, 8, 10]) {
-    if (x <= k) return k;
+export function obtenerColumnaStock(esf, cil) {
+  const esfAbs = Math.abs(esf);
+  const cilAbs = Math.abs(cil);
+
+  if (esfAbs === 0 && cilAbs === 0) return 'ESF2';
+
+  if (esfAbs === 0 && cilAbs > 0) {
+    if (cilAbs <= 2.0) return 'CIL-2';
+    if (cilAbs <= 4.0) return 'CIL-4';
+    if (cilAbs <= 6.0) return 'CIL-6';
+    return null;
+  }
+
+  if (esfAbs > 0 && cilAbs === 0) {
+    if (esfAbs <= 2.0) return 'ESF2';
+    if (esfAbs <= 4.0) return 'ESF4';
+    if (esfAbs <= 6.0) return 'ESF6';
+    if (esfAbs <= 8.0) return 'ESF8';
+    if (esfAbs <= 10.0) return 'ESF10';
+    return null;
+  }
+
+  // Esferocilindrico
+  if (cilAbs <= 2.0) {
+    if (esfAbs <= 2.0) return '2/2';
+    if (esfAbs <= 4.0) return '4/2';
+    if (esfAbs <= 6.0) return '6/2';
+    if (esfAbs <= 8.0) return '8/2';
+    if (esfAbs <= 10.0) return '10/2';
+    return null;
+  } else if (cilAbs <= 4.0) {
+    if (esfAbs <= 2.0) return '2/4';
+    if (esfAbs <= 4.0) return '4/4';
+    if (esfAbs <= 6.0) return '6/4';
+    if (esfAbs <= 8.0) return '8/4';
+    if (esfAbs <= 10.0) return '10/4';
+    return null;
+  } else if (cilAbs <= 6.0) {
+    if (esfAbs <= 2.0) return '2/6';
+    if (esfAbs <= 4.0) return '4/6';
+    if (esfAbs <= 6.0) return '6/6';
+    return null;
   }
   return null;
 }
 
-function precioStock(db, stockKey, esfAbs, cilAbs) {
-  if (!db || !db.stock) return null;
-  const m = db.stock[stockKey];
-  if (!m) return null;
-  if (m.flat_solo_neutro !== undefined) {
-    return (esfAbs === 0 && cilAbs === 0) ? m.flat_solo_neutro : null;
-  }
-  if (esfAbs === 0 && cilAbs > 0 && m.cil_solo) {
-    if (cilAbs <= 2 && m.cil_solo['2'] !== undefined) return m.cil_solo['2'];
-    if (cilAbs <= 4 && m.cil_solo['4'] !== undefined) return m.cil_solo['4'];
-    if (cilAbs <= 6 && m.cil_solo['6'] !== undefined) return m.cil_solo['6'];
-    return null;
-  }
-  const esfR = redondearEsf(esfAbs);
-  if (esfR === null) return null;
-  let banda = null;
-  if (cilAbs === 0) banda = m.esf_solo;
-  else if (cilAbs <= 2) banda = m.cil2;
-  else if (cilAbs <= 4) banda = m.cil4;
-  else if (cilAbs <= 6) banda = m.cil6;
-  else return null;
+export function calcularRecargosLab(esf, cil) {
+  const esfAbs = Math.abs(esf);
+  const cilAbs = Math.abs(cil);
+  let recargoEsf = 0;
+  if (esf <= -20.25 || esf >= 20.25) recargoEsf = 8000;
+  else if (esfAbs >= 12.25) recargoEsf = 6000;
+  else if (esfAbs >= 7.25) recargoEsf = 3000;
 
-  if (!banda) return null;
-  const val = banda[String(esfR)];
-  return (val !== undefined && val !== null) ? val : null;
+  let recargoCil = 0;
+  if (cilAbs >= 4.25) recargoCil = 2000;
+
+  return { recargoEsf, recargoCil, totalRecargo: recargoEsf + recargoCil };
 }
 
-function verificarCompatibilidadStock(db, grad, tipo, materialId, ar) {
-  if (!db || !db.stock || !db.stock_map) return { compatible: false, precioUnitario: null };
-  if (tipo !== 'monofocal' || grad.tieneAdd) return { compatible: false, precioUnitario: null };
-  const mapa = db.stock_map[materialId];
-  if (!mapa) return { compatible: false, precioUnitario: null };
-  const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
-  if (!stockKey || !db.stock[stockKey]) return { compatible: false, precioUnitario: null };
-  const precioUnitario = precioStock(db, stockKey, grad.maxEsf, grad.maxCil);
-  if (precioUnitario === null) return { compatible: false, precioUnitario: null };
-  return { compatible: true, precioUnitario };
+export function verificarCompatibilidadStockPorOjo(matObj, colOD, colOI) {
+  if (!matObj || !colOD || !colOI) return { compatible: false, pOD: null, pOI: null };
+  const pOD = matObj.columnas ? matObj.columnas[colOD] : undefined;
+  const pOI = matObj.columnas ? matObj.columnas[colOI] : undefined;
+  if (pOD !== undefined && pOI !== undefined) {
+    return { compatible: true, pOD: Number(pOD), pOI: Number(pOI) };
+  }
+  return { compatible: false, pOD: null, pOI: null };
 }
 
-function calcularCotizacionBackend(body) {
-  const db = getDB();
-  if (!db) {
-    throw new Error('Base de precios del servidor no disponible');
+export function calcularCotizacionBackend(body) {
+  initDBs();
+  if (!DB_STOCK || !DB_LAB_SIN_AR || !DB_LAB_CON_AR) {
+    throw new Error('Base de datos de precios de Optiland no disponible en el servidor');
   }
 
   const grad = extraerGraduacion(body);
+  const colOD = obtenerColumnaStock(grad.odEsf, grad.odCil);
+  const colOI = obtenerColumnaStock(grad.oiEsf, grad.oiCil);
 
   let tipo = body.tipo || 'monofocal';
   if (grad.tieneAdd && tipo === 'monofocal') {
@@ -131,91 +168,155 @@ function calcularCotizacionBackend(body) {
     tipo = 'monofocal';
   }
 
-  let disenoId = body.diseno || body.disenoId;
-  if (!disenoId || !db.disenos[disenoId]) {
-    const disponibles = Object.entries(db.disenos).filter(([_, d]) => d.tipo === tipo);
-    if (disponibles.length > 0) disenoId = disponibles[0][0];
-    else disenoId = 'monofocal_convencional';
-  }
-  const disenoObj = db.disenos[disenoId];
-  if (!disenoObj) {
-    throw new Error('Diseño de cristal no encontrado');
-  }
-
   const ar = body.antirreflejo !== undefined ? Boolean(body.antirreflejo) : (body.ar !== undefined ? Boolean(body.ar) : true);
   const onix = ar && Boolean(body.onix);
+  const promoCrossMax = Boolean(body.promoCrossMax);
 
-  const tablaPrecios = ar ? disenoObj.precio_con_ar : disenoObj.precio_sin_ar;
-  const materialesDisponibles = Object.keys(tablaPrecios || {});
-
-  let materialId = body.material || body.materialId;
-  if (!materialId || !materialesDisponibles.includes(materialId)) {
-    materialId = materialesDisponibles[0] || 'cr39';
-  }
-
-  const stockInfo = verificarCompatibilidadStock(db, grad, tipo, materialId, ar);
-  const disenoRequiereLab = (disenoId === 'monofocal_cross_compress' || disenoId === 'cross_myofix' || tipo !== 'monofocal');
+  // Evaluar compatibilidad general de Stock para esta receta
+  const stockPosibleGeneral = !grad.tieneAdd && tipo === 'monofocal' && Boolean(colOD && colOI);
+  let origenDeseado = (body.origen || body.origenFabricacion || (stockPosibleGeneral ? 'stock' : 'laboratorio')).toLowerCase();
 
   let origenFinal = 'laboratorio';
-  let costo = null;
+  let costoNetoPar = 0;
+  let netoOD = 0;
+  let netoOI = 0;
+  let disenoNombre = '';
+  let materialNombre = '';
 
-  const origenDeseado = body.origen || body.origenFabricacion || 'stock';
-  if (origenDeseado === 'stock' && stockInfo.compatible && !disenoRequiereLab) {
-    costo = stockInfo.precioUnitario * 2;
-    origenFinal = 'stock';
-  } else {
-    const costoLabUnitario = (tablaPrecios && tablaPrecios[materialId] !== undefined)
-      ? tablaPrecios[materialId]
-      : null;
-    if (costoLabUnitario === null) {
-      throw new Error('Material no disponible para esta combinación');
+  // 1) Si se solicita STOCK y la receta no tiene ADD
+  if (origenDeseado === 'stock' && stockPosibleGeneral) {
+    const stockMats = DB_STOCK.monofocales || [];
+    let matObj = null;
+    const reqMat = body.material || body.materialId;
+
+    if (reqMat) {
+      matObj = stockMats.find(m => m.id === reqMat || m.nombre === reqMat || m.nombre_cliente === reqMat);
     }
-    costo = costoLabUnitario * 2;
+    // Si no se especificó o no coincide, buscar el primero con o sin AR
+    if (!matObj) {
+      matObj = stockMats.find(m => m.ar === ar && m.columnas && m.columnas[colOD] && m.columnas[colOI]);
+    }
+    if (!matObj) {
+      matObj = stockMats.find(m => m.columnas && m.columnas[colOD] && m.columnas[colOI]);
+    }
+
+    if (matObj) {
+      const matchStock = verificarCompatibilidadStockPorOjo(matObj, colOD, colOI);
+      if (matchStock.compatible) {
+        netoOD = matchStock.pOD;
+        netoOI = matchStock.pOI;
+        costoNetoPar = netoOD + netoOI;
+        origenFinal = 'stock';
+        disenoNombre = 'Monofocal de Stock (Entrega Rápida)';
+        materialNombre = matObj.nombre_cliente || matObj.nombre;
+      }
+    }
+  }
+
+  // 2) Si no fue Stock o no hubo coincidencia en Stock -> LABORATORIO
+  if (origenFinal !== 'stock') {
     origenFinal = 'laboratorio';
+    const dbLab = ar ? DB_LAB_CON_AR : DB_LAB_SIN_AR;
+    const disenos = dbLab.disenos || [];
+
+    // Seleccionar diseño
+    let reqDiseno = body.diseno || body.disenoId;
+    let disenoObj = null;
+    if (reqDiseno) {
+      disenoObj = disenos.find(d => d.nombre === reqDiseno || d.nombre.toLowerCase().includes(String(reqDiseno).toLowerCase()));
+    }
+    if (!disenoObj) {
+      if (tipo === 'progresivo') {
+        disenoObj = disenos.find(d => d.nombre.includes('CROSS ONE')) || disenos[6];
+      } else if (tipo === 'bifocal') {
+        disenoObj = disenos.find(d => d.nombre.includes('BIFOCAL CONVENCIONAL')) || disenos[3];
+      } else {
+        disenoObj = disenos.find(d => d.nombre.includes('MONOFOCAL CONVENCIONAL')) || disenos[0];
+      }
+    }
+    if (!disenoObj) disenoObj = disenos[0];
+    disenoNombre = disenoObj.nombre;
+
+    // Seleccionar material dentro del diseño
+    const reqMat = body.material || body.materialId;
+    let matObj = null;
+    if (reqMat) {
+      matObj = disenoObj.materiales.find(m => m.material === reqMat || m.material.toLowerCase().includes(String(reqMat).toLowerCase()));
+    }
+    if (!matObj) {
+      // Default inteligente de material
+      if (ar) {
+        matObj = disenoObj.materiales.find(m => m.material.includes('BLUE-FILTER') || m.material.includes('CR-39') || m.material.includes('POLICARBONATO')) || disenoObj.materiales[0];
+      } else {
+        matObj = disenoObj.materiales[0];
+      }
+    }
+    if (!matObj) throw new Error('Material no disponible para este diseño');
+
+    materialNombre = matObj.material.trim();
+    const precioBaseOjo = Number(matObj.precio) || 0;
+
+    // Recargos por potencia
+    const recOD = calcularRecargosLab(grad.odEsf, grad.odCil);
+    const recOI = calcularRecargosLab(grad.oiEsf, grad.oiCil);
+    netoOD = precioBaseOjo + recOD.totalRecargo;
+    netoOI = precioBaseOjo + recOI.totalRecargo;
+    costoNetoPar = netoOD + netoOI;
+
+    // Promo Cross Max: -35% en Progressive Cross Max si se activa
+    if (promoCrossMax && disenoNombre.toUpperCase().includes('CROSS MAX')) {
+      costoNetoPar = Math.round(costoNetoPar * 0.65);
+    }
+
+    // Onix: +5000 por ojo sobre precio con AR
+    if (onix && ar) {
+      costoNetoPar += 10000;
+    }
   }
 
-  if (costo !== null && onix) {
-    const onixExtra = (db.reglas_precio_cliente && db.reglas_precio_cliente.capa_onix_extra && db.reglas_precio_cliente.capa_onix_extra.costo_extra_total) || 10000;
-    costo += onixExtra;
-  }
-
-  const IVA = (db.reglas_precio_cliente && db.reglas_precio_cliente.iva !== undefined) ? (1 + db.reglas_precio_cliente.iva) : 1.19;
-  const MARGEN = (db.reglas_precio_cliente && db.reglas_precio_cliente.margen !== undefined) ? (1 + db.reglas_precio_cliente.margen) : 1.60;
-  const FIJO = (db.reglas_precio_cliente && db.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
-
-  const precioCristalesCliente = Math.round(costo * IVA * MARGEN) + FIJO;
-  const montura = FIJO;
-  const precioSoloCristales = precioCristalesCliente - montura;
-
+  // FÓRMULA SACC OBLIGATORIA:
+  // cristalesCliente = Math.round(costoNetoPar * 1.19 * 1.60)
+  // totalCliente = cristalesCliente + 16000 + precioMarcoSACC
+  const MONTAJE_FIJO_SACC = 16000;
+  const cristalesCliente = Math.round(costoNetoPar * 1.19 * 1.60);
   const traeMarco = Boolean(body.traeMarco !== undefined ? body.traeMarco : (body.tieneMarco === 'si'));
   const marcoPrecio = (!traeMarco && body.marcoPrecio) ? Math.max(0, Number(body.marcoPrecio) || 0) : 0;
-  const totalCliente = precioCristalesCliente + marcoPrecio;
+  const totalCliente = cristalesCliente + MONTAJE_FIJO_SACC + marcoPrecio;
 
-  const disenoNombre = disenoObj.nombre_cliente || disenoObj.nombre_interno || disenoId;
-  const matObj = db.materiales.find(m => m.id === materialId);
-  const materialNombre = matObj ? matObj.nombre_cliente : materialId;
+  // LOG EN CONSOLA OBLIGATORIO (Para seguimiento y verificación)
+  console.log('=== COTIZACIÓN CALCULADA ===');
+  console.log('origen:', origenFinal);
+  console.log('columnaOD / columnaOI:', `${colOD || 'N/A'} / ${colOI || 'N/A'}`);
+  console.log('netoPar:', costoNetoPar);
+  console.log('cristalesCliente:', cristalesCliente);
+  console.log('totalCliente:', totalCliente);
 
   const tratamientos = [];
   if (disenoNombre) tratamientos.push(disenoNombre);
   if (materialNombre) tratamientos.push(materialNombre);
-  if (ar) tratamientos.push('Antirreflejo (AR)');
-  if (onix) tratamientos.push('Onix Premium');
+  if (ar) tratamientos.push('Antirreflejo Simple (AR)');
+  if (onix) tratamientos.push('Onix Premium (+16 capas)');
+  if (promoCrossMax && disenoNombre.toUpperCase().includes('CROSS MAX')) tratamientos.push('Promo Cross Max (-35%)');
 
   return {
     grad,
-    costoCristales: costo,
-    precioCristalesCliente: precioSoloCristales,
-    montura: montura,
-    totalCristalesConMontura: precioCristalesCliente,
+    origen: origenFinal,
+    columnaOD: colOD,
+    columnaOI: colOI,
+    netoOD,
+    netoOI,
+    netoPar: costoNetoPar,
+    costoCristales: costoNetoPar,
+    precioCristalesCliente: cristalesCliente,
+    cristalesCliente: cristalesCliente,
+    montura: MONTAJE_FIJO_SACC,
+    totalCristalesConMontura: cristalesCliente + MONTAJE_FIJO_SACC,
     marcoPrecio: marcoPrecio,
     totalCliente: totalCliente,
     tipo: tipo,
-    disenoId: disenoId,
     disenoNombre: disenoNombre,
-    materialId: materialId,
     materialNombre: materialNombre,
     tratamientos: tratamientos,
-    origen: origenFinal,
     ar: ar,
     onix: onix,
     traeMarco: traeMarco
@@ -237,7 +338,7 @@ export default async function handler(req, res) {
   }
   d = d || {};
 
-  // Recalcular y validar SIEMPRE en el backend usando precios_optiland.json
+  // Recalcular y validar SIEMPRE en el backend usando los 3 JSON de Optiland
   let resultadoCalculo;
   try {
     resultadoCalculo = calcularCotizacionBackend(d);
@@ -253,7 +354,13 @@ export default async function handler(req, res) {
     return res.status(200).json({
       ok: true,
       costoCristales: resultadoCalculo.costoCristales,
+      netoPar: resultadoCalculo.netoPar,
+      netoOD: resultadoCalculo.netoOD,
+      netoOI: resultadoCalculo.netoOI,
+      columnaOD: resultadoCalculo.columnaOD,
+      columnaOI: resultadoCalculo.columnaOI,
       precioCristalesCliente: resultadoCalculo.precioCristalesCliente,
+      cristalesCliente: resultadoCalculo.cristalesCliente,
       montura: resultadoCalculo.montura,
       totalCristalesConMontura: resultadoCalculo.totalCristalesConMontura,
       marcoPrecio: resultadoCalculo.marcoPrecio,
@@ -274,7 +381,9 @@ export default async function handler(req, res) {
   }
 
   const fecha = new Date().toLocaleString('es-CL', { timeZone: 'America/Santiago' });
-  const origenTxt = resultadoCalculo.origen === 'stock' ? '📦 Stock (Entrega rápida)' : '🏭 Laboratorio (Fabricación a medida)';
+  const origenTxt = resultadoCalculo.origen === 'stock'
+    ? `📦 Stock [OD: ${resultadoCalculo.columnaOD || '—'} / OI: ${resultadoCalculo.columnaOI || '—'}]`
+    : '🏭 Laboratorio (Fabricación a medida)';
 
   const marcoTexto = resultadoCalculo.traeMarco
     ? 'Trae su marco'
@@ -296,14 +405,17 @@ export default async function handler(req, res) {
     '',
     'Tipo: ' + (resultadoCalculo.tipo.toUpperCase()),
     'Origen cristales: ' + origenTxt,
+    'Diseño: ' + resultadoCalculo.disenoNombre,
+    'Material: ' + resultadoCalculo.materialNombre,
+    resultadoCalculo.origen === 'stock' ? ('Columnas Stock: OD ' + (resultadoCalculo.columnaOD || '—') + ' ($' + (resultadoCalculo.netoOD || 0) + ') | OI ' + (resultadoCalculo.columnaOI || '—') + ' ($' + (resultadoCalculo.netoOI || 0) + ')') : '',
     'Opciones: ' + (resultadoCalculo.tratamientos.join(', ') || '-'),
     'Marco: ' + marcoTexto,
-    'Montura fija: $' + Number(resultadoCalculo.montura || 0).toLocaleString('es-CL'),
+    'Montura fija (SACC): $' + Number(resultadoCalculo.montura || 0).toLocaleString('es-CL'),
     '',
-    'Costo cristales (par): $' + Number(resultadoCalculo.costoCristales || 0).toLocaleString('es-CL'),
-    'Cristales cliente: $' + Number(resultadoCalculo.precioCristalesCliente || 0).toLocaleString('es-CL'),
+    'Neto par cristales: $' + Number(resultadoCalculo.netoPar || 0).toLocaleString('es-CL'),
+    'Cristales cliente (Neto * 1.19 * 1.60): $' + Number(resultadoCalculo.precioCristalesCliente || 0).toLocaleString('es-CL'),
     'TOTAL CLIENTE: $' + Number(resultadoCalculo.totalCliente || 0).toLocaleString('es-CL')
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 
   const lejosOd = resultadoCalculo.grad.lejosOd;
   const lejosOi = resultadoCalculo.grad.lejosOi;

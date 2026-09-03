@@ -1,0 +1,235 @@
+{
+  "_meta": {
+    "fuente": "CRISTAL STOCK .xlsx",
+    "tipo": "stock",
+    "nota": "Precios netos por unidad (por ojo), sin IVA. Diámetro positivo 65mm, negativo 70mm."
+  },
+  "columnas_disponibles": [
+    "ESF2",
+    "ESF4",
+    "ESF6",
+    "ESF8",
+    "ESF10",
+    "2/2",
+    "4/2",
+    "6/2",
+    "8/2",
+    "10/2",
+    "2/4",
+    "4/4",
+    "6/4",
+    "8/4",
+    "10/4",
+    "2/6",
+    "4/6",
+    "6/6",
+    "CIL-2",
+    "CIL-4",
+    "CIL-6"
+  ],
+  "monofocales": [
+    {
+      "id": "cr39_blanco",
+      "nombre": "CR-39 BLANCO 100% UV 1.56",
+      "nombre_cliente": "CR-39 Blanco 1.56 (Sin AR)",
+      "ar": false,
+      "columnas": {
+        "ESF2": 500.0,
+        "ESF4": 500.0,
+        "ESF6": 650.0,
+        "2/2": 500.0,
+        "4/2": 500.0,
+        "6/2": 650.0,
+        "2/4": 1200.0,
+        "4/4": 1200.0,
+        "6/4": 1600.0,
+        "2/6": 2000.0,
+        "4/6": 2100.0,
+        "6/6": 2400.0,
+        "CIL-2": 520.0,
+        "CIL-4": 1200.0,
+        "CIL-6": 2000.0
+      }
+    },
+    {
+      "id": "cr39_blanco_ar",
+      "nombre": "CR-39 BLANCO AR 1.56",
+      "nombre_cliente": "CR-39 Blanco AR 1.56",
+      "ar": true,
+      "columnas": {
+        "ESF2": 620.0,
+        "ESF4": 620.0,
+        "ESF6": 940.0,
+        "2/2": 620.0,
+        "4/2": 620.0,
+        "6/2": 940.0,
+        "2/4": 1890.0,
+        "4/4": 1990.0,
+        "6/4": 2190.0,
+        "2/6": 2390.0,
+        "4/6": 2490.0,
+        "6/6": 2590.0,
+        "CIL-2": 690.0,
+        "CIL-4": 1890.0,
+        "CIL-6": 2390.0
+      }
+    },
+    {
+      "id": "blue_filter_ar",
+      "nombre": "CR-39 BLUE FILTER AR 1.56",
+      "nombre_cliente": "CR-39 Filtro Azul AR 1.56",
+      "ar": true,
+      "columnas": {
+        "ESF2": 1880.0,
+        "ESF4": 1880.0,
+        "ESF6": 2290.0,
+        "2/2": 1880.0,
+        "4/2": 1880.0,
+        "6/2": 2290.0,
+        "2/4": 3770.0,
+        "4/4": 3770.0,
+        "6/4": 3790.0,
+        "2/6": 7700.0,
+        "4/6": 7700.0,
+        "6/6": 7700.0,
+        "CIL-2": 1880.0,
+        "CIL-4": 3770.0,
+        "CIL-6": 7700.0
+      }
+    },
+    {
+      "id": "foto_cafe_ar",
+      "nombre": "CR-39 FOTO CAFÉ AR 1.56",
+      "nombre_cliente": "CR-39 Fotocromático Café AR 1.56",
+      "ar": true,
+      "columnas": {
+        "ESF2": 2890.0,
+        "ESF4": 2890.0,
+        "2/2": 2890.0,
+        "4/2": 2890.0,
+        "2/4": 5790.0,
+        "4/4": 5790.0,
+        "CIL-2": 2890.0,
+        "CIL-4": 5790.0
+      }
+    },
+    {
+      "id": "foto_gris_blue_ar",
+      "nombre": "CR-39 FOTO GRIS BLUE AR 1.56",
+      "nombre_cliente": "CR-39 Foto Gris Blue AR 1.56",
+      "ar": true,
+      "columnas": {
+        "ESF2": 3500.0,
+        "ESF4": 3500.0,
+        "2/2": 3500.0,
+        "4/2": 3500.0,
+        "CIL-2": 3500.0,
+        "CIL-4": 4000.0
+      }
+    },
+    {
+      "id": "policarbonato_ar",
+      "nombre": "POLICARBONATO AR 1.59",
+      "nombre_cliente": "Policarbonato AR 1.59",
+      "ar": true,
+      "columnas": {
+        "ESF2": 2040.0,
+        "ESF4": 2040.0,
+        "ESF6": 2740.0,
+        "2/2": 2040.0,
+        "4/2": 2040.0,
+        "6/2": 2740.0,
+        "2/4": 5840.0,
+        "4/4": 5840.0,
+        "6/4": 7490.0,
+        "2/6": 8490.0,
+        "4/6": 8990.0,
+        "6/6": 9990.0,
+        "CIL-2": 2540.0,
+        "CIL-4": 5840.0,
+        "CIL-6": 8490.0
+      }
+    },
+    {
+      "id": "policarbonato_blue_ar",
+      "nombre": "POLICARBONATO BLUE AR 1.59",
+      "nombre_cliente": "Policarbonato Filtro Azul AR 1.59",
+      "ar": true,
+      "columnas": {
+        "ESF2": 4000.0,
+        "ESF4": 4000.0,
+        "2/2": 4000.0,
+        "4/2": 4000.0,
+        "2/4": 8000.0,
+        "4/4": 8000.0,
+        "CIL-2": 4000.0,
+        "CIL-4": 8000.0
+      }
+    },
+    {
+      "id": "policarbonato_blanco",
+      "nombre": "POLICARBONATO BLANCO 1.59",
+      "nombre_cliente": "Policarbonato Blanco (Solo Neutro)",
+      "ar": false,
+      "columnas": {},
+      "solo_neutro": 1600.0
+    },
+    {
+      "id": "antiage_blue_filter",
+      "nombre": "ANTIAGE BLUE FILTER 1.60",
+      "nombre_cliente": "Antiage Filtro Azul 1.60 (Hasta 4/2)",
+      "ar": true,
+      "columnas": {
+        "ESF2": 12000.0,
+        "ESF4": 12000.0,
+        "2/2": 12000.0,
+        "4/2": 12000.0,
+        "CIL-2": 12000.0,
+        "CIL-4": 12000.0
+      }
+    },
+    {
+      "id": "alto_indice_167",
+      "nombre": "ALTO INDICE BLUE AR 1.67 A partir de esferico 6 al 10 con cilindro -4.00",
+      "nombre_cliente": "Alto Índice Blue AR 1.67 (Esf 6 a 10, Cil -4)",
+      "ar": true,
+      "columnas": {
+        "ESF6": 11000.0,
+        "ESF8": 11000.0,
+        "ESF10": 11000.0,
+        "6/2": 11000.0,
+        "8/2": 11000.0,
+        "10/2": 11000.0,
+        "6/4": 18000.0,
+        "8/4": 18000.0,
+        "10/4": 18000.0
+      }
+    },
+    {
+      "id": "foto_color",
+      "nombre": "FOTO COLOR (Green, Purple,Pink, Blue)",
+      "nombre_cliente": "Foto Color (Solo Neutro)",
+      "ar": false,
+      "columnas": {},
+      "solo_neutro": 3500.0
+    },
+    {
+      "id": "polarizado_espejado",
+      "nombre": "POLARIZADO ESPEJADO 1.49 (Green, Blue, Silver,Yellow,Red, Pink)",
+      "nombre_cliente": "Polarizado Espejado 1.49 (Solo Neutro)",
+      "ar": false,
+      "columnas": {},
+      "solo_neutro": 14000.0
+    }
+  ],
+  "bifocales": {
+    "nombre": "Bifocales Orgánico AR (ADD +1.00 a +3.00)",
+    "esfera_positivo": 2960.0,
+    "esfera_negativo": 3400.0
+  },
+  "multifocales": {
+    "nombre": "Multifocal Orgánico AR (ADD +1.00 a +3.00)",
+    "esfera_positivo": 8400.0,
+    "esfera_negativo": 8900.0
+  }
+}

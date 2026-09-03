@@ -3,7 +3,7 @@
    PWA Caching & Offline Support
    ============================================================ */
 
-const CACHE_NAME = 'sacc-vision-v2';
+const CACHE_NAME = 'sacc-vision-v3';
 
 // Recursos esenciales para precachear (App Shell)
 const PRECACHE_ASSETS = [
@@ -11,6 +11,7 @@ const PRECACHE_ASSETS = [
   './index.html',
   './catalogo.html',
   './cotizar.html',
+  './informacion.html',
   './css/main.css',
   './js/utils.js',
   './js/motor-visual.worker.js',

@@ -1,0 +1,538 @@
+{
+  "_meta": {
+    "fuente": "Laboratorio Sin AR.xlsx",
+    "tipo": "sin_ar",
+    "nota": "Precios por unidad, sin IVA"
+  },
+  "disenos": [
+    {
+      "nombre": "MONOFOCAL CONVENCIONAL",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 3500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 6000,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 7000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 6000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 16000,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "MONOFOCAL CROSS COMPRESS 3A GEN",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 4500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 11000,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 8000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 11500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 18000,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "CROS MYOFIX MYOPIA CONTROL",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 23500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 30000,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 27000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 30500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 37000,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "BIFOCAL CONVENCIONAL (PREDTERMINADO, DE NO ESPECIFICAR SE REALIZARA ESTOS PARAMETROS)",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 4500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 17000,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 10000,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "BIFOCAL 3a Gen CROSS BISOFT KRIPTOCK / BISOFT ULTEX",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 7500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 18500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 11000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 15000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 22500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "BIFOCAL CROSS FREELINE 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 7500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 18500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 11000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 15000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 22500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "PROGRESSIVE CROSS ONE 3a Gen (Predeterminado, de no especifiacar se realizara bajo estos parametros)",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 10000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 19500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 15500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 18500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 25500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "PROGRESSIVE PRECISA 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 19500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 29000,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 25000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 28000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 35000,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "PROGRESSIVE CROSS MAX 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 24000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 33500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 29500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 32500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 39500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "Dynamics Virtual Lenses 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 44000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 53500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 49500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 52500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 59500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "PROGRESSIVE AILENS 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 59000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 68500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 64500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 67500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 74500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "MULTIFOCAL OFFICE 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 8500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 19500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 14000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 17000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 23500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    },
+    {
+      "nombre": "PROGRESSIVA DRIVE 3a Gen",
+      "materiales": [
+        {
+          "material": "CR-39      1.56",
+          "indice": 39,
+          "precio": 8500,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "CR FOTCROMATICO",
+          "indice": 1.56,
+          "precio": 19500,
+          "colores": "GRIS, CAFÉ",
+          "nota": ""
+        },
+        {
+          "material": "POLICARBONATO",
+          "indice": 1.59,
+          "precio": 14000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "ULTRAVEX BLUE FILTER 0",
+          "indice": 1.6,
+          "precio": 17000,
+          "colores": "",
+          "nota": ""
+        },
+        {
+          "material": "INDICE",
+          "indice": 1.67,
+          "precio": 23500,
+          "colores": "",
+          "nota": ""
+        }
+      ]
+    }
+  ],
+  "servicios": {
+    "express": {
+      "monofocal": 1500,
+      "bifocal": 1500,
+      "progresivo": 1500
+    },
+    "adicionales": {
+      "capa_dura": 1500,
+      "descentrado": 1500,
+      "curva_especial": 1500
+    },
+    "recargos": {
+      "esfera_superior_7": 3000,
+      "esfera_superior_12": 6000,
+      "esfera_superior_20": 8000
+    }
+  },
+  "parametros": {
+    "freeform_add": "0.75 a 3.50",
+    "convencional_add": "1.00 a 3.00",
+    "diametro_min": 60,
+    "diametro_max": 70
+  }
+}

@@ -289,6 +289,9 @@
                 <a class="nav-btn" href="catalogo.html">
                     <i class="fas fa-th-large"></i> Catálogo
                 </a>
+                <a class="nav-btn" href="informacion.html">
+                    <i class="fas fa-info-circle"></i> Información
+                </a>
             </nav>
 
             <div class="search-container">
@@ -419,7 +422,7 @@
             </div>
             <div class="onix-wrap" id="onixWrap">
                 <label class="check" style="max-width:320px">
-                    <input type="checkbox" id="tratOnix" onchange="C.actualizarTotal()">
+                    <input type="checkbox" id="tratOnix" onchange="C.cambiarOnix()">
                     Antirreflejo Onix Premium — hasta 16x menos reflejos
                 </label>
             </div>
@@ -475,39 +478,54 @@
 
     <script>
     /* =========================================================
-       1) CARGA DE PRECIOS DESDE JSON (data/precios_optiland.json)
+       1) CARGA DE PRECIOS DESDE LOS 3 JSON REALES DE OPTILAND
+       - OPTILAND/precios_stock.json
+       - OPTILAND/precios_lab_sin_ar.json
+       - OPTILAND/precios_lab_con_ar.json
        ========================================================= */
-    let DB = null;
-    let dbListo = fetch('data/precios_optiland.json', { cache: 'no-cache' })
-        .catch(() => fetch('precios_optiland.json', { cache: 'no-cache' }))
-        .then(r => {
-            if (!r.ok) throw new Error('HTTP ' + r.status + ' al pedir precios_optiland.json');
-            return r.json();
-        })
-        .then(json => { DB = json; C.armarSelectDiseno(); C.cambiarAR(); return json; })
-        .catch(err => {
-            console.error('No se pudo cargar precios_optiland.json', err);
-            document.getElementById('totalTxt').textContent = 'Precios no disponibles';
-            const sel = document.getElementById('disenoSelect');
-            sel.innerHTML = '<option>No se pudo cargar precios_optiland.json</option>';
-            const aviso = document.createElement('div');
-            aviso.className = 'diseno-desc visible';
-            aviso.style.borderColor = '#E06C75';
-            aviso.style.color = '#FFB3BA';
-            aviso.textContent = 'No se pudo cargar precios_optiland.json. Revisa que el archivo se encuentre en data/precios_optiland.json.';
-            sel.insertAdjacentElement('afterend', aviso);
-            document.getElementById('btnEnviar').disabled = true;
-        });
+    let DB_STOCK = null;
+    let DB_LAB_SIN_AR = null;
+    let DB_LAB_CON_AR = null;
 
-    /* Fórmula de negocio:
-       precio_cliente = round(costo_par * 1.19 * 1.60) + 16000
-       (costo_par = precio_por_ojo × 2 + Onix si aplica) */
-    function calcularPrecioCliente(costo) {
-        if (costo === null || costo === undefined) return null;
+    let dbListo = Promise.all([
+        fetch('OPTILAND/precios_stock.json', { cache: 'no-cache' })
+            .catch(() => fetch('data/precios_stock.json', { cache: 'no-cache' }))
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status + ' precios_stock.json'); return r.json(); }),
+        fetch('OPTILAND/precios_lab_sin_ar.json', { cache: 'no-cache' })
+            .catch(() => fetch('data/precios_lab_sin_ar.json', { cache: 'no-cache' }))
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status + ' precios_lab_sin_ar.json'); return r.json(); }),
+        fetch('OPTILAND/precios_lab_con_ar.json', { cache: 'no-cache' })
+            .catch(() => fetch('data/precios_lab_con_ar.json', { cache: 'no-cache' }))
+            .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status + ' precios_lab_con_ar.json'); return r.json(); })
+    ]).then(([stock, labSin, labCon]) => {
+        DB_STOCK = stock;
+        DB_LAB_SIN_AR = labSin;
+        DB_LAB_CON_AR = labCon;
+        if (typeof C !== 'undefined' && C.inicializar) {
+            C.inicializar();
+        }
+        return true;
+    }).catch(err => {
+        console.error('Error cargando los 3 JSONs de Optiland:', err);
+        document.getElementById('totalTxt').textContent = 'Precios no disponibles';
+        const sel = document.getElementById('disenoSelect');
+        if (sel) sel.innerHTML = '<option>Error cargando listas de precios</option>';
+        const btn = document.getElementById('btnEnviar');
+        if (btn) btn.disabled = true;
+    });
+
+    /* FÓRMULA DE NEGOCIO SACC (obligatoria):
+       cristalesCliente = Math.round(costoNetoPar * 1.19 * 1.60)
+       totalCliente = cristalesCliente + 16000 + precioMarcoSACC
+       Precios de lista = por ojo y NETO (sin IVA)
+       16000 = montaje fijo que cobra SACC */
+    const MONTAJE_FIJO_SACC = 16000;
+
+    function calcularPrecioCliente(costoNetoPar) {
+        if (costoNetoPar === null || costoNetoPar === undefined || isNaN(costoNetoPar)) return null;
         const IVA = 1.19;
         const MARGEN = 1.60;
-        const FIJO = (DB && DB.reglas_precio_cliente && DB.reglas_precio_cliente.cobro_fijo_montaje_al_marco) || 16000;
-        return Math.round(Number(costo) * IVA * MARGEN) + FIJO;
+        return Math.round(Number(costoNetoPar) * IVA * MARGEN);
     }
 
     /* =========================================================
@@ -697,15 +715,81 @@
     });
 
     /* =========================================================
-       4) LÓGICA DE COTIZACIÓN ÓPTICA AVANZADA
+       4) LÓGICA DE COTIZACIÓN ÓPTICA AVANZADA (3 JSON OPTILAND)
        ========================================================= */
+    function obtenerColumnaStock(esf, cil) {
+        const esfAbs = Math.abs(esf);
+        const cilAbs = Math.abs(cil);
+
+        if (esfAbs === 0 && cilAbs === 0) return 'ESF2';
+
+        if (esfAbs === 0 && cilAbs > 0) {
+            if (cilAbs <= 2.0) return 'CIL-2';
+            if (cilAbs <= 4.0) return 'CIL-4';
+            if (cilAbs <= 6.0) return 'CIL-6';
+            return null;
+        }
+
+        if (esfAbs > 0 && cilAbs === 0) {
+            if (esfAbs <= 2.0) return 'ESF2';
+            if (esfAbs <= 4.0) return 'ESF4';
+            if (esfAbs <= 6.0) return 'ESF6';
+            if (esfAbs <= 8.0) return 'ESF8';
+            if (esfAbs <= 10.0) return 'ESF10';
+            return null;
+        }
+
+        // Esferocilíndrico
+        if (cilAbs <= 2.0) {
+            if (esfAbs <= 2.0) return '2/2';
+            if (esfAbs <= 4.0) return '4/2';
+            if (esfAbs <= 6.0) return '6/2';
+            if (esfAbs <= 8.0) return '8/2';
+            if (esfAbs <= 10.0) return '10/2';
+            return null;
+        } else if (cilAbs <= 4.0) {
+            if (esfAbs <= 2.0) return '2/4';
+            if (esfAbs <= 4.0) return '4/4';
+            if (esfAbs <= 6.0) return '6/4';
+            if (esfAbs <= 8.0) return '8/4';
+            if (esfAbs <= 10.0) return '10/4';
+            return null;
+        } else if (cilAbs <= 6.0) {
+            if (esfAbs <= 2.0) return '2/6';
+            if (esfAbs <= 4.0) return '4/6';
+            if (esfAbs <= 6.0) return '6/6';
+            return null;
+        }
+        return null;
+    }
+
+    function calcularRecargosLab(esf, cil) {
+        const esfAbs = Math.abs(esf);
+        const cilAbs = Math.abs(cil);
+        let recargoEsf = 0;
+        if (esf <= -20.25 || esf >= 20.25) recargoEsf = 8000;
+        else if (esfAbs >= 12.25) recargoEsf = 6000;
+        else if (esfAbs >= 7.25) recargoEsf = 3000;
+
+        let recargoCil = 0;
+        if (cilAbs >= 4.25) recargoCil = 2000;
+
+        return { recargoEsf, recargoCil, totalRecargo: recargoEsf + recargoCil };
+    }
+
     const C = {
         marcoElegido: null,
-        materialId: 'cr39',
+        materialId: null,
         origenElegido: 'stock', // 'stock' | 'laboratorio'
         tipoManualUsuario: null,
         costoActual: null,
         origenActual: 'stock',
+        columnaOD: null,
+        columnaOI: null,
+
+        inicializar: function () {
+            this.recalcularTodo();
+        },
 
         // 1. Lectura y análisis de la graduación real en los inputs
         obtenerGraduacion: function () {
@@ -747,17 +831,6 @@
             };
         },
 
-        armarSelectDiseno: function () {
-            this.recalcularTodo();
-        },
-
-        disenosDeTipo: function (tipo) {
-            if (!DB || !DB.disenos) return [];
-            return Object.entries(DB.disenos)
-                .filter(([k, d]) => d.tipo === tipo)
-                .map(([k, d]) => ({ id: k, ...d }));
-        },
-
         disenoActual: function () {
             const sel = document.getElementById('disenoSelect');
             return sel ? sel.value : null;
@@ -793,66 +866,59 @@
 
         seleccionarOrigenManual: function (origen) {
             const grad = this.obtenerGraduacion();
-            const tipo = this.tipoActual();
+            const colOD = obtenerColumnaStock(grad.odEsf, grad.odCil);
+            const colOI = obtenerColumnaStock(grad.oiEsf, grad.oiCil);
             const ar = document.getElementById('tratAR') ? document.getElementById('tratAR').checked : true;
-            const stockCheck = this.verificarCompatibilidadStock(grad, tipo, this.materialId, ar);
 
-            if (origen === 'stock' && !stockCheck.compatible) {
-                this.toast(stockCheck.razon || 'Esta opción no está disponible para tu graduación.', false);
+            const stockPosible = !grad.tieneAdd && colOD && colOI && DB_STOCK && (DB_STOCK.monofocales || []).some(m => m.columnas && m.columnas[colOD] && m.columnas[colOI]);
+
+            if (origen === 'stock' && !stockPosible) {
+                this.toast('Esta graduación no cabe en los rangos estándar de Stock. Se confeccionará a medida en Laboratorio.', false);
                 this.origenElegido = 'laboratorio';
                 const rLab = document.querySelector('input[name="origenFabricacion"][value="laboratorio"]');
                 if (rLab) rLab.checked = true;
+                this.actualizarVisibilidadOnix();
                 this.recalcularTodo();
                 return;
             }
 
             this.origenElegido = origen;
+            this.actualizarVisibilidadOnix();
             this.recalcularTodo();
         },
 
         cambiarDiseno: function () {
-            if (!DB) return;
-            const key = this.disenoActual();
-            const d = DB.disenos[key];
-            const desc = document.getElementById('disenoDesc');
-            if (d && d.descripcion_cliente) {
-                desc.textContent = d.descripcion_cliente;
-                desc.classList.add('visible');
-            } else {
-                desc.classList.remove('visible');
-            }
-            this.armarMateriales();
             this.recalcularTodo();
+        },
+
+        actualizarVisibilidadOnix: function () {
+            const onixWrap = document.getElementById('onixWrap');
+            const tratAR = document.getElementById('tratAR');
+            const tratOnix = document.getElementById('tratOnix');
+            const arChecked = tratAR ? tratAR.checked : false;
+            const esLaboratorio = this.origenElegido === 'laboratorio';
+
+            // 1. Al seleccionar "Fabricación a medida", debe mostrarse automáticamente la opción de ONIX.
+            // 2. ONIX solo debe estar disponible cuando está activa la Fabricación a medida (Laboratorio) y AR activo.
+            // 3. Si el usuario vuelve a "Entrega rápida" (Stock), ONIX debe ocultarse.
+            const visible = esLaboratorio && arChecked;
+            if (onixWrap) {
+                onixWrap.classList.toggle('visible', visible);
+            }
+
+            // Si no está en laboratorio, desmarcar ONIX para no cobrarlo en stock
+            if (!esLaboratorio && tratOnix && tratOnix.checked) {
+                tratOnix.checked = false;
+            }
         },
 
         cambiarAR: function () {
-            const arChecked = document.getElementById('tratAR').checked;
-            document.getElementById('onixWrap').classList.toggle('visible', arChecked);
-            this.armarMateriales();
+            this.actualizarVisibilidadOnix();
             this.recalcularTodo();
         },
 
-        armarMateriales: function () {
-            if (!DB) return;
-            const key = this.disenoActual();
-            const d = DB.disenos[key];
-            if (!d) return;
-            const ar = document.getElementById('tratAR').checked;
-            const tabla = ar ? d.precio_con_ar : d.precio_sin_ar;
-            const disponibles = Object.keys(tabla || {});
-            if (!disponibles.includes(this.materialId)) {
-                this.materialId = disponibles[0] || null;
-            }
-            const box = document.getElementById('materialChecks');
-            if (box) {
-                box.innerHTML = disponibles.map(id => {
-                    const mat = DB.materiales.find(m => m.id === id);
-                    const nombre = mat ? mat.nombre_cliente : id;
-                    const checked = id === this.materialId ? 'checked' : '';
-                    return '<label class="check"><input type="radio" name="material" value="' + id +
-                        '" ' + checked + ' onchange="C.elegirMaterial(\'' + id + '\')"> ' + nombre + '</label>';
-                }).join('') || '<span style="color:var(--text-muted);font-size:0.85rem">No hay materiales disponibles para esta combinación, contáctanos.</span>';
-            }
+        cambiarOnix: function () {
+            this.recalcularTodo();
         },
 
         elegirMaterial: function (id) {
@@ -871,6 +937,7 @@
             }
             this.actualizarTotal();
         },
+
         buscarMarco: function (q) {
             const box = document.getElementById('marcoSugerencias');
             const term = (q || '').trim();
@@ -890,6 +957,7 @@
                     '</div>';
             }).join('') || '<div style="padding:0.5rem;color:var(--text-muted);font-size:0.85rem">Sin resultados</div>';
         },
+
         elegirMarco: function (nombre, marca, precio, url) {
             this.marcoElegido = { nombre: nombre, marca: marca, precio: Number(precio) || 0, url: url };
             document.getElementById('marcoSeleccionado').innerHTML =
@@ -899,99 +967,19 @@
             this.actualizarTotal();
         },
 
-        redondearEsf: function (x) {
-            for (const k of [2, 4, 6, 8, 10]) if (x <= k) return k;
-            return null;
-        },
-
-        precioStock: function (stockKey, esfAbs, cilAbs) {
-            if (!DB || !DB.stock) return null;
-            const m = DB.stock[stockKey];
-            if (!m) return null;
-            if (m.flat_solo_neutro !== undefined) {
-                return (esfAbs === 0 && cilAbs === 0) ? m.flat_solo_neutro : null;
-            }
-
-            // Cilindro puro (ESF 0, CIL > 0)
-            if (esfAbs === 0 && cilAbs > 0 && m.cil_solo) {
-                if (cilAbs <= 2 && m.cil_solo['2'] !== undefined) return m.cil_solo['2'];
-                if (cilAbs <= 4 && m.cil_solo['4'] !== undefined) return m.cil_solo['4'];
-                if (cilAbs <= 6 && m.cil_solo['6'] !== undefined) return m.cil_solo['6'];
-                return null;
-            }
-
-            const esfR = this.redondearEsf(esfAbs);
-            if (esfR === null) return null;
-            let banda;
-            if (cilAbs === 0) banda = m.esf_solo;
-            else if (cilAbs <= 2) banda = m.cil2;
-            else if (cilAbs <= 4) banda = m.cil4;
-            else if (cilAbs <= 6) banda = m.cil6;
-            else return null;
-            if (!banda) return null;
-            const val = banda[String(esfR)];
-            return (val !== undefined && val !== null) ? val : null;
-        },
-
-        verificarCompatibilidadStock: function (grad, tipo, materialId, ar) {
-            if (!DB || !DB.stock || !DB.stock_map) {
-                return { compatible: false, razon: 'Opciones de confección no disponibles temporalmente', precioUnitario: null };
-            }
-
-            // Regla óptica: Progresivo / Multifocal / Bifocal siempre se fabrica a medida
-            if (tipo !== 'monofocal' || grad.tieneAdd) {
-                return {
-                    compatible: false,
-                    razon: 'Los lentes multifocales y progresivos se confeccionan siempre <strong>a medida</strong> mediante tallado digital personalizado.',
-                    precioUnitario: null
-                };
-            }
-
-            const mapa = DB.stock_map[materialId];
-            if (!mapa) {
-                return {
-                    compatible: false,
-                    razon: 'Este material de alta tecnología se confecciona exclusivamente mediante <strong>fabricación a medida</strong>.',
-                    precioUnitario: null
-                };
-            }
-
-            const stockKey = ar ? mapa.con_ar : mapa.sin_ar;
-            if (!stockKey || !DB.stock[stockKey]) {
-                return {
-                    compatible: false,
-                    razon: 'Esta combinación de material y tratamiento se confecciona mediante <strong>fabricación a medida</strong>.',
-                    precioUnitario: null
-                };
-            }
-
-            const precioUnitario = this.precioStock(stockKey, grad.maxEsf, grad.maxCil);
-            if (precioUnitario === null) {
-                let detalle = 'Graduación especial';
-                if (grad.maxEsf > 6) detalle = 'Graduación esférica alta (+/-' + grad.maxEsf.toFixed(2) + ')';
-                else if (grad.maxCil > 4) detalle = 'Astigmatismo/cilindro alto (-' + grad.maxCil.toFixed(2) + ')';
-                return {
-                    compatible: false,
-                    razon: detalle + ': tus cristales requieren <strong>fabricación personalizada a medida</strong> para asegurar máxima nitidez y menor grosor.',
-                    precioUnitario: null
-                };
-            }
-
-            return {
-                compatible: true,
-                razon: 'Graduación compatible con confección de entrega rápida.',
-                precioUnitario: precioUnitario
-            };
-        },
-
         /* ========================================================
            MOTOR CENTRAL: RECALCULAR TODO EN TIEMPO REAL
            ======================================================== */
         recalcularTodo: function () {
-            if (!DB) return;
+            if (!DB_STOCK || !DB_LAB_SIN_AR || !DB_LAB_CON_AR) return;
 
             const grad = this.obtenerGraduacion();
             const ar = document.getElementById('tratAR') ? document.getElementById('tratAR').checked : true;
+
+            const colOD = obtenerColumnaStock(grad.odEsf, grad.odCil);
+            const colOI = obtenerColumnaStock(grad.oiEsf, grad.oiCil);
+            this.columnaOD = colOD;
+            this.columnaOI = colOI;
 
             // 1. REGLA MONOFOCAL vs MULTIFOCAL
             const rMonofocal = document.querySelector('input[name="tipoLente"][value="monofocal"]');
@@ -1008,18 +996,9 @@
             let tipoDeseado = this.tipoActual();
 
             if (grad.tieneAdd) {
-                // Hay ADD -> Bloquear Monofocal y habilitar/recomendar Progresivo
-                if (rMonofocal) {
-                    rMonofocal.disabled = true;
-                    rMonofocal.checked = false;
-                }
-                if (lblTipoMonofocal) {
-                    lblTipoMonofocal.style.opacity = '0.45';
-                    lblTipoMonofocal.style.cursor = 'not-allowed';
-                }
-                if (badgeMonofocal) {
-                    badgeMonofocal.innerHTML = '<span class="badge-incompatible"><i class="fas fa-ban"></i> No recomendado (tiene ADD)</span>';
-                }
+                if (rMonofocal) { rMonofocal.disabled = true; rMonofocal.checked = false; }
+                if (lblTipoMonofocal) { lblTipoMonofocal.style.opacity = '0.45'; lblTipoMonofocal.style.cursor = 'not-allowed'; }
+                if (badgeMonofocal) badgeMonofocal.innerHTML = '<span class="badge-incompatible"><i class="fas fa-ban"></i> No recomendado (tiene ADD)</span>';
 
                 if (rProgresivo) rProgresivo.disabled = false;
                 if (rBifocal) rBifocal.disabled = false;
@@ -1029,7 +1008,6 @@
                 if (badgeProgresivo) badgeProgresivo.innerHTML = '<span class="badge-sugerido"><i class="fas fa-check"></i> Recomendado</span>';
                 if (badgeBifocal) badgeBifocal.innerHTML = '<span class="badge-secundario">Alternativa</span>';
 
-                // Si el usuario eligió bifocal, mantenerlo; sino, Progresivo por defecto
                 if (this.tipoManualUsuario === 'bifocal') {
                     tipoDeseado = 'bifocal';
                 } else {
@@ -1042,14 +1020,8 @@
                     tipoNota.innerHTML = '<i class="fas fa-magic"></i> <strong>Tu receta incluye visión de cerca (ADD +' + grad.maxAdd.toFixed(2) + '):</strong> Recomendamos <strong>Progresivo</strong> para ver nítido de lejos, intermedio (pantallas) y cerca sin líneas divisorias.';
                 }
             } else {
-                // Sin ADD -> Monofocal habilitado, Progresivo y Bifocal bloqueados
-                if (rMonofocal) {
-                    rMonofocal.disabled = false;
-                }
-                if (lblTipoMonofocal) {
-                    lblTipoMonofocal.style.opacity = '1';
-                    lblTipoMonofocal.style.cursor = 'pointer';
-                }
+                if (rMonofocal) rMonofocal.disabled = false;
+                if (lblTipoMonofocal) { lblTipoMonofocal.style.opacity = '1'; lblTipoMonofocal.style.cursor = 'pointer'; }
                 if (badgeMonofocal) badgeMonofocal.innerHTML = '<span class="badge-sugerido"><i class="fas fa-check"></i> Recomendado</span>';
 
                 if (rProgresivo) rProgresivo.disabled = true;
@@ -1063,62 +1035,17 @@
                 tipoDeseado = 'monofocal';
                 this.tipoManualUsuario = 'monofocal';
 
-                if (tipoNota) {
-                    tipoNota.style.display = 'none';
-                }
+                if (tipoNota) tipoNota.style.display = 'none';
             }
 
-            // Actualizar radio buttons de tipoLente
             const radioTarget = document.querySelector('input[name="tipoLente"][value="' + tipoDeseado + '"]');
-            if (radioTarget && !radioTarget.checked) {
-                radioTarget.checked = true;
-            }
+            if (radioTarget && !radioTarget.checked) radioTarget.checked = true;
 
-            // 2. ACTUALIZAR SELECT DE DISEÑOS SEGÚN TIPO
-            const selDiseno = document.getElementById('disenoSelect');
-            const disenosDisponibles = this.disenosDeTipo(tipoDeseado);
-            const disenoPrevio = selDiseno.value;
-            const sigueValido = disenosDisponibles.some(d => d.id === disenoPrevio);
+            // 2. VERIFICAR COMPATIBILIDAD DE STOCK
+            // Cabe en Stock si: es monofocal, no tiene ADD, y al menos un material de Stock tiene columnas para ambos ojos (OD y OI)
+            const stockMats = DB_STOCK.monofocales || [];
+            const stockPosible = (!grad.tieneAdd && tipoDeseado === 'monofocal' && Boolean(colOD && colOI) && stockMats.some(m => m.columnas && m.columnas[colOD] && m.columnas[colOI]));
 
-            selDiseno.innerHTML = disenosDisponibles.map(d => {
-                return '<option value="' + d.id + '">' + d.nombre_cliente + '</option>';
-            }).join('');
-
-            if (sigueValido) {
-                selDiseno.value = disenoPrevio;
-            } else if (disenosDisponibles.length > 0) {
-                selDiseno.value = disenosDisponibles[0].id;
-            }
-
-            const disenoKey = selDiseno.value;
-            const disenoObj = DB.disenos[disenoKey];
-            const desc = document.getElementById('disenoDesc');
-            if (disenoObj && disenoObj.descripcion_cliente) {
-                desc.textContent = disenoObj.descripcion_cliente;
-                desc.classList.add('visible');
-            } else {
-                desc.classList.remove('visible');
-            }
-
-            // 3. REARMAR MATERIALES SI CAMBIÓ EL DISEÑO
-            const tablaPrecios = ar ? (disenoObj && disenoObj.precio_con_ar) : (disenoObj && disenoObj.precio_sin_ar);
-            const materialesDisponibles = Object.keys(tablaPrecios || {});
-            if (!materialesDisponibles.includes(this.materialId)) {
-                this.materialId = materialesDisponibles[0] || null;
-            }
-            const boxMat = document.getElementById('materialChecks');
-            if (boxMat) {
-                boxMat.innerHTML = materialesDisponibles.map(id => {
-                    const mat = DB.materiales.find(m => m.id === id);
-                    const nombre = mat ? mat.nombre_cliente : id;
-                    const checked = id === this.materialId ? 'checked' : '';
-                    return '<label class="check"><input type="radio" name="material" value="' + id +
-                        '" ' + checked + ' onchange="C.elegirMaterial(\'' + id + '\')"> ' + nombre + '</label>';
-                }).join('') || '<span style="color:var(--text-muted);font-size:0.85rem">No hay materiales disponibles para esta combinación, contáctanos.</span>';
-            }
-
-            // 4. VERIFICAR MODO DE CONFECCIÓN (Entrega rápida vs Fabricación a medida)
-            const stockInfo = this.verificarCompatibilidadStock(grad, tipoDeseado, this.materialId, ar);
             const lblStock = document.getElementById('lblOrigenStock');
             const lblLab = document.getElementById('lblOrigenLab');
             const inputStock = document.querySelector('input[name="origenFabricacion"][value="stock"]');
@@ -1127,29 +1054,24 @@
             const badgeLab = document.getElementById('badgeLab');
             const origenAviso = document.getElementById('origenAviso');
 
-            // Diseños de alta definición como Cross Compress o MyoFix requieren siempre fabricación a medida
-            const disenoRequiereLab = (disenoKey === 'monofocal_cross_compress' || disenoKey === 'cross_myofix' || tipoDeseado !== 'monofocal');
-
-            if (stockInfo.compatible && !disenoRequiereLab) {
+            if (stockPosible) {
                 if (inputStock) inputStock.disabled = false;
                 if (lblStock) { lblStock.style.opacity = '1'; lblStock.style.pointerEvents = ''; }
-                if (badgeStock) badgeStock.innerHTML = '<span class="badge-sugerido">Disponible</span>';
+                if (badgeStock) badgeStock.innerHTML = '<span class="badge-sugerido">Disponible [' + colOD + ' / ' + colOI + ']</span>';
                 if (badgeLab) badgeLab.innerHTML = '<span class="badge-secundario">Personalizado</span>';
 
-                // Si el usuario no forzó a medida, usar entrega rápida
+                // Si el usuario no forzó a medida, usar Stock
                 if (this.origenElegido !== 'laboratorio') {
                     this.origenElegido = 'stock';
                     if (inputStock) inputStock.checked = true;
                 } else {
                     if (inputLab) inputLab.checked = true;
                 }
-
                 if (origenAviso) origenAviso.style.display = 'none';
             } else {
-                // Entrega rápida no disponible -> Fabricación a medida obligatoria
                 if (inputStock) inputStock.disabled = true;
                 if (lblStock) { lblStock.style.opacity = '0.45'; lblStock.style.pointerEvents = 'none'; }
-                if (badgeStock) badgeStock.innerHTML = '<span class="badge-incompatible">No disponible para tu receta</span>';
+                if (badgeStock) badgeStock.innerHTML = '<span class="badge-incompatible">No disponible en Stock</span>';
                 if (badgeLab) badgeLab.innerHTML = '<span class="badge-sugerido"><i class="fas fa-check"></i> Recomendado para tu receta</span>';
 
                 this.origenElegido = 'laboratorio';
@@ -1157,36 +1079,187 @@
 
                 if (origenAviso) {
                     origenAviso.style.display = 'block';
-                    const mensaje = disenoRequiereLab && stockInfo.compatible
-                        ? 'El diseño seleccionado (' + (disenoObj ? disenoObj.nombre_cliente : '') + ') se confecciona exclusivamente mediante <strong>fabricación a medida digital</strong>.'
-                        : stockInfo.razon;
-                    origenAviso.innerHTML = '<i class="fas fa-info-circle"></i> ' + mensaje;
+                    let motivo = '';
+                    if (grad.tieneAdd) {
+                        motivo = 'Los lentes multifocales y progresivos se confeccionan exclusivamente mediante <strong>fabricación digital a medida</strong>.';
+                    } else if (!colOD || !colOI) {
+                        motivo = 'Tu graduación (' + (grad.maxEsf > 10 ? 'Esfera alta' : 'Cilindro alto') + ') supera los límites de stock y requiere <strong>tallado a medida digital</strong>.';
+                    } else {
+                        motivo = 'Para tus columnas de receta (' + colOD + ' y ' + colOI + '), se requiere <strong>fabricación personalizada a medida</strong>.';
+                    }
+                    origenAviso.innerHTML = '<i class="fas fa-info-circle"></i> ' + motivo;
                 }
             }
 
-            // 5. CALCULAR COSTO Y PRECIO FINAL
-            let costo = null;
+            // Sincronizar visibilidad de ONIX (solo disponible en Laboratorio con AR activo)
+            this.actualizarVisibilidadOnix();
+            const onix = (this.origenElegido === 'laboratorio') && ar && Boolean(document.getElementById('tratOnix')?.checked);
+
+            // 3. ACTUALIZAR SELECT DE DISEÑOS SEGÚN ORIGEN Y TIPO
+            const selDiseno = document.getElementById('disenoSelect');
+            const desc = document.getElementById('disenoDesc');
+
+            if (this.origenElegido === 'stock') {
+                selDiseno.innerHTML = '<option value="stock_monofocal">Monofocal Stock (Entrega Rápida)</option>';
+                selDiseno.disabled = true;
+                if (desc) {
+                    desc.textContent = 'Cristales terminados de stock listos para corte y montaje en pocos días. Diámetro positivo 65mm / negativo 70mm.';
+                    desc.classList.add('visible');
+                }
+            } else {
+                selDiseno.disabled = false;
+                const dbLab = ar ? DB_LAB_CON_AR : DB_LAB_SIN_AR;
+                const disenosLab = dbLab.disenos || [];
+
+                let disenosFiltrados = [];
+                if (tipoDeseado === 'progresivo') {
+                    disenosFiltrados = disenosLab.filter(d => d.nombre.toUpperCase().includes('PROGRESSIVE') || d.nombre.toUpperCase().includes('MULTIFOCAL') || d.nombre.toUpperCase().includes('DYNAMICS'));
+                } else if (tipoDeseado === 'bifocal') {
+                    disenosFiltrados = disenosLab.filter(d => d.nombre.toUpperCase().includes('BIFOCAL'));
+                } else {
+                    disenosFiltrados = disenosLab.filter(d => d.nombre.toUpperCase().includes('MONOFOCAL') || d.nombre.toUpperCase().includes('MYOFIX'));
+                }
+
+                if (disenosFiltrados.length === 0) disenosFiltrados = disenosLab;
+
+                const disenoPrevio = selDiseno.value;
+                selDiseno.innerHTML = disenosFiltrados.map(d => {
+                    let nombreMostrar = d.nombre;
+                    if (d.nombre.includes('CROSS ONE')) nombreMostrar = 'Progressive Cross One 3a Gen (Predeterminado)';
+                    else if (d.nombre.includes('MONOFOCAL CONVENCIONAL')) nombreMostrar = 'Monofocal Convencional';
+                    else if (d.nombre.includes('CROSS COMPRESS')) nombreMostrar = 'Monofocal Cross Compress 3a Gen';
+                    else if (d.nombre.includes('MYOFIX')) nombreMostrar = 'Cros MyoFix Control Miopía';
+                    return '<option value="' + d.nombre + '">' + nombreMostrar + '</option>';
+                }).join('');
+
+                const sigueValido = disenosFiltrados.some(d => d.nombre === disenoPrevio);
+                if (sigueValido) {
+                    selDiseno.value = disenoPrevio;
+                } else if (tipoDeseado === 'progresivo') {
+                    // Default = Cross One
+                    const crossOne = disenosFiltrados.find(d => d.nombre.includes('CROSS ONE'));
+                    selDiseno.value = crossOne ? crossOne.nombre : disenosFiltrados[0].nombre;
+                } else {
+                    selDiseno.value = disenosFiltrados[0].nombre;
+                }
+
+                if (desc) {
+                    const selObj = disenosLab.find(d => d.nombre === selDiseno.value);
+                    desc.textContent = selObj ? ('Fabricación digital a medida: ' + (selObj.nombre || '')) : '';
+                    desc.classList.add('visible');
+                }
+            }
+
+            // 4. ACTUALIZAR LISTA DE MATERIALES
+            const boxMat = document.getElementById('materialChecks');
+            let costoNetoPar = null;
             let origenFinal = this.origenElegido;
 
-            if (this.origenElegido === 'stock' && stockInfo.compatible && !disenoRequiereLab) {
-                costo = stockInfo.precioUnitario * 2;
-                origenFinal = 'stock';
+            if (this.origenElegido === 'stock') {
+                // Stock: filtrar materiales por AR y verificar columnas
+                const materialesStock = stockMats.filter(m => m.ar === ar);
+                if (materialesStock.length === 0) {
+                    // fallback a cualquiera si no coincide ar
+                    materialesStock.push(...stockMats);
+                }
+
+                // Asegurar que materialId sea válido
+                const primerCompatible = materialesStock.find(m => m.columnas && m.columnas[colOD] && m.columnas[colOI]);
+                if (!this.materialId || !materialesStock.some(m => m.id === this.materialId)) {
+                    this.materialId = primerCompatible ? primerCompatible.id : materialesStock[0].id;
+                }
+
+                if (boxMat) {
+                    boxMat.innerHTML = materialesStock.map(m => {
+                        const tieneCols = Boolean(m.columnas && m.columnas[colOD] && m.columnas[colOI]);
+                        const checked = m.id === this.materialId ? 'checked' : '';
+                        const disabled = !tieneCols ? 'disabled' : '';
+                        const badgeExtra = tieneCols
+                            ? '<span class="badge-sugerido" style="font-size:0.65rem">OD: ' + colOD + ' | OI: ' + colOI + '</span>'
+                            : '<span class="badge-incompatible" style="font-size:0.65rem">Requiere Laboratorio</span>';
+                        return '<label class="check" style="' + (!tieneCols ? 'opacity:0.45;cursor:not-allowed;' : '') + '">' +
+                            '<input type="radio" name="material" value="' + m.id + '" ' + checked + ' ' + disabled +
+                            ' onchange="C.elegirMaterial(\'' + m.id + '\')"> ' +
+                            (m.nombre_cliente || m.nombre) + ' ' + badgeExtra + '</label>';
+                    }).join('');
+                }
+
+                // Calcular costo en stock
+                const matElegido = stockMats.find(m => m.id === this.materialId);
+                if (matElegido && matElegido.columnas && matElegido.columnas[colOD] && matElegido.columnas[colOI]) {
+                    const netoOD = Number(matElegido.columnas[colOD]);
+                    const netoOI = Number(matElegido.columnas[colOI]);
+                    costoNetoPar = netoOD + netoOI;
+                    origenFinal = 'stock';
+                } else {
+                    costoNetoPar = null;
+                }
             } else {
-                const costoLabUnitario = tablaPrecios && tablaPrecios[this.materialId] !== undefined
-                    ? tablaPrecios[this.materialId]
-                    : null;
-                costo = costoLabUnitario !== null ? costoLabUnitario * 2 : null;
-                origenFinal = 'laboratorio';
+                // Laboratorio: usar JSON correspondiente (Sin AR o Con AR)
+                const dbLab = ar ? DB_LAB_CON_AR : DB_LAB_SIN_AR;
+                const disenoActualNom = selDiseno.value;
+                const disenoObj = (dbLab.disenos || []).find(d => d.nombre === disenoActualNom) || dbLab.disenos[0];
+                const mats = disenoObj ? disenoObj.materiales : [];
+
+                const matExiste = mats.some(m => m.material.trim() === this.materialId);
+                if (!this.materialId || !matExiste) {
+                    this.materialId = mats.length > 0 ? mats[0].material.trim() : null;
+                }
+
+                if (boxMat) {
+                    boxMat.innerHTML = mats.map(m => {
+                        const idM = m.material.trim();
+                        const checked = idM === this.materialId ? 'checked' : '';
+                        const colorNota = m.colores ? (' <span style="font-size:0.75rem;color:var(--text-muted)">(' + m.colores + ')</span>') : '';
+                        return '<label class="check"><input type="radio" name="material" value="' + idM + '" ' + checked +
+                            ' onchange="C.elegirMaterial(\'' + idM.replace(/'/g, "\\'") + '\')"> ' +
+                            idM + colorNota + '</label>';
+                    }).join('') || '<span style="color:var(--text-muted);font-size:0.85rem">No hay materiales disponibles</span>';
+                }
+
+                const matObj = mats.find(m => m.material.trim() === this.materialId);
+                if (matObj) {
+                    const baseOjo = Number(matObj.precio) || 0;
+                    const recOD = calcularRecargosLab(grad.odEsf, grad.odCil);
+                    const recOI = calcularRecargosLab(grad.oiEsf, grad.oiCil);
+                    const netoOD = baseOjo + recOD.totalRecargo;
+                    const netoOI = baseOjo + recOI.totalRecargo;
+                    costoNetoPar = netoOD + netoOI;
+
+                    if (disenoActualNom && disenoActualNom.toUpperCase().includes('CROSS MAX')) {
+                        // Promo Cross Max: -35%
+                        costoNetoPar = Math.round(costoNetoPar * 0.65);
+                    }
+
+                    if (onix && ar) {
+                        costoNetoPar += 10000;
+                    }
+                    origenFinal = 'laboratorio';
+                } else {
+                    costoNetoPar = null;
+                }
             }
 
-            // Extra Onix si aplica
-            if (costo !== null && ar && document.getElementById('tratOnix') && document.getElementById('tratOnix').checked) {
-                const onixExtra = (DB.reglas_precio_cliente && DB.reglas_precio_cliente.capa_onix_extra && DB.reglas_precio_cliente.capa_onix_extra.costo_extra_total) || 10000;
-                costo += onixExtra;
-            }
-
-            this.costoActual = costo;
+            this.costoActual = costoNetoPar;
             this.origenActual = origenFinal;
+
+            // FÓRMULA DE NEGOCIO SACC OBLIGATORIA:
+            // cristalesCliente = Math.round(costoNetoPar * 1.19 * 1.60)
+            // totalCliente = cristalesCliente + 16000 + precioMarcoSACC
+            const cristalesCliente = calcularPrecioCliente(costoNetoPar);
+            const trae = document.querySelector('input[name="tieneMarco"][value="si"]').checked;
+            const marco = (!trae && this.marcoElegido) ? this.marcoElegido.precio : 0;
+            const totalCliente = (cristalesCliente !== null) ? (cristalesCliente + MONTAJE_FIJO_SACC + marco) : null;
+
+            // LOG EN CONSOLA OBLIGATORIO:
+            console.log('=== COTIZACIÓN SACC & VISION ===', {
+                origen: origenFinal,
+                columnaOD: colOD || 'N/A',
+                columnaOI: colOI || 'N/A',
+                netoPar: costoNetoPar,
+                cristalesCliente: cristalesCliente,
+                totalCliente: totalCliente
+            });
 
             this.actualizarTotal();
             this.consultarBackendDebounced();
@@ -1194,7 +1267,7 @@
 
         consultarBackendDebounced: function () {
             clearTimeout(this._calcTimer);
-            this._calcTimer = setTimeout(() => this.consultarBackend(), 150);
+            this._calcTimer = setTimeout(() => this.consultarBackend(), 200);
         },
 
         consultarBackend: async function () {
@@ -1206,7 +1279,7 @@
             }
             const disenoKey = this.disenoActual();
             const ar = document.getElementById('tratAR') ? document.getElementById('tratAR').checked : true;
-            const onix = ar && document.getElementById('tratOnix') ? document.getElementById('tratOnix').checked : false;
+            const onix = (this.origenElegido === 'laboratorio') && ar && Boolean(document.getElementById('tratOnix')?.checked);
             const traeMarco = document.querySelector('input[name="tieneMarco"][value="si"]')?.checked ?? true;
             const marcoPrecio = (!traeMarco && this.marcoElegido) ? this.marcoElegido.precio : 0;
 
@@ -1254,12 +1327,11 @@
                     }
                 }
             } catch (err) {
-                // Fallback silencioso a cálculo local si /api/cotizar no está disponible localmente
+                // Fallback silencioso al cálculo local ya realizado
             }
         },
 
         actualizarTotal: function () {
-            if (!DB) return;
             const precioCristalesCli = calcularPrecioCliente(this.costoActual);
             const trae = document.querySelector('input[name="tieneMarco"][value="si"]').checked;
             const marco = (!trae && this.marcoElegido) ? this.marcoElegido.precio : 0;
@@ -1275,11 +1347,8 @@
                 totalEl.textContent = grad.tieneReceta ? 'Combinación no disponible' : 'Completa tu receta';
                 return;
             }
-            totalEl.textContent = money(precioCristalesCli + marco);
-        },
-
-        costoCristal: function () {
-            return { costo: this.costoActual, origen: this.origenActual };
+            // SACC: totalCliente = cristalesCliente + 16000 + marco
+            totalEl.textContent = money(precioCristalesCli + MONTAJE_FIJO_SACC + marco);
         },
 
         val: function (id) {
@@ -1297,8 +1366,7 @@
                 this.toast('Indica tu teléfono para coordinar la entrega.', false);
                 return;
             }
-            const { costo } = this.costoCristal();
-            const precioCristalesCli = calcularPrecioCliente(costo);
+            const precioCristalesCli = calcularPrecioCliente(this.costoActual);
             if (precioCristalesCli === null) {
                 this.toast('Nos falta tu receta o el material elegido no está disponible. Revisa los datos.', false);
                 return;
@@ -1307,7 +1375,7 @@
             const tipo = this.tipoActual();
             const disenoKey = this.disenoActual();
             const ar = document.getElementById('tratAR').checked;
-            const onix = ar && document.getElementById('tratOnix').checked;
+            const onix = (this.origenElegido === 'laboratorio') && ar && Boolean(document.getElementById('tratOnix')?.checked);
             const traeMarco = document.querySelector('input[name="tieneMarco"][value="si"]').checked;
 
             const lejosOd = 'ESF ' + this.val('lejosOdEsf') + ' | CIL ' + this.val('lejosOdCil') + ' | EJE ' + this.val('lejosOdEje') + ' | DP ' + this.val('lejosOdDp') + ' | ADD ' + this.val('lejosOdAdd');
@@ -1317,8 +1385,6 @@
 
             const marco = (!traeMarco && this.marcoElegido) ? this.marcoElegido.precio : 0;
 
-            // Enviamos únicamente datos de receta, opciones y contacto.
-            // El backend recalcula y valida el precio usando precios_optiland.json
             const payload = {
                 nombre: nombre,
                 telefono: telefono,
